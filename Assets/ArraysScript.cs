@@ -31,13 +31,13 @@ public class ArraysScript : MonoBehaviour
     public void AddItem()
     {
         if (AddNameInput.text != "" && AddCountInput.text != "")
-        {
+        {    
             int CountOfItems = int.Parse(AddCountInput.text);
             for (int i = 0; i < ItemNames.Count; i++)
             {
                 if (AddNameInput.Equals(ItemNames[i]))
                 {
-                    ItemCount[i] -= CountOfItems;
+                    ItemCount[i] += CountOfItems;
                 }
                 else
                 {
@@ -55,12 +55,21 @@ public class ArraysScript : MonoBehaviour
     }
     public void RemoveItem()
     {
+        int CountOfItems = int.Parse(AddCountInput.text);
         for (int i = 0; i < ItemNames.Count; i++)
         {
-            if (RemoveNameInput.Equals(ItemNames[i]) && RemoveCountInput.Equals(ItemCount[i]))
+            if (RemoveNameInput.Equals(ItemNames[i]) && int.Parse(RemoveCountInput.text) < int.Parse(ItemCount[i].ToString()))
             {
-                ItemNames.RemoveAt(i);
+                ItemCount[i] -= CountOfItems;
+            }
+            else if(RemoveNameInput.Equals(ItemNames[i]) && int.Parse(RemoveCountInput.text) == int.Parse(ItemCount[i].ToString()))
+            {
                 ItemCount.RemoveAt(i);
+                ItemNames.RemoveAt(i);
+            }
+            else
+            {
+                print("Error");
             }
         }
     }
