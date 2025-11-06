@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UIElements;
 using UnityEditor;
+using System.Linq;
 
 public class ArraysScript : MonoBehaviour
 {
@@ -31,6 +32,8 @@ public class ArraysScript : MonoBehaviour
 
     public void AddItem()
     {
+        AddCountInput.text.ToLower();
+        AddNameInput.text.ToLower();
         if (AddNameInput.text != "" && AddCountInput.text != "")
         {    
             int CountOfItems = int.Parse(AddCountInput.text);
@@ -45,23 +48,20 @@ public class ArraysScript : MonoBehaviour
                 ItemNames.Add(createdNameText.GetComponent<TMP_Text>().text);
                 ItemCount.Add(CountOfItems);
             }
-            for (int i = 0; i < ItemNames.Count; i++)
+            else if (!ItemNames.Contains(AddNameInput.text))
             {
-                if (AddNameInput.text != ItemNames[i])
-                {
-                    GameObject createdNameText = Instantiate(Text, ItemNamesContent.transform);
-                    GameObject createdCountText = Instantiate(Text, ItemCountContent.transform);
+                GameObject createdNameText = Instantiate(Text, ItemNamesContent.transform);
+                GameObject createdCountText = Instantiate(Text, ItemCountContent.transform);
 
-                    createdNameText.GetComponent<TMP_Text>().text = AddNameInput.text;
-                    createdCountText.GetComponent<TMP_Text>().text = CountOfItems.ToString();
+                createdNameText.GetComponent<TMP_Text>().text = AddNameInput.text;
+                createdCountText.GetComponent<TMP_Text>().text = CountOfItems.ToString();
 
-                    ItemNames.Add(createdNameText.GetComponent<TMP_Text>().text);
-                    ItemCount.Add(CountOfItems);
-                }
-                else
-                {
-                    ItemCount[i] += CountOfItems;
-                }
+                ItemNames.Add(createdNameText.GetComponent<TMP_Text>().text);
+                ItemCount.Add(CountOfItems);
+            }
+            else
+            {
+                ItemCount[ItemNames.IndexOf(AddNameInput.text)] += int.Parse(AddCountInput.text);
             }
         }
     }
