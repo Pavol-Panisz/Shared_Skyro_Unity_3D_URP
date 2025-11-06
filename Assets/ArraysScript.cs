@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UIElements;
+using UnityEditor;
 
 public class ArraysScript : MonoBehaviour
 {
@@ -14,8 +15,8 @@ public class ArraysScript : MonoBehaviour
     public GameObject ItemNamesContent;
     public GameObject ItemCountContent;
 
-    public List<string> ItemNames;
-    public List<int> ItemCount;
+    public List<string> ItemNames = new List<string>();
+    public List<int> ItemCount = new List<int>();
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -33,13 +34,20 @@ public class ArraysScript : MonoBehaviour
         if (AddNameInput.text != "" && AddCountInput.text != "")
         {    
             int CountOfItems = int.Parse(AddCountInput.text);
+            if (ItemNames.Count == 0)
+            {
+                GameObject createdNameText = Instantiate(Text, ItemNamesContent.transform);
+                GameObject createdCountText = Instantiate(Text, ItemCountContent.transform);
+
+                createdNameText.GetComponent<TMP_Text>().text = AddNameInput.text;
+                createdCountText.GetComponent<TMP_Text>().text = CountOfItems.ToString();
+
+                ItemNames.Add(createdNameText.GetComponent<TMP_Text>().text);
+                ItemCount.Add(CountOfItems);
+            }
             for (int i = 0; i < ItemNames.Count; i++)
             {
-                if (AddNameInput.Equals(ItemNames[i]))
-                {
-                    ItemCount[i] += CountOfItems;
-                }
-                else
+                if (AddNameInput.text != ItemNames[i])
                 {
                     GameObject createdNameText = Instantiate(Text, ItemNamesContent.transform);
                     GameObject createdCountText = Instantiate(Text, ItemCountContent.transform);
@@ -49,6 +57,10 @@ public class ArraysScript : MonoBehaviour
 
                     ItemNames.Add(createdNameText.GetComponent<TMP_Text>().text);
                     ItemCount.Add(CountOfItems);
+                }
+                else
+                {
+                    ItemCount[i] += CountOfItems;
                 }
             }
         }
