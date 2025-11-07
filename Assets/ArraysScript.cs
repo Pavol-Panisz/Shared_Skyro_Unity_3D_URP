@@ -1,9 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
-using UnityEngine.UIElements;
-using UnityEditor;
-using System.Linq;
 
 public class ArraysScript : MonoBehaviour
 {
@@ -15,74 +12,76 @@ public class ArraysScript : MonoBehaviour
 
     public GameObject ItemNamesContent;
     public GameObject ItemCountContent;
+    private List<Component> textComponent = new List<Component>();
 
     public List<string> ItemNames = new List<string>();
     public List<int> ItemCount = new List<int>();
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    private void Awake()
     {
-
+        
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void AddItem()
     {
-        AddCountInput.text.ToLower();
-        AddNameInput.text.ToLower();
+
         if (AddNameInput.text != "" && AddCountInput.text != "")
-        {    
-            int CountOfItems = int.Parse(AddCountInput.text);
+        {
+            string CurrentAddNameInput = AddNameInput.text.ToLowerInvariant();
+            string CurrentCountInput = AddCountInput.text.ToLowerInvariant();
+
             if (ItemNames.Count == 0)
             {
                 GameObject createdNameText = Instantiate(Text, ItemNamesContent.transform);
                 GameObject createdCountText = Instantiate(Text, ItemCountContent.transform);
 
-                createdNameText.GetComponent<TMP_Text>().text = AddNameInput.text;
-                createdCountText.GetComponent<TMP_Text>().text = CountOfItems.ToString();
+                createdNameText.GetComponent<TMP_Text>().text = CurrentAddNameInput;
+                createdCountText.GetComponent<TMP_Text>().text = CurrentCountInput;
 
                 ItemNames.Add(createdNameText.GetComponent<TMP_Text>().text);
-                ItemCount.Add(CountOfItems);
+                ItemCount.Add(int.Parse(CurrentCountInput));
+                textComponent.Add(createdCountText.GetComponent<TMP_Text>());
             }
-            else if (!ItemNames.Contains(AddNameInput.text))
+            else if (!ItemNames.Contains(CurrentAddNameInput))
             {
                 GameObject createdNameText = Instantiate(Text, ItemNamesContent.transform);
                 GameObject createdCountText = Instantiate(Text, ItemCountContent.transform);
 
-                createdNameText.GetComponent<TMP_Text>().text = AddNameInput.text;
-                createdCountText.GetComponent<TMP_Text>().text = CountOfItems.ToString();
+                createdNameText.GetComponent<TMP_Text>().text = CurrentAddNameInput;
+                createdCountText.GetComponent<TMP_Text>().text = CurrentCountInput;
 
                 ItemNames.Add(createdNameText.GetComponent<TMP_Text>().text);
-                ItemCount.Add(CountOfItems);
+                ItemCount.Add(int.Parse(CurrentCountInput));
+                textComponent.Add(createdCountText.GetComponent<TMP_Text>());
             }
             else
             {
-                ItemCount[ItemNames.IndexOf(AddNameInput.text)] += int.Parse(AddCountInput.text);
+                ItemCount[ItemNames.IndexOf(CurrentAddNameInput)] += int.Parse(CurrentCountInput);
+                textComponent[ItemNames.IndexOf(CurrentAddNameInput)].GetComponent<TMP_Text>().text = ItemCount[ItemNames.IndexOf(CurrentAddNameInput)].ToString();
             }
         }
     }
     public void RemoveItem()
     {
-        int CountOfItems = int.Parse(AddCountInput.text);
-        for (int i = 0; i < ItemNames.Count; i++)
-        {
-            if (RemoveNameInput.Equals(ItemNames[i]) && int.Parse(RemoveCountInput.text) < int.Parse(ItemCount[i].ToString()))
+        string CurrentRemoveNameInput = RemoveNameInput.text.ToLowerInvariant();
+        string CurrentRemoveInput = RemoveCountInput.text.ToLowerInvariant();
+
+            if (CurrentRemoveNameInput.Equals(ItemNames[ItemNames.IndexOf(CurrentRemoveNameInput)]) && int.Parse(CurrentRemoveInput) < ItemCount[ItemNames.IndexOf(CurrentRemoveNameInput)])
             {
-                ItemCount[i] -= CountOfItems;
+                ItemCount[ItemNames.IndexOf(CurrentRemoveNameInput)] -= int.Parse(CurrentRemoveInput);
+                textComponent[ItemNames.IndexOf(CurrentRemoveNameInput)].GetComponent<TMP_Text>().text = ItemCount[ItemNames.IndexOf(CurrentRemoveNameInput)].ToString();
+
             }
-            else if(RemoveNameInput.Equals(ItemNames[i]) && int.Parse(RemoveCountInput.text) == int.Parse(ItemCount[i].ToString()))
+            else if(CurrentRemoveNameInput.Equals(ItemNames[ItemNames.IndexOf(CurrentRemoveNameInput)]) && int.Parse(CurrentRemoveInput) == ItemCount[ItemNames.IndexOf(CurrentRemoveNameInput)])
             {
-                ItemCount.RemoveAt(i);
-                ItemNames.RemoveAt(i);
+                ItemCount.RemoveAt(ItemNames.IndexOf(CurrentRemoveNameInput));
+                ItemNames.RemoveAt(ItemNames.IndexOf(CurrentRemoveNameInput));
             }
             else
             {
+                Destroy(ItemNamesContent.GetComponentInChildren<TMP_Text>());
+                ItemCount.RemoveAt(ItemNames.IndexOf(CurrentRemoveNameInput));
+                ItemNames.RemoveAt(ItemNames.IndexOf(CurrentRemoveNameInput));
                 print("Error");
             }
         }
-    }
 }
