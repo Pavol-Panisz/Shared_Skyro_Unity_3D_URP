@@ -12,15 +12,13 @@ public class ArraysScript : MonoBehaviour
 
     public GameObject ItemNamesContent;
     public GameObject ItemCountContent;
+
     private List<Component> textComponent = new List<Component>();
+    private List<GameObject> nameTextObjects = new List<GameObject>();
+    private List<GameObject> countTextObjects = new List<GameObject>();
+    private List<string> ItemNames = new List<string>();
+    private List<int> ItemCount = new List<int>();
 
-    public List<string> ItemNames = new List<string>();
-    public List<int> ItemCount = new List<int>();
-
-    private void Awake()
-    {
-        
-    }
     public void AddItem()
     {
 
@@ -40,6 +38,8 @@ public class ArraysScript : MonoBehaviour
                 ItemNames.Add(createdNameText.GetComponent<TMP_Text>().text);
                 ItemCount.Add(int.Parse(CurrentCountInput));
                 textComponent.Add(createdCountText.GetComponent<TMP_Text>());
+                nameTextObjects.Add(createdNameText);
+                countTextObjects.Add(createdCountText);
             }
             else if (!ItemNames.Contains(CurrentAddNameInput))
             {
@@ -52,6 +52,8 @@ public class ArraysScript : MonoBehaviour
                 ItemNames.Add(createdNameText.GetComponent<TMP_Text>().text);
                 ItemCount.Add(int.Parse(CurrentCountInput));
                 textComponent.Add(createdCountText.GetComponent<TMP_Text>());
+                nameTextObjects.Add(createdNameText);
+                countTextObjects.Add(createdCountText);
             }
             else
             {
@@ -73,12 +75,15 @@ public class ArraysScript : MonoBehaviour
             }
             else if(CurrentRemoveNameInput.Equals(ItemNames[ItemNames.IndexOf(CurrentRemoveNameInput)]) && int.Parse(CurrentRemoveInput) == ItemCount[ItemNames.IndexOf(CurrentRemoveNameInput)])
             {
+                Destroy(nameTextObjects[(ItemNames.IndexOf(CurrentRemoveNameInput))]);
+                Destroy(countTextObjects[(ItemNames.IndexOf(CurrentRemoveNameInput))]);
                 ItemCount.RemoveAt(ItemNames.IndexOf(CurrentRemoveNameInput));
                 ItemNames.RemoveAt(ItemNames.IndexOf(CurrentRemoveNameInput));
             }
             else
             {
-                Destroy(ItemNamesContent.GetComponentInChildren<TMP_Text>());
+                Destroy(nameTextObjects[(ItemNames.IndexOf(CurrentRemoveNameInput))]);
+                Destroy(countTextObjects[(ItemNames.IndexOf(CurrentRemoveNameInput))]);
                 ItemCount.RemoveAt(ItemNames.IndexOf(CurrentRemoveNameInput));
                 ItemNames.RemoveAt(ItemNames.IndexOf(CurrentRemoveNameInput));
                 print("Error");
