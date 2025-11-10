@@ -1,23 +1,27 @@
 using TMPro;
 using UnityEngine;
 
-public class ItemPanelUIElement : MonoBehaviour
+namespace Game.UI
 {
-    [SerializeField] private TMP_Text leftTextObj;
-    [SerializeField] private TMP_Text rightTextObj;
-
-    public void SetName(string @name)
+    public class ItemPanelUIElement : MonoBehaviour
     {
-        leftTextObj.text = @name;
-    }
+        [SerializeField] private TMP_Text leftTextObj;
+        [SerializeField] private TMP_Text rightTextObj;
 
-    public void SetValue(string @value)
-    {
-        rightTextObj.text = @value;
-    }
+        public void SetName(string name)
+        {
+            leftTextObj.text = name;
+        }
 
-    public string GetValue()
-    {
-        return rightTextObj.text;
+        public void SetValue(string value)
+        {
+            rightTextObj.text = value;
+        }
+
+        public string GetValue()
+        {
+            return rightTextObj.text;
+        }
+
     }
 }
