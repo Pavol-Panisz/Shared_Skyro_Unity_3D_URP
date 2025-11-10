@@ -16,7 +16,20 @@ public class ItemsManager : MonoBehaviour
         itemPanel.name = @name;
     }
 
-    public void ChangeItem(string @name, int @newValue)
+    public bool ExistsItem(string @name)
+    {
+        return contentObj.Find(@name);
+    }
+
+    public string GetItem(string @name)
+    {
+        Transform t = contentObj.Find(@name);
+        if (!t) return null;
+        ItemPanelUIElement uIElement = t.GetComponent<ItemPanelUIElement>();
+        return uIElement.GetValue();
+    }
+
+    public void ChangeItem(string @name, float @newValue)
     {
         Transform t = contentObj.Find(@name);
         if (!t) return;

@@ -15,4 +15,9 @@ public class ItemPanelUIElement : MonoBehaviour
     {
         rightTextObj.text = @value;
     }
+
+    public string GetValue()
+    {
+        return rightTextObj.text;
+    }
 }
