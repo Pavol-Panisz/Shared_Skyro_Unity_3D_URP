@@ -33,15 +33,6 @@ public class Sklad : MonoBehaviour
     {
         Debug.Log("Preslo to sem");
         userInputText = IF.text.ToString();
-        Debug.Log(userInputText);
-        //if (userInputList.Contains(userInputText) == false)
-        //{
-            //isItemIncluded = false;
-        //}
-        //else
-        //{
-            //isItemIncluded = true;
-        //}
-        
+        Debug.Log(userInputText);        
     }
 }
