@@ -12,36 +12,33 @@ public class PlayerMovement : MonoBehaviour
     public float airAcceleration = 6f;
 
     [Header("Friction (horizontal only)")]
-    [Tooltip("How quickly horizontal velocity decays when grounded and no input is given.")]
     public float groundFriction = 12f;
 
     [Header("Jump")]
     public float jumpForce = 7.5f;
-    [Tooltip("Small grace period allowing jump slightly after leaving the ground.")]
     public float coyoteTime = 0.1f;
 
     [Header("Grounding")]
     public LayerMask groundMask = ~0;
-    [Tooltip("Extra distance below the capsule bottom to check for ground.")]
     public float groundCheckDistance = 0.15f;
 
     [Header("Air Jumps")]
-    [Tooltip("How many extra jumps can be made while in air.")]
     public int maxAirJumps = 5;
-    [Tooltip("How many air jumps are currently available.")]
     public int remainingAirJumps = 2;
-    [Tooltip("If true, air jumps reset automatically when hitting the ground.")]
     public bool resetAirJumpsOnImpact = true;
 
     Rigidbody rb;
     CapsuleCollider col;
 
     float inputX, inputZ;
-    bool jumpPressed;
+
+    // Input queues
+    bool jumpHeld;           // raw held state
+    bool jumpHoldQueued;     // request for ground/coyote jump while held
+    bool jumpPressQueued;    // request for air-jump on press
 
     bool grounded;
     bool wasGrounded;
-    bool jumpJustHappened;
     float coyoteTimer;
 
     Text jumpsText;
@@ -59,7 +56,6 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
-        // Keep the value the user sets in inspector, but ensure it's valid
         remainingAirJumps = Mathf.Clamp(remainingAirJumps, 0, maxAirJumps);
 
         GameObject textObj = GameObject.FindGameObjectWithTag("JumpsText");
@@ -74,10 +70,13 @@ public class PlayerMovement : MonoBehaviour
         inputX = Input.GetAxisRaw("Horizontal");
         inputZ = Input.GetAxisRaw("Vertical");
 
-        if (Input.GetButtonDown("Jump"))
-            jumpPressed = true;
+        // Queue ground/coyote jump while held
+        jumpHeld = Input.GetButton("Jump");
+        if (jumpHeld) jumpHoldQueued = true;
 
-        // Reload scene
+        // Queue air-jump only on press
+        if (Input.GetButtonDown("Jump")) jumpPressQueued = true;
+
         if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.Escape))
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
@@ -87,20 +86,16 @@ public class PlayerMovement : MonoBehaviour
         wasGrounded = grounded;
         grounded = IsGrounded();
 
-        // Maintain coyote time
-        if (grounded)
-            coyoteTimer = coyoteTime;
-        else
-            coyoteTimer -= Time.fixedDeltaTime;
+        if (grounded) coyoteTimer = coyoteTime;
+        else coyoteTimer -= Time.fixedDeltaTime;
 
-        // Reset air jumps if toggle enabled
         if (resetAirJumpsOnImpact && grounded && !wasGrounded)
         {
             remainingAirJumps = maxAirJumps;
             UpdateJumpsText();
         }
 
-        // Handle horizontal velocity
+        // Movement
         Vector3 moveDir = (transform.right * inputX + transform.forward * inputZ).normalized;
         Vector3 targetVel = moveDir * moveSpeed;
 
@@ -123,26 +118,28 @@ public class PlayerMovement : MonoBehaviour
 
         rb.linearVelocity = new Vector3(horiz.x, v.y, horiz.z);
 
-        // --- Jump handling ---
-        if (jumpPressed)
-        {
-            if (coyoteTimer > 0f && !jumpJustHappened)
-            {
-                DoJump();
-                jumpJustHappened = true;
-            }
-            else if (!grounded && remainingAirJumps > 0)
-            {
-                DoJump();
-                remainingAirJumps = Mathf.Clamp(remainingAirJumps - 1, 0, maxAirJumps);
-                UpdateJumpsText();
-            }
+        // Jumping
+        bool didJump = false;
 
-            jumpPressed = false;
+        // Ground/coyote jump while held (never consumes air jumps)
+        if (jumpHoldQueued && (grounded || coyoteTimer > 0f))
+        {
+            DoJump();
+            didJump = true;
+            coyoteTimer = 0f; // consume coyote this frame
+        }
+        // Air jump only on press, only if we started this tick in the air
+        else if (jumpPressQueued && !grounded && !wasGrounded && remainingAirJumps > 0)
+        {
+            DoJump();
+            remainingAirJumps = Mathf.Clamp(remainingAirJumps - 1, 0, maxAirJumps);
+            UpdateJumpsText();
+            didJump = true;
         }
 
-        if (!grounded)
-            jumpJustHappened = false;
+        // Consume queues for this physics step
+        jumpPressQueued = false;
+        jumpHoldQueued = false; // will be re-queued by Update() next frame if still held
     }
 
     void DoJump()
@@ -175,14 +172,12 @@ public class PlayerMovement : MonoBehaviour
 
     public void SetAirJumps(int i)
     {
-        
-        remainingAirJumps = Mathf.Clamp(remainingAirJumps, 0, maxAirJumps);
+        remainingAirJumps = Mathf.Clamp(i, 0, maxAirJumps);
         UpdateJumpsText();
     }
 
     public void AddAirJumps(int i)
     {
-        
         remainingAirJumps = Mathf.Clamp(remainingAirJumps + i, 0, maxAirJumps);
         UpdateJumpsText();
     }
