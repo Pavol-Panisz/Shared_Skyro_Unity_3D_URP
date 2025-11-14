@@ -43,12 +43,12 @@ public class Sklad : MonoBehaviour
         {
             howManyItems = int.Parse(IFcoutOfItem.text);
             int whatToRemove = userInputList.IndexOf(userInputText);
-            if (coutOfItemsList[whatToRemove] == 1)
+            if (coutOfItemsList[whatToRemove] == 1 || coutOfItemsList[whatToRemove] == howManyItems || coutOfItemsList[whatToRemove] <= howManyItems)
             {
                 userInputList.RemoveAt(whatToRemove);
                 coutOfItemsList.RemoveAt(whatToRemove);
             }
-            else if (coutOfItemsList[whatToRemove] > 1)
+            else if (coutOfItemsList[whatToRemove] >= 1)
             {
                 coutOfItemsList[whatToRemove] -= howManyItems;
             }
