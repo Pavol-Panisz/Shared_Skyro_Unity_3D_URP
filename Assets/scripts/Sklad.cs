@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Runtime.Serialization;
 using System.Diagnostics;
+using System.Dynamic;
 
 public class Sklad : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class Sklad : MonoBehaviour
     bool isItemIncluded;
     [SerializeField] TMP_InputField IFnameOfItem;
     [SerializeField] TMP_InputField IFcoutOfItem;
+    [SerializeField] TextMeshProUGUI text; 
 
 
     [Header("Cout of items list")]
@@ -24,6 +26,11 @@ public class Sklad : MonoBehaviour
 
     public void ClickedAdd()
     {
+        if (int.Parse(IFcoutOfItem.text) < 0)
+        {
+            text.text = "You entered en invalid count of items";
+            Invoke(nameof(HideText), 3f);
+        }
         howManyItems = int.Parse(IFcoutOfItem.text);
         if (userInputList.Contains(userInputText) == false)
         {
@@ -39,7 +46,7 @@ public class Sklad : MonoBehaviour
 
     public void ClickedRemove()
     {
-        if(userInputList.Contains(userInputText) == true)
+        if (userInputList.Contains(userInputText) == true)
         {
             howManyItems = int.Parse(IFcoutOfItem.text);
             int whatToRemove = userInputList.IndexOf(userInputText);
@@ -52,7 +59,12 @@ public class Sklad : MonoBehaviour
             {
                 coutOfItemsList[whatToRemove] -= howManyItems;
             }
-            
+
+        }
+        else
+        {
+            text.text = "You are trying to remove invalid item";
+            Invoke(nameof(HideText), 3f);
         }
     }
 
@@ -60,9 +72,9 @@ public class Sklad : MonoBehaviour
     {
         userInputText = IFnameOfItem.text.ToString();
     }
-    
-    public void EditedTextCount()
+
+    private void HideText()
     {
-        
+        text.text = "";
     }
 }
