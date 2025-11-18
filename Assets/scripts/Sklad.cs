@@ -5,6 +5,7 @@ using TMPro;
 using System.Runtime.Serialization;
 using System.Diagnostics;
 using System.Dynamic;
+using System.Linq;
 
 public class Sklad : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class Sklad : MonoBehaviour
     [SerializeField] TMP_InputField IFnameOfItem;
     [SerializeField] TMP_InputField IFcoutOfItem;
     [SerializeField] TextMeshProUGUI text; 
+    [SerializeField] TextMeshProUGUI listText;
 
 
     [Header("Cout of items list")]
@@ -36,6 +38,7 @@ public class Sklad : MonoBehaviour
         {
             userInputList.Add(userInputText);
             coutOfItemsList.Add(howManyItems);
+            listText.text = listText.text + userInputList.LastOrDefault() + '\n';
         }
         else if (userInputList.Contains(userInputText) == true)
         {
