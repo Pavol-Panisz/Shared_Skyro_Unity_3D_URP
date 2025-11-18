@@ -5,32 +5,57 @@ using TMPro;
 [System.Serializable]
 public class ListsStorage
 {
-    List<string> itemNames = new();
-    List<int> itemCounts = new();
+    public class Item
+    {
+        public string name;
+        public int count;
 
-    public bool Contains(string name) => itemNames.Contains(name);
+        public Item(string name, int count)
+        {
+            this.name = name;
+            this.count = count;
+        }
 
-    public int IndexOf(string name) => itemNames.IndexOf(name);
+    }
+    List<Item> itemsList;
 
-    public int CountOf(string name) => itemCounts[IndexOf(name)];
+    //List<string> itemNames = new();
+    //List<int> itemCounts = new();
+
+    public bool Contains(string name)
+    {
+        
+        for (int i = 0; i < itemsList.Count; i++) 
+        {
+            if (itemsList[i].name == name)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int IndexOf(string name) => itemsList.FindIndex(x => x.name == name);
+
+    public int CountOf(string name) => itemsList[IndexOf(name)].count;
 
     public void AddExistingItem(string itemName, int itemCount)
-    {
-        int index = itemNames.IndexOf(itemName);
-        int newCount = itemCounts[index] + itemCount;
-        itemCounts[index] = newCount;
+    { 
+        int indexOfItem = itemsList.FindIndex(x => x.name == itemName);
+        itemsList[indexOfItem].count += itemCount;
     }
 
     public void AddNewItem(string itemName, int itemCount)
     {
-        itemNames.Add(itemName);
-        itemCounts.Add(itemCount);
+        Item newItemToAdd = new Item(itemName, itemCount);
+
+        itemsList.Add(newItemToAdd);
     }
 
     public void RemoveExistingItem(string itemName)
     { 
         int index = IndexOf(itemName);
-        itemNames.RemoveAt(index);
+        //itemNames.RemoveAt(index);
     }
 
 }
