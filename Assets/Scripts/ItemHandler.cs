@@ -32,7 +32,8 @@ public class ItemHandler : MonoBehaviour
         bool getName = itemNames.Contains(name);
         if (getName)
         {
-            int index = itemNames.IndexOf(name, 0);
+            int index = itemNames.IndexOf(name);
+            Debug.Log(index);
         }
         else if (!getName)
         {
