@@ -3,14 +3,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Runtime.Serialization;
-using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
 
 public class Sklad : MonoBehaviour
 {
 
-    [Header("Item names list")]
     public List<string> userInputList = new List<string>();
     string userInputText;
     bool isItemIncluded;
@@ -18,29 +16,34 @@ public class Sklad : MonoBehaviour
     [SerializeField] TMP_InputField IFcoutOfItem;
     [SerializeField] TextMeshProUGUI text; 
     [SerializeField] TextMeshProUGUI listText;
+    [SerializeField] TextMeshProUGUI countText;
 
 
-    [Header("Cout of items list")]
     public List<int> coutOfItemsList = new List<int>();
     int lastAddedItemIndex;
     int indexOfIncludedItem;
     int howManyItems;
+    bool isInputCorect;
 
     public void ClickedAdd()
     {
-        if (int.Parse(IFcoutOfItem.text) < 0)
+        if (string.IsNullOrEmpty(IFcoutOfItem.text) == true || int.Parse(IFcoutOfItem.text) < 0)
         {
             text.text = "You entered en invalid count of items";
             Invoke(nameof(HideText), 3f);
+            isInputCorect = false;
         }
-        howManyItems = int.Parse(IFcoutOfItem.text);
-        if (userInputList.Contains(userInputText) == false)
+        else
+        {
+            isInputCorect = true;
+        }
+        
+        if (userInputList.Contains(userInputText) == false && isInputCorect == true)
         {
             userInputList.Add(userInputText);
             coutOfItemsList.Add(howManyItems);
-            listText.text = listText.text + userInputList.LastOrDefault() + '\n';
         }
-        else if (userInputList.Contains(userInputText) == true)
+        else if (userInputList.Contains(userInputText) == true && isInputCorect == true)
         {
             indexOfIncludedItem = userInputList.IndexOf(userInputText);
             coutOfItemsList[indexOfIncludedItem] += howManyItems;
