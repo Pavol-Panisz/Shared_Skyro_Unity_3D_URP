@@ -1,17 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
-using System.Runtime.Serialization;
-using System.Dynamic;
-using System.Linq;
 
 public class Sklad : MonoBehaviour
 {
 
     public List<string> userInputList = new List<string>();
     string userInputText;
-    bool isItemIncluded;
     [SerializeField] TMP_InputField IFnameOfItem;
     [SerializeField] TMP_InputField IFcoutOfItem;
     [SerializeField] TextMeshProUGUI text; 
@@ -20,7 +15,6 @@ public class Sklad : MonoBehaviour
 
 
     public List<int> coutOfItemsList = new List<int>();
-    int lastAddedItemIndex;
     int indexOfIncludedItem;
     int howManyItems;
     bool isInputCorect;
@@ -40,13 +34,18 @@ public class Sklad : MonoBehaviour
         
         if (userInputList.Contains(userInputText) == false && isInputCorect == true)
         {
+            howManyItems = int.Parse(IFcoutOfItem.text);
             userInputList.Add(userInputText);
             coutOfItemsList.Add(howManyItems);
+            SetText();
+            
         }
         else if (userInputList.Contains(userInputText) == true && isInputCorect == true)
         {
+            howManyItems = int.Parse(IFcoutOfItem.text);
             indexOfIncludedItem = userInputList.IndexOf(userInputText);
             coutOfItemsList[indexOfIncludedItem] += howManyItems;
+            SetText();
         }
     }
 
@@ -60,12 +59,13 @@ public class Sklad : MonoBehaviour
             {
                 userInputList.RemoveAt(whatToRemove);
                 coutOfItemsList.RemoveAt(whatToRemove);
+                SetText();
             }
             else if (coutOfItemsList[whatToRemove] >= 1)
             {
                 coutOfItemsList[whatToRemove] -= howManyItems;
+                SetText();
             }
-
         }
         else
         {
@@ -82,5 +82,19 @@ public class Sklad : MonoBehaviour
     private void HideText()
     {
         text.text = "";
+    }
+
+    private void SetText()
+    {
+        listText.text = "";
+        countText.text = "";
+        foreach (string items in userInputList)
+        {
+            listText.text += items + '\n';
+        }
+        foreach (int countOfItems in coutOfItemsList)
+        {
+            countText.text += countOfItems + '\n'.ToString();
+        }
     }
 }
