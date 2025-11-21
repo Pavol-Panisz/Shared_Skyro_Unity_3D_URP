@@ -145,7 +145,7 @@ public class PlayerMovement : MonoBehaviour
             jumpJustHappened = false;
     }
 
-    void DoJump()
+    public void DoJump()
     {
         Vector3 vel = rb.linearVelocity;
         if (vel.y < 0f) vel.y = 0f;
