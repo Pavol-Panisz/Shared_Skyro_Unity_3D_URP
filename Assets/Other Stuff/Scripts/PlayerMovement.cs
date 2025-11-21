@@ -142,7 +142,7 @@ public class PlayerMovement : MonoBehaviour
         jumpHoldQueued = false; // will be re-queued by Update() next frame if still held
     }
 
-    void DoJump()
+    public void DoJump()
     {
         Vector3 vel = rb.linearVelocity;
         if (vel.y < 0f) vel.y = 0f;
