@@ -3,7 +3,8 @@ using UnityEngine.Events;
 
 public class ActionOnCollision : MonoBehaviour
 {
-    public UnityEvent EventToFire;
+    public UnityEvent EventOnEnter;
+    public UnityEvent EventOnExit;
     public LayerMask acceptedLayers = ~0;
 
     [Header("Visual Feedback")]
@@ -24,7 +25,7 @@ public class ActionOnCollision : MonoBehaviour
         if (((1 << collision.gameObject.layer) & acceptedLayers) != 0)
         {
             collisionCount++;
-            EventToFire?.Invoke();
+            EventOnEnter?.Invoke();
             UpdateMaterial();
         }
     }
@@ -33,6 +34,7 @@ public class ActionOnCollision : MonoBehaviour
     {
         if (((1 << collision.gameObject.layer) & acceptedLayers) != 0)
         {
+            EventOnExit?.Invoke();
             collisionCount = Mathf.Max(0, collisionCount - 1);
             UpdateMaterial();
         }
