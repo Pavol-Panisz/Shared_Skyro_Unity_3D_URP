@@ -298,7 +298,8 @@ GameObject:
   - component: {fileID: 4631331637662416645}
   - component: {fileID: 7201300903428807526}
   - component: {fileID: 1855126699763265727}
-  - component: {fileID: 3640557825500845802}
+  - component: {fileID: 5947592829294144441}
+  - component: {fileID: 7934302396341918008}
   m_Layer: 5
   m_Name: NotificationUIElement
   m_TagString: Untagged
@@ -365,7 +366,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3640557825500845802
+--- !u!114 &5947592829294144441
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -374,7 +375,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4414802706842267958}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ae9e091b4e0c474fa8085f648dd55a1, type: 3}
+  m_Script: {fileID: 11500000, guid: fa2f4e1a22dd42347acb0289f9c4977b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   messageText: {fileID: 5570851037447121568}
@@ -382,6 +383,18 @@ MonoBehaviour:
   infoColor: {r: 0.3, g: 0.7, b: 1, a: 0.8}
   warningColor: {r: 1, g: 0.8, b: 0.3, a: 0.8}
   errorColor: {r: 1, g: 0.3, b: 0.3, a: 0.8}
+--- !u!225 &7934302396341918008
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4414802706842267958}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5664968872540208990
 GameObject:
   m_ObjectHideFlags: 0

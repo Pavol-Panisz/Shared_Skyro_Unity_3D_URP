@@ -1,3 +1,4 @@
+using System.Globalization;
 using TMPro;
 using UnityEngine;
 
@@ -13,9 +14,9 @@ namespace Game.UI
             leftTextObj.text = name;
         }
 
-        public void SetValue(string value)
+        public void SetValue(float value)
         {
-            rightTextObj.text = value;
+            rightTextObj.text = value.ToString(CultureInfo.InvariantCulture);
         }
 
         public string GetValue()

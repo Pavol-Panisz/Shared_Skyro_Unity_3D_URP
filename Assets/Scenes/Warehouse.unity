@@ -206,9 +206,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 64907041}
+  - component: {fileID: 64907042}
+  - component: {fileID: 64907044}
   - component: {fileID: 64907043}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: Game Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -226,10 +228,25 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 360504765}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &64907042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 64907039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2c65ab49979f2847bf65086972e285d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  notificationViewMB: {fileID: 64907044}
+  itemsViewMB: {fileID: 64907043}
+  popupViewMB: {fileID: 1720826336}
+  popupControllerMB: {fileID: 1720826335}
 --- !u!114 &64907043
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -239,9 +256,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 64907039}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f32def30ad9fa1c49a9800aa4b672f74, type: 3}
+  m_Script: {fileID: 11500000, guid: 3558e839997d3d8418be757df7e1c4bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  contentObj: {fileID: 1981908599}
+  itemPanelPrefab: {fileID: 5432338058442879649, guid: e21b01992efbad24a8b601b15ed9e27c, type: 3}
+--- !u!114 &64907044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 64907039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e72fcb5e49fa6894389c55f53374ccb5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  notificationContainer: {fileID: 885535162}
+  notificationPrefab: {fileID: 4414802706842267958, guid: 089920f135f2666408bd95579f478148, type: 3}
+  lifetime: 2.5
 --- !u!1 &90068133
 GameObject:
   m_ObjectHideFlags: 0
@@ -796,52 +830,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 345922376}
   m_CullTransparentMesh: 1
---- !u!1 &360504764
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 360504765}
-  - component: {fileID: 360504766}
-  m_Layer: 0
-  m_Name: ItemsManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &360504765
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 360504764}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 64907041}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &360504766
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 360504764}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7350616a8a24a6b48b38c337c85e135b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  contentObj: {fileID: 1981908599}
-  itemPanelPrefab: {fileID: 5432338058442879649, guid: e21b01992efbad24a8b601b15ed9e27c, type: 3}
 --- !u!1 &432125254
 GameObject:
   m_ObjectHideFlags: 0
@@ -2729,8 +2717,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1720826336}
-        m_TargetAssemblyTypeName: Game.UI.PopupController, Assembly-CSharp
+      - m_Target: {fileID: 1720826335}
+        m_TargetAssemblyTypeName: Game.Popup.PopupControllerView, Assembly-CSharp
         m_MethodName: OnActionButtonPressed
         m_Mode: 1
         m_Arguments:
@@ -3662,53 +3650,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1293236998}
   m_CullTransparentMesh: 1
---- !u!1 &1317894620
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1317894622}
-  - component: {fileID: 1317894621}
-  m_Layer: 0
-  m_Name: PlayerNotificationManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1317894621
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1317894620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 316b1d68b6171b14a877caef413c5277, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  notificationContainer: {fileID: 885535162}
-  notificationPrefab: {fileID: 4414802706842267958, guid: 089920f135f2666408bd95579f478148, type: 3}
-  lifetime: 2.5
---- !u!4 &1317894622
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1317894620}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1361076881
 GameObject:
   m_ObjectHideFlags: 0
@@ -4161,8 +4102,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1720826336}
-        m_TargetAssemblyTypeName: Game.UI.PopupController, Assembly-CSharp
+      - m_Target: {fileID: 1720826335}
+        m_TargetAssemblyTypeName: Game.Popup.PopupControllerView, Assembly-CSharp
         m_MethodName: OnCloseButtonPressed
         m_Mode: 1
         m_Arguments:
@@ -4420,8 +4361,8 @@ GameObject:
   - component: {fileID: 1720826334}
   - component: {fileID: 1720826333}
   - component: {fileID: 1720826332}
-  - component: {fileID: 1720826335}
   - component: {fileID: 1720826336}
+  - component: {fileID: 1720826335}
   m_Layer: 5
   m_Name: Popup
   m_TagString: Untagged
@@ -4511,15 +4452,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1720826330}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67cb315f878e5224b9585a5cc2808c8c, type: 3}
+  m_Script: {fileID: 11500000, guid: f9ed3bf4a12d3634994dd237a8b11a31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inlineImg: {fileID: 11789985}
-  actionBtnText: {fileID: 1464969979}
-  addColor: {r: 0.4862745, g: 1, b: 0.5176471, a: 1}
-  removeColor: {r: 1, g: 0.5686275, b: 0.48235294, a: 1}
-  nameInputField: {fileID: 1064289951}
-  amountInputField: {fileID: 2116245508}
 --- !u!114 &1720826336
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4529,10 +4464,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1720826330}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fe841faf18ea414b93611812915b1fb, type: 3}
+  m_Script: {fileID: 11500000, guid: a0b0f58b12748a2439e49ae7fbba717a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupUI: {fileID: 1720826335}
+  inlineImg: {fileID: 11789985}
+  actionBtnText: {fileID: 1464969979}
+  addColor: {r: 0, g: 0, b: 0, a: 0}
+  removeColor: {r: 0, g: 0, b: 0, a: 0}
+  nameInputField: {fileID: 1064289951}
+  amountInputField: {fileID: 2116245508}
 --- !u!1 &1737829839
 GameObject:
   m_ObjectHideFlags: 0
@@ -4788,8 +4728,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1720826336}
-        m_TargetAssemblyTypeName: Game.UI.PopupController, Assembly-CSharp
+      - m_Target: {fileID: 1720826335}
+        m_TargetAssemblyTypeName: Game.Popup.PopupControllerView, Assembly-CSharp
         m_MethodName: OnAddButtonPressed
         m_Mode: 1
         m_Arguments:
@@ -5401,8 +5341,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1720826336}
-        m_TargetAssemblyTypeName: Game.UI.PopupController, Assembly-CSharp
+      - m_Target: {fileID: 1720826335}
+        m_TargetAssemblyTypeName: Game.Popup.PopupControllerView, Assembly-CSharp
         m_MethodName: OnRemoveButtonPressed
         m_Mode: 1
         m_Arguments:
@@ -5456,7 +5396,6 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 64907041}
-  - {fileID: 1317894622}
   - {fileID: 1200217387}
   - {fileID: 1604704796}
   - {fileID: 747636059}

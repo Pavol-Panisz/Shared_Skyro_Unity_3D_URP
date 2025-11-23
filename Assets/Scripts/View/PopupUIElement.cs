@@ -1,10 +1,11 @@
+using Game.Popup;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Game.UI
 {
-    public class PopupUIElement : MonoBehaviour
+    public class PopupUIElement : MonoBehaviour, IPopupView
     {
         [SerializeField] private Image inlineImg;
         [SerializeField] private TMP_Text actionBtnText;
@@ -13,15 +14,9 @@ namespace Game.UI
         [SerializeField] private TMP_InputField nameInputField;
         [SerializeField] private TMP_InputField amountInputField;
 
-        public enum PopupVersion
-        {
-            ADD,
-            REMOVE
-        };
-
         private PopupVersion currentVersion;
 
-        public void SetVersion(PopupVersion @version)
+        public void SetVersion(PopupVersion version)
         {
             currentVersion = version;
 
@@ -29,18 +24,16 @@ namespace Game.UI
             actionBtnText.text = version == PopupVersion.ADD ? "Add" : "Remove";
 
             nameInputField.text = "";
-            nameInputField.text = "";
+            amountInputField.text = "";
         }
 
-        public void SetEnabled(bool @enabled)
+        public void SetEnabled(bool enabled)
         {
-            gameObject.SetActive(@enabled);
+            gameObject.SetActive(enabled);
         }
 
         public string GetName() => nameInputField.text;
-
         public string GetAmount() => amountInputField.text;
-
         public PopupVersion GetVersion() => currentVersion;
     }
 }
