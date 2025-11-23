@@ -4469,8 +4469,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inlineImg: {fileID: 11789985}
   actionBtnText: {fileID: 1464969979}
-  addColor: {r: 0, g: 0, b: 0, a: 0}
-  removeColor: {r: 0, g: 0, b: 0, a: 0}
+  addColor: {r: 0.6007473, g: 0.9607843, b: 0.5019608, a: 1}
+  removeColor: {r: 0.9607843, g: 0.5019608, b: 0.51530117, a: 1}
   nameInputField: {fileID: 1064289951}
   amountInputField: {fileID: 2116245508}
 --- !u!1 &1737829839
