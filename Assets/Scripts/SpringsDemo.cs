@@ -9,6 +9,8 @@ public class SpringsDemo : MonoBehaviour
     [SerializeField] float damping;
     [SerializeField] Transform target;
 
+    [SerializeField] Transform springVisual;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -32,6 +34,8 @@ public class SpringsDemo : MonoBehaviour
 
         float springForce = offset * strength;     
 
+        
+
         // calculate the damping force
         Vector3 dampingForceVec3 = rb.linearVelocity * damping;
 
@@ -42,12 +46,34 @@ public class SpringsDemo : MonoBehaviour
             * Time.fixedDeltaTime;
 
 
+        // just debug logging
         Debug.Log(
             $"spring: {springForce.ToString("F2")}" + 
             $", vel: {rb.linearVelocity.magnitude.ToString("F2")}" +
             $", damp: {dampingForceVec3.ToString("F2")}"
         );
 
+        // spring visuals
+        //Vector3 newLocalScale = transform.localScale;
+        //newLocalScale.z = 10f;
+        //transform.localScale = newLocalScale;
+    }
 
+    void Update()
+    {
+        // spring visuals
+        Vector3 directionToTarget = 
+            (target.position - transform.position).normalized;
+     
+        springVisual.position = 
+            (transform.position + target.position) / 2f;
+        
+        springVisual.forward = directionToTarget;
+
+        Vector3 visualScale = springVisual.localScale;
+        visualScale.z = Vector3.Distance(
+            transform.position, target.position
+        );
+        springVisual.localScale = visualScale;
     }
 }
