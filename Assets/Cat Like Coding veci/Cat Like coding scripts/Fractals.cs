@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Fractals : MonoBehaviour
 {
-    [SerializeField, Range(1, 8)] int depth = 4;
+    [SerializeField, Range(1, 20)] int depth = 4;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -15,8 +15,8 @@ public class Fractals : MonoBehaviour
             return;
         }
 
-        Fractals childA = CreateChild(Vector3.right, Quaternion.identity);
-        Fractals childB = CreateChild(Vector3.up, Quaternion.Euler(0f, 0f, -90f));
+        Fractals childA = CreateChild(Vector3.right, Quaternion.Euler(0f, 0f, -90f));
+        Fractals childB = CreateChild(Vector3.up, Quaternion.identity);
         Fractals childC = CreateChild(Vector3.left, Quaternion.Euler(0f, 0f, 90f));
         Fractals childD = CreateChild(Vector3.forward, Quaternion.Euler(90f, 0f, 0f));
         Fractals childE = CreateChild(Vector3.back, Quaternion.Euler(-90f, 0f, 0f));
@@ -26,6 +26,11 @@ public class Fractals : MonoBehaviour
         childC.transform.SetParent(transform, false);
         childD.transform.SetParent(transform, false);
         childE.transform.SetParent(transform, false);
+    }
+
+    void Update()
+    {
+        transform.Rotate(0f, 22.5f * Time.deltaTime, 0f);
     }
 
     Fractals CreateChild(Vector3 direction, Quaternion rotation)
