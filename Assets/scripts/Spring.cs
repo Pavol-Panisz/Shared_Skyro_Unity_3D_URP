@@ -21,13 +21,13 @@ public class Spring : MonoBehaviour
         newLocalScale.z = Vector3.Distance(spring.transform.position, anchorRef.transform.position) * 2f;
         spring.transform.localScale = newLocalScale;
 
-        if (Physics.Raycast(cameraRef.transform.position, , 100))
+        /*if (Physics.Raycast(cameraRef.transform.position, 100))
         {
             Debug.Log("Dotklo sa to niecoho");
-        }
+        }*/
 
     }
-    // Update is called once per frame
+    
     void FixedUpdate()
     {
         rb.linearVelocity += ((direction * strenght) - (rb.linearVelocity * dumping) * Time.fixedDeltaTime);
