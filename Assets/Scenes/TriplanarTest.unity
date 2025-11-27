@@ -451,7 +451,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!54 &1580467060
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -584,6 +584,7 @@ MonoBehaviour:
   strength: 100
   damping: 5
   target: {fileID: 1654379158}
+  springVisual: {fileID: 0}
 --- !u!1 &1654379154
 GameObject:
   m_ObjectHideFlags: 0
@@ -604,7 +605,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1654379155
 BoxCollider:
   m_ObjectHideFlags: 0
