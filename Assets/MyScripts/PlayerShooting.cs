@@ -2,9 +2,10 @@ using UnityEngine;
 
 
 public class PlayerShooting : MonoBehaviour
+
 {
     public int bulletsCount = 10;
-
+    public GameObject bullet;
 
     void Start()
     {
@@ -13,8 +14,8 @@ public class PlayerShooting : MonoBehaviour
 
 
     void Update()
-    {   
-        Debug.Log("Bullets left: " + bulletsCount);
+    {
+        Debug.Log("Momentalne mas: " + bulletsCount + " bulletov");
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
@@ -25,8 +26,13 @@ public class PlayerShooting : MonoBehaviour
             else
             {
                 bulletsCount = bulletsCount - 1;
-                instantiate(bulletPrefab, shootPoint.position, shootPoint.rotation);
+
+                Vector3 spawnPositrion = transform.position + transform.forward * 1.0f;
+
+                Instantiate(bullet, spawnPositrion, transform.rotation);
+
                 Debug.Log("Pew pew!");
+                Debug.Log("Bullets left: " + bulletsCount);
             }
         }
     }
