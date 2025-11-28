@@ -10,7 +10,10 @@ public class PlayerShooting : MonoBehaviour
     public int maxAmmo = 10;
     public bool isReloading = false;
     public float reloadingSpeed = 0.5f;
-    public float shootingSpeed = 1f;
+    public float fireRate = 0.1f;
+
+    private bool isAutomatic = false;
+    private float nextFireTime = 0f;
 
     void Start()
     {
@@ -22,15 +25,27 @@ public class PlayerShooting : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetKeyDown(KeyCode.B))
         {
-            Shoot();
+            isAutomatic = !isAutomatic;
+            Debug.Log("Fire mode: " + (isAutomatic ? "AUTO" : "SEMI"));
         }
 
-        // if (Input.GetKey(KeyCode.U))
-        // {
-        //     StartCoroutine(Reload());
-        // }
+        if (isAutomatic)
+        {
+            if (Input.GetMouseButton(0) && Time.time >= nextFireTime)
+            {
+                Shoot();
+                nextFireTime = Time.time + fireRate;
+            }
+        }
+        else
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Shoot();
+            }
+        }
 
         if (Input.GetKeyDown(KeyCode.U) && !isReloading)
         {
@@ -40,7 +55,7 @@ public class PlayerShooting : MonoBehaviour
 
     void Shoot()
     {
-        if (currentAmmo > 0 && isReloading == false)
+        if (currentAmmo > 0 && !isReloading)
         {
             GameObject projectile = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
 
@@ -66,21 +81,3 @@ public class PlayerShooting : MonoBehaviour
         isReloading = false;
     }
 }
-
-/*
-old reload system:
-
-IEnumerator Reload()
-    {
-        isReloading = true;
-
-        yield return new WaitForSeconds(maxAmmo - currentAmmo);
-
-        currentAmmo = maxAmmo;
-
-        isReloading = false;
-
-        yield return 0; // stop corot
-    }
-
-*/
