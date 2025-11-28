@@ -11,7 +11,6 @@ public class PlayerShooting : MonoBehaviour
     public bool isReloading = false;
     public float reloadingSpeed = 0.5f;
     public float fireRate = 0.1f;
-
     private bool isAutomatic = false;
     private float nextFireTime = 0f;
 
