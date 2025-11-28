@@ -14,6 +14,7 @@ public class PlayerShooting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         Debug.Log("Momentalne mas " + bulletsCount + "bulletov");   
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
@@ -28,7 +29,7 @@ public class PlayerShooting : MonoBehaviour
 
                     Vector3 spawnpos = transform.position + transform.forward;
 
-                Instantiate(bullet, spawnpos, Quaternion.identity );
+                Instantiate(bullet, transform.position, transform.rotation );
             }
                 if (bulletsCount <= 5)
                 {
