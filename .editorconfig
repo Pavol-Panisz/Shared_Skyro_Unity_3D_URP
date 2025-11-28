@@ -1,0 +1,87 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# All files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# C# source files
+[*.cs]
+indent_style = space
+indent_size = 4
+tab_width = 4
+max_line_length = 120
+
+# Unity-specific C# settings
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_indent_case_contents = true
+csharp_indent_switch_labels = true
+csharp_space_after_cast = false
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_prefer_braces = true:warning
+
+# Unity meta files
+[*.meta]
+indent_style = space
+indent_size = 2
+
+# Unity scene and prefab files
+[*.{unity,prefab}]
+indent_style = space
+indent_size = 2
+
+# Unity asset files
+[*.asset]
+indent_style = space
+indent_size = 2
+
+# Shader files
+[*.{shader,cginc,hlsl}]
+indent_style = space
+indent_size = 4
+tab_width = 4
+
+# JSON files (for package.json, manifest.json, etc.)
+[*.json]
+indent_style = space
+indent_size = 2
+
+# YAML files (for CI/CD, package manager)
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# Markdown files
+[*.md]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = false
+
+# XML files (for project files)
+[*.xml]
+indent_style = space
+indent_size = 2
+
+# Unity solution and project files
+[*.{csproj,sln}]
+indent_style = space
+indent_size = 2
+end_of_line = crlf
+
+# Git files
+[.gitignore,.gitattributes]
+indent_style = space
+indent_size = 2
+
+# Assembly definition files
+[*.asmdef]
+indent_style = space
+indent_size = 2
