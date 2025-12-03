@@ -4,5 +4,6 @@ using UnityEngine;
 public class MirkovaHra_ItemScriptableObject : ScriptableObject
 {
     public string name;
+    public string description;
     public Sprite itemSprite;
 }
