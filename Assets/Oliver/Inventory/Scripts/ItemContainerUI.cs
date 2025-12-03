@@ -28,7 +28,7 @@ public class ItemContainerUI : MonoBehaviour
 
         spawnedUIItemList.Clear();
 
-        foreach (ItemInstanceStruct itemInstance in itemContainer.GetItems())
+        foreach (ItemInstanceClass itemInstance in itemContainer.GetItems())
         {
             GameObject spawnedUIItem = Instantiate(itemUIPrefab, content);
 

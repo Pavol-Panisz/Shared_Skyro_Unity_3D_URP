@@ -1,7 +1,7 @@
 using System;
 
 [Serializable]
-public class ItemInstanceStruct
+public class ItemInstanceClass
 {
     public ItemDataSOScript itemData;
     public int count;

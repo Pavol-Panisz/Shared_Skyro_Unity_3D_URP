@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PickableItem : MonoBehaviour
 {
-    [SerializeField]private ItemInstanceStruct itemInstance;
+    [SerializeField]private ItemInstanceClass itemInstance;
     [SerializeField]private bool randomAmount = true;
 
     private void Start() {

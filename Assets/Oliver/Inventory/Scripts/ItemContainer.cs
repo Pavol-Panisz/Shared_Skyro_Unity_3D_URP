@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ItemContainer : MonoBehaviour
 {
-    [SerializeField]private List<ItemInstanceStruct> items;
+    [SerializeField]private List<ItemInstanceClass> items;
 
     public static ItemContainer instance;
 
@@ -19,18 +19,18 @@ public class ItemContainer : MonoBehaviour
         }
     }
 
-    public List<ItemInstanceStruct> GetItems()
+    public List<ItemInstanceClass> GetItems()
     {
         return items;
     }
 
-    public void AddItem(ItemInstanceStruct itemInstanceStruct)
+    public void AddItem(ItemInstanceClass itemInstanceStruct)
     {
         //items.Add(itemInstanceStruct);
 
         int amountToAdd = itemInstanceStruct.count;
         int index = 0;
-        foreach (ItemInstanceStruct itemInstance in items)
+        foreach (ItemInstanceClass itemInstance in items)
         {
             if (amountToAdd <= 0)
             {
