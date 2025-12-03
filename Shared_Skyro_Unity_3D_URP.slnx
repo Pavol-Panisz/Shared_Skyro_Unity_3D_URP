@@ -8,6 +8,7 @@
   <Project Path="QFSW.QC.Editor.csproj" />
   <Project Path="QFSW.QC.Parsers.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="VHierarchy.csproj" />
   <Project Path="CompileCo.TimeTweaker.Editor.csproj" />
   <Project Path="QFSW.QC.QGUI.csproj" />
   <Project Path="QFSW.QC.UI.csproj" />
