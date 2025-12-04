@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class InventoryItem
 {
@@ -31,7 +32,8 @@ public class InventorySystem : MonoBehaviour
     {
         Instance = this;
 
-        _itemUiPrefab = Resources.Load<GameObject>("ItemUI");
+        _itemUiPrefab = Resources.Load<GameObject>("ItemUI_");
+        print(_itemUiPrefab);
         _inventorySelectedItemIndicator = Instantiate(Resources.Load<GameObject>("SelectedItemIndicator")).transform;
         SetItemsUi(_items);
         SetCurItem(0);
@@ -83,6 +85,12 @@ public class InventorySystem : MonoBehaviour
         }
         smallestIndex = 0;
         return false;
+    }
+
+    public void OnNextItem(InputAction.CallbackContext context)
+    {
+        if (!context.started) return;
+        SetCurItem(GetPossibleItemIndex(_curItemIndex + (int)context.ReadValue<float>()));
     }
 
     private int GetPossibleItemIndex(int index)

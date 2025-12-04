@@ -1,6 +1,35 @@
 {
-    "version": 0,
+    "version": 1,
     "name": "InventoryInputs",
-    "maps": [],
+    "maps": [
+        {
+            "name": "Inventory",
+            "id": "2599f365-1818-4eea-bc73-05de0a59f2b9",
+            "actions": [
+                {
+                    "name": "SetNextItem",
+                    "type": "Value",
+                    "id": "d5650cda-da7e-4180-990d-556d82dfb499",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "2927ed7d-67b1-4435-a872-f996d8e1d373",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SetNextItem",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
     "controlSchemes": []
 }
