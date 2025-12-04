@@ -26,32 +26,24 @@ public class ItemContainer : MonoBehaviour
 
     public void AddItem(ItemInstanceClass itemInstanceStruct)
     {
-        //items.Add(itemInstanceStruct);
-
         int amountToAdd = itemInstanceStruct.count;
         int index = 0;
         foreach (ItemInstanceClass itemInstance in items)
         {
             if (amountToAdd <= 0)
             {
-                Debug.Log("break");
                 break;
             }
-
-            Debug.Log(itemInstance.itemData.itemName + " " + itemInstanceStruct.itemData.itemName);
-            Debug.Log(itemInstance.itemData.itemName == itemInstanceStruct.itemData.itemName);
 
             if (itemInstance.itemData.itemName == itemInstanceStruct.itemData.itemName && itemInstance.count < itemInstanceStruct.itemData.maxCount)
             {
                 itemInstance.AddCount(amountToAdd);
-                Debug.Log("add");
                 amountToAdd = 0;
 
                 if (itemInstance.count > itemInstanceStruct.itemData.maxCount)
                 {
                     amountToAdd = itemInstance.count - itemInstanceStruct.itemData.maxCount;
                     itemInstance.SetCount(itemInstanceStruct.itemData.maxCount);
-                    Debug.Log("Set");
                 }
             }
 
@@ -62,7 +54,6 @@ public class ItemContainer : MonoBehaviour
         {
             itemInstanceStruct.count = amountToAdd;
             items.Add(itemInstanceStruct);
-            Debug.Log("Spawn");
         }
 
         FindAnyObjectByType<ItemContainerUI>().LoadUI();

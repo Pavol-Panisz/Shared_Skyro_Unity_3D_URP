@@ -16,7 +16,6 @@ public class PickableItem : MonoBehaviour
     }
 
     private void OnMouseDown() {
-        Debug.Log("Picked up item");
         PickUp();
     }
 }
