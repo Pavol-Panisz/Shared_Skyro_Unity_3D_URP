@@ -1254,11 +1254,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1405525285}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0c89232047648f4783b24d040de5c64, type: 3}
+  m_Script: {fileID: 11500000, guid: d8d1ac9f6c2ec30449b629fa839756da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   bulletsCount: 10
-  bullet: {fileID: 3898009765159487220, guid: 14628a4de49a0c44ab1f55bc00f7c9f2, type: 3}
+  bullet: {fileID: 3898009765159487220, guid: dba308eded18d0a4e836b51c7416e98b, type: 3}
 --- !u!1 &1468429629
 GameObject:
   m_ObjectHideFlags: 0
