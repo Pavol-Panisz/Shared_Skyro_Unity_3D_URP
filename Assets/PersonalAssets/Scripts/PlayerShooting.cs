@@ -80,3 +80,5 @@ public class PlayerShooting : MonoBehaviour
         isReloading = false;
     }
 }
+
+// look at constraint
