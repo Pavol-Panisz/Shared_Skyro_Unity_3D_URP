@@ -1,9 +1,13 @@
 using System;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class BasicSpawner : MonoBehaviour
 {
     public GameObject prefabtospawn;
+    public int numbertospawn;
+    private int coinsspawned = 0;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -15,11 +19,20 @@ public class BasicSpawner : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            Debug.Log("E has been pressed!");
-            Instantiate(prefabtospawn, transform.position, transform.rotation);
+            coinsspawned = coinsspawned + 1;
+            if (coinsspawned < numbertospawn)
+            {
+                 
+                {
+                    
+                    coinsspawned = coinsspawned + 1;
+                    Instantiate(prefabtospawn, transform.position, transform.rotation);
+                  
+                }
+                
+            }
+
         }
-        else         {
-            Debug.Log("E has not been pressed!");
         }
     }
-}
+

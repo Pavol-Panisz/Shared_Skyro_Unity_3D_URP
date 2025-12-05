@@ -3328,6 +3328,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabtospawn: {fileID: 35955164885231597, guid: 3182441c89b81344bb8053bfa402d1f8, type: 3}
+  numbertospawn: 10
 --- !u!1001 &2967481244129805802
 PrefabInstance:
   m_ObjectHideFlags: 0
