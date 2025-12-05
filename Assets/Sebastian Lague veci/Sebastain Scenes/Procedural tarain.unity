@@ -340,23 +340,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4989a031dc544d044a7416923ba31ff4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drawMode: 0
+  drawMode: 1
   mapWidth: 100
   mapHeight: 100
-  noiseScale: 27
-  octaves: 3
-  persistance: 0.5
-  lacumarity: 1.64
+  noiseScale: 25
+  octaves: 5
+  persistance: 0.331
+  lacumarity: 2
   seed: 0
-  offset: {x: 0, y: 0}
+  offset: {x: -2.23, y: -0.21}
   autoUpdate: 1
   regions:
-  - name: water
+  - name: water deep
+    height: 0.3
+    color: {r: 0, g: 0.13979106, b: 0.5622641, a: 0}
+  - name: water shalow
     height: 0.4
-    color: {r: 0.12242782, g: 0.22920759, b: 0.6830188, a: 0}
-  - name: land
+    color: {r: 0, g: 0.25268865, b: 0.5999999, a: 0}
+  - name: sand
+    height: 0.45
+    color: {r: 0.93207544, g: 0.8612303, b: 0, a: 0}
+  - name: grass
+    height: 0.55
+    color: {r: 0.18385375, g: 0.5396226, b: 0, a: 0}
+  - name: grass 2
+    height: 0.6
+    color: {r: 0.020992603, g: 0.4113207, b: 0, a: 0}
+  - name: rock low
+    height: 0.85
+    color: {r: 0.2981131, g: 0.23993056, b: 0.1726806, a: 0}
+  - name: rock 2
+    height: 0.9
+    color: {r: 0.2981131, g: 0.2556922, b: 0.20642926, a: 0}
+  - name: mountain heigh
     height: 1
-    color: {r: 0.09913135, g: 0.5773585, b: 0.17082898, a: 0}
+    color: {r: 1, g: 1, b: 1, a: 0}
+  - name: mountain low
+    height: 0.9
+    color: {r: 0.5245282, g: 0.28122294, b: 0, a: 0}
 --- !u!4 &1492029328
 Transform:
   m_ObjectHideFlags: 0
