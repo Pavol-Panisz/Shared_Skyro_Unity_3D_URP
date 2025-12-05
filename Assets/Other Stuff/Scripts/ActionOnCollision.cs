@@ -1,11 +1,14 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Events;
 
 public class ActionOnCollision : MonoBehaviour
 {
-    public UnityEvent EventOnEnter;
-    public UnityEvent EventOnExit;
-    public LayerMask acceptedLayers = ~0;
+    public UnityEvent OnCollision;
+
+    public UnityEvent OnExit;
+
+    public List<string> acceptedTags;
 
     [Header("Visual Feedback")]
     public Material TurnedOnMaterial;
@@ -22,21 +25,28 @@ public class ActionOnCollision : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (((1 << collision.gameObject.layer) & acceptedLayers) != 0)
+        string tag = collision.gameObject.tag;
+
+        if (acceptedTags.Contains(tag))
         {
             collisionCount++;
-            EventOnEnter?.Invoke();
+            OnCollision?.Invoke();
             UpdateMaterial();
         }
     }
 
     void OnCollisionExit(Collision collision)
     {
-        if (((1 << collision.gameObject.layer) & acceptedLayers) != 0)
+        string tag = collision.gameObject.tag;
+
+        if (acceptedTags.Contains(tag))
         {
-            EventOnExit?.Invoke();
-            collisionCount = Mathf.Max(0, collisionCount - 1);
-            UpdateMaterial();
+            collisionCount--;
+        }
+
+        if (collisionCount <= 0)
+        {
+            OnExit?.Invoke();
         }
     }
 
@@ -44,9 +54,11 @@ public class ActionOnCollision : MonoBehaviour
     {
         if (meshRenderer == null) return;
 
-        if (collisionCount > 0 && TurnedOnMaterial != null)
+        if (collisionCount > 0 && TurnedOnMaterial != null) {
             meshRenderer.material = TurnedOnMaterial;
-        else if (collisionCount <= 0 && TurnedOffMaterial != null)
+        }
+        else if (collisionCount <= 0 && TurnedOffMaterial != null) {
             meshRenderer.material = TurnedOffMaterial;
+        }
     }
 }
