@@ -7,6 +7,8 @@ public class MoveForward : MonoBehaviour
 
     void Start()
     {
+        if (myRigidbody == null) myRigidbody = GetComponent<Rigidbody>();
+        myRigidbody.isKinematic = false;
         myRigidbody.linearVelocity = transform.forward * speed;
     }
 }
