@@ -28,16 +28,16 @@
 
 public class MainProgram
 {
-#region Game Variables
+    #region Game Variables
     static int landPrice = DefaultValues.landPrice;
-    
-    static int currentYear = DefaultValues.startingYear;
-#endregion
 
-#region Player Variables
+    static int currentYear = DefaultValues.startingYear;
+    #endregion
+
+    #region Player Variables
     static int ownedLand = DefaultValues.startingLand;
     static int bushels = DefaultValues.startingBushels;
-#endregion
+    #endregion
 
     public static void Main()
     {
@@ -49,7 +49,7 @@ public class MainProgram
         Report();
 
         TryToBuyLand();
-    
+
         EndYear();
     }
 
@@ -57,7 +57,7 @@ public class MainProgram
     {
         if (currentYear > DefaultValues.maxYear)
         {
-            EndGame();    
+            EndGame();
         }
         else
         {
@@ -91,9 +91,10 @@ public class MainProgram
         BonusMethods.PrintInParentheses(DefaultValues.canBuyText + " " + amountThatPlayerCanBuy.ToString());
 
         int amountOfLandToBuy = int.Parse(Console.ReadLine());
-        
-        if (amountOfLandToBuy * landPrice > bushels) {
-            Console.WriteLine(DefaultValues.notEnoughMoneyText);    
+
+        if (amountOfLandToBuy * landPrice > bushels)
+        {
+            Console.WriteLine(DefaultValues.notEnoughMoneyText);
             TryToBuyLand();
         }
         else
