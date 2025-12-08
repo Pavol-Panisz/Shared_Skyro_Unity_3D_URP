@@ -7,23 +7,41 @@
     public const int startingYear = 0;
     public const int maxYear = 10;
 
+    public static readonly MinMaxValueInt32 minMaxLandPrice = new MinMaxValueInt32(17, 27);
+
     //GAME CURRENCY NAMES
     public const string moneyName = " bushels";
     public const string landName = " land";
 
     //LAND TEXT
     public const string buyLandQuestion = "How much land do you want to buy?";
+    public const string sellLandQuestion = "How much land do you want to sell?";
     public const string landCostText = "Land costs ";
 
     //GENERAL TEXT
     public const string ownText = "You own ";
     public const string haveText = "You have ";
     public const string currentYearPrefix = "It is year ";
-    public const string notEnoughMoneyText = "You don't have enough money!!!";
+
+    //BUY
     public const string canBuyText = "You can buy ";
+    public const string notEnoughMoneyText = "You don't have enough money!!!";
+    public const string notEnoughLandText = "You don't have enough land!!!";
+    
+    //SELL
+    public const string canSellText = "You can sell ";
 
     //SUMMARY TEXT
-    public const string summaryText = "Summary";
+    public const string summaryText = "====Summary====";
+    public const string lastSummaryText = "====GAME ENDED====";
+
+    #region Randomize Methods
+    public static int ReturnRandomLandPrice()
+    {
+        Random rnd = new Random();
+        return rnd.Next(minMaxLandPrice.min, minMaxLandPrice.max);
+    }
+    #endregion
 }
 
 public class MainProgram
@@ -39,43 +57,61 @@ public class MainProgram
     static int bushels = DefaultValues.startingBushels;
     #endregion
 
+
     public static void Main()
     {
         MainGame();
+        //SimulatePrices.SimulateLandPrices(10, 10);
     }
 
-    public static void MainGame()
+    private static void MainGame()
     {
         Report();
 
         TryToBuyLand();
-
+        TryToSellLand();
+        
         EndYear();
     }
 
-    public static void EndYear()
+    private static void RandomizeNumbers()
     {
-        if (currentYear > DefaultValues.maxYear)
+        Random rnd = new Random();
+        landPrice = DefaultValues.ReturnRandomLandPrice();
+    }
+
+    private static void EndYear()
+    {
+        if (currentYear == DefaultValues.maxYear)
         {
             EndGame();
         }
         else
         {
             currentYear++;
+            RandomizeNumbers();
+
             MainGame();
         }
     }
 
-    public static void EndGame()
+    private static void EndGame()
     {
         Report();
     }
 
-    public static void Report()
+    private static void Report(bool lastReport = false)
     {
-        //WRITE BASIC INFO
-        BonusMethods.PrintHeader(DefaultValues.summaryText);
+        if (lastReport)
+        {
+            BonusMethods.PrintHeader(DefaultValues.lastSummaryText);
+        }
+        else
+        {
+            BonusMethods.PrintHeader(DefaultValues.summaryText);
+        }
 
+        //WRITE BASIC INFO
         Console.WriteLine(DefaultValues.currentYearPrefix + currentYear);
         BonusMethods.PrintOwnedLand(ownedLand);
         Console.WriteLine(DefaultValues.landCostText + landPrice + DefaultValues.moneyName);
@@ -84,13 +120,13 @@ public class MainProgram
         BonusMethods.Space();
     }
 
-    public static void TryToBuyLand()
+    private static void TryToBuyLand()
     {
         int amountThatPlayerCanBuy = bushels / landPrice;
-        Console.WriteLine(DefaultValues.buyLandQuestion);
-        BonusMethods.PrintInParentheses(DefaultValues.canBuyText + " " + amountThatPlayerCanBuy.ToString());
+        Console.WriteLine(DefaultValues.buyLandQuestion + " (" + DefaultValues.canBuyText + amountThatPlayerCanBuy.ToString() + ")");
 
-        int amountOfLandToBuy = int.Parse(Console.ReadLine());
+        int.TryParse(Console.ReadLine(), out int parseResult);
+        int amountOfLandToBuy = parseResult;
 
         if (amountOfLandToBuy * landPrice > bushels)
         {
@@ -101,6 +137,29 @@ public class MainProgram
         {
             bushels -= amountOfLandToBuy * landPrice;
             ownedLand += amountOfLandToBuy;
+
+            BonusMethods.Printbushels(bushels);
+            BonusMethods.PrintOwnedLand(ownedLand);
+        }
+    }
+
+    private static void TryToSellLand()
+    {
+        int amountThatPlayerCanSell = ownedLand;
+        Console.WriteLine(DefaultValues.sellLandQuestion + " (" + DefaultValues.canSellText + amountThatPlayerCanSell.ToString() + ")");
+
+        int.TryParse(Console.ReadLine(), out int parseResult);
+        int amountOfLandToSell = parseResult;
+
+        if (amountOfLandToSell > ownedLand)
+        {
+            Console.WriteLine(DefaultValues.notEnoughLandText);
+            TryToSellLand();
+        }
+        else
+        {
+            bushels += amountOfLandToSell * landPrice;
+            ownedLand -= amountOfLandToSell;
 
             BonusMethods.Printbushels(bushels);
             BonusMethods.PrintOwnedLand(ownedLand);
@@ -131,16 +190,55 @@ public class BonusMethods
         Console.WriteLine(text);
         Space();
     }
+}
 
-    public static void PrintInParentheses(string text, bool writeOnNewLine = false)
+public struct MinMaxValueInt32
+{
+    public int min;
+    public int max;
+
+    public MinMaxValueInt32(int min, int max)
     {
-        if (writeOnNewLine)
+        this.min = min;
+        this.max = max;
+    }
+}
+
+public class SimulatePrices()
+{
+    static List<int> landPrices = new List<int>();
+    static int landPrice;
+
+    public static void SimulateLandPrices(int amountOfSimulations, int amountOfNumbersInSimulations)
+    {
+        landPrice = DefaultValues.landPrice;
+        landPrices.Clear();
+
+        for (int i = 0; i < amountOfSimulations; i++)
         {
-            Console.WriteLine(" (" + text + ")");
+            for (int y = 0; y < amountOfSimulations; y++)
+            {
+                RandomizeNumbers();
+            }
         }
-        else
+
+        float averageLandPrice = 0;
+
+        for (int i = 0; i < landPrices.Count; i++)
         {
-            Console.Write(" (" + text + ")");
+            averageLandPrice += landPrices[i];
         }
+
+        averageLandPrice /= landPrices.Count;
+        Console.WriteLine(averageLandPrice);
+    }
+
+    private static void RandomizeNumbers()
+    {
+        Random rnd = new Random();
+        landPrice = DefaultValues.ReturnRandomLandPrice();
+
+        landPrices.Add(landPrice);
+        Console.WriteLine(landPrice);
     }
 }
