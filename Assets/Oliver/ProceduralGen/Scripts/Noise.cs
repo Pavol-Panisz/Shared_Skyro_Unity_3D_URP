@@ -25,7 +25,7 @@ public static class Noise
             amplitude *= persistance;
         }
 
-        if (scale == 0f)
+        if (scale <= 0f)
         {
             scale = 0.0001f;
         }
@@ -79,7 +79,7 @@ public static class Noise
                 }
                 else
                 {
-                    float normalizedHeight = (noiseMap[x, y] + 1) / maxPosibleHeight; 
+                    float normalizedHeight = (noiseMap[x, y] + 1) / maxPosibleHeight / 1.45f; 
                     noiseMap[x, y] = Mathf.Clamp(normalizedHeight, 0, int.MaxValue);
                 }
             }
