@@ -1,13 +1,21 @@
 ﻿public class DefaultValues
 {
     //DEFAULT VALUES
-    public const int startingLand = 100;
+    public const int startingLand = 1000;
     public const int landPrice = 20;
-    public const int startingBushels = 1000;
+    public const int startingBushels = 2700;
     public const int startingYear = 0;
     public const int maxYear = 10;
+    public const int startingPopulation = 98;
+    public const int startingBushelsPerAcre = 3;
+    public const int seedsPerAcre = 2;
+    public const int minimumBushelsPerYearPerPerson = 20;
 
     public static readonly MinMaxValueInt32 minMaxLandPrice = new MinMaxValueInt32(17, 27);
+    public static readonly MinMaxValueInt32 minMaxBushelshPerAcre = new MinMaxValueInt32(1, 5);
+
+    //LOSE VALUES
+    public const int percentageOfPeopleNeededToBeKilledInOneTurnToLose = 33;
 
     //GAME CURRENCY NAMES
     public const string moneyName = " bushels";
@@ -18,10 +26,19 @@
     public const string sellLandQuestion = "How much land do you want to sell?";
     public const string landCostText = "Land costs ";
 
+    //GROW
+    public const string bushelPerAcre = "Bushels per acre ";
+    
+    //POPULATION
+    public const string currentPopulationText = "Current population is ";
+    public const string populationAddedText = " new people arrived.";
+    public const string feedPopulationQuestion = "How many bushels do you wish to feed your people? ";
+
     //GENERAL TEXT
     public const string ownText = "You own ";
     public const string haveText = "You have ";
     public const string currentYearPrefix = "It is year ";
+    public const string perPersonText = " per person.";
 
     //BUY
     public const string canBuyText = "You can buy ";
@@ -39,7 +56,13 @@
     public static int ReturnRandomLandPrice()
     {
         Random rnd = new Random();
-        return rnd.Next(minMaxLandPrice.min, minMaxLandPrice.max);
+        return rnd.Next(minMaxLandPrice.min, minMaxLandPrice.max + 1);
+    }
+
+    public static int ReturnRandomBushelsPerAcre()
+    {
+        Random rnd = new Random();
+        return rnd.Next(minMaxBushelshPerAcre.min, minMaxBushelshPerAcre.max + 1);
     }
     #endregion
 }
@@ -50,11 +73,18 @@ public class MainProgram
     static int landPrice = DefaultValues.landPrice;
 
     static int currentYear = DefaultValues.startingYear;
+    static int bushelsPerAcre = DefaultValues.startingBushelsPerAcre;
+    static int imigration;
     #endregion
 
     #region Player Variables
     static int ownedLand = DefaultValues.startingLand;
     static int bushels = DefaultValues.startingBushels;
+
+    static int currentPopulation = DefaultValues.startingPopulation;
+    static int peopleToDie = 0;
+
+    static bool gameEnded;
     #endregion
 
 
@@ -66,18 +96,96 @@ public class MainProgram
 
     private static void MainGame()
     {
+        KillPeople();
+
+        if (gameEnded) return;
+
+        GrowBushels();
+        AddPopulation();
+
         Report();
 
         TryToBuyLand();
         TryToSellLand();
-        
+        TryToPlantLand();
+
+        TryToFeedPeople();
+
         EndYear();
+    }
+
+    private static void GrowBushels()
+    {
+        bushels += bushelsPerAcre * ownedLand;
+    }
+
+    private static void TryToPlantLand()
+    {
+        Console.WriteLine(DefaultValues.feedPopulationQuestion + " (" + DefaultValues.minimumBushelsPerYearPerPerson + DefaultValues.perPersonText + ")");
+
+        int.TryParse(Console.ReadLine(), out int parseResult);
+        int amountOfBushelsToFeedPeople = parseResult;
+
+        if (amountOfBushelsToFeedPeople > bushels)
+        {
+            Console.WriteLine(DefaultValues.notEnoughMoneyText);
+            TryToPlantLand();
+        }
+        else
+        {
+            bushels -= amountOfBushelsToFeedPeople;
+            int bushelsNeeded = currentPopulation * DefaultValues.minimumBushelsPerYearPerPerson;
+            peopleToDie = (int)((bushelsNeeded - amountOfBushelsToFeedPeople) / DefaultValues.minimumBushelsPerYearPerPerson);
+        }
+    }
+
+    private static void KillPeople()
+    {
+        if (peopleToDie > currentPopulation / 100 * DefaultValues.percentageOfPeopleNeededToBeKilledInOneTurnToLose)
+        {
+            Lose();
+        }
+
+        currentPopulation -= peopleToDie;
+    }
+
+    private static void Lose()
+    {
+        //LOSE
+        gameEnded = true;
+    }
+
+    private static void TryToFeedPeople()
+    {
+        Console.WriteLine(DefaultValues.feedPopulationQuestion + " (" + DefaultValues.minimumBushelsPerYearPerPerson + DefaultValues.perPersonText + ")");
+
+        int.TryParse(Console.ReadLine(), out int parseResult);
+        int amountOfBushelsToFeedPeople = parseResult;
+
+        if (amountOfBushelsToFeedPeople > bushels)
+        {
+            Console.WriteLine(DefaultValues.notEnoughMoneyText);
+            TryToFeedPeople();
+        }
+        else
+        {
+            bushels -= amountOfBushelsToFeedPeople;
+            int bushelsNeeded = currentPopulation * DefaultValues.minimumBushelsPerYearPerPerson;
+            peopleToDie = (int)((bushelsNeeded - amountOfBushelsToFeedPeople) / DefaultValues.minimumBushelsPerYearPerPerson);
+        }
+    }
+
+    private static void AddPopulation()
+    {
+        imigration = (int)(bushelsPerAcre * (20 * ownedLand + bushels) / currentPopulation / 100 + 1);
+        currentPopulation += imigration;
     }
 
     private static void RandomizeNumbers()
     {
-        Random rnd = new Random();
         landPrice = DefaultValues.ReturnRandomLandPrice();
+
+        bushelsPerAcre = DefaultValues.ReturnRandomBushelsPerAcre();
     }
 
     private static void EndYear()
@@ -97,7 +205,7 @@ public class MainProgram
 
     private static void EndGame()
     {
-        Report();
+        Report(true);
     }
 
     private static void Report(bool lastReport = false)
@@ -113,9 +221,15 @@ public class MainProgram
 
         //WRITE BASIC INFO
         Console.WriteLine(DefaultValues.currentYearPrefix + currentYear);
+        Console.WriteLine(imigration + DefaultValues.populationAddedText);
+        Console.WriteLine(DefaultValues.currentPopulationText + currentPopulation);
         BonusMethods.PrintOwnedLand(ownedLand);
-        Console.WriteLine(DefaultValues.landCostText + landPrice + DefaultValues.moneyName);
         BonusMethods.Printbushels(bushels);
+        Console.WriteLine(DefaultValues.bushelPerAcre + bushelsPerAcre);
+
+        BonusMethods.Space();
+
+        Console.WriteLine(DefaultValues.landCostText + landPrice + DefaultValues.moneyName);
 
         BonusMethods.Space();
     }
