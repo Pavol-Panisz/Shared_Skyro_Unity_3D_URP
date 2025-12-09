@@ -3,12 +3,12 @@
     //DEFAULT VALUES
     public const int startingLand = 1000;
     public const int landPrice = 20;
-    public const int startingBushels = 2700;
+    public const int startingBushels = 3000;
     public const int startingYear = 0;
     public const int maxYear = 10;
-    public const int startingPopulation = 98;
+    public const int startingPopulation = 100;
     public const int startingBushelsPerAcre = 3;
-    public const int seedsPerAcre = 2;
+    public const int bushelsPerLand = 2;
     public const int minimumBushelsPerYearPerPerson = 20;
 
     public static readonly MinMaxValueInt32 minMaxLandPrice = new MinMaxValueInt32(17, 27);
@@ -25,6 +25,10 @@
     public const string buyLandQuestion = "How much land do you want to buy?";
     public const string sellLandQuestion = "How much land do you want to sell?";
     public const string landCostText = "Land costs ";
+
+    //PLANT
+    public const string plantBeshelsQuestion = "How many bushels do you want to plant? ";
+    public const string seedsPerAcreText = " beshels per land";
 
     //GROW
     public const string bushelPerAcre = "Bushels per acre ";
@@ -75,6 +79,10 @@ public class MainProgram
     static int currentYear = DefaultValues.startingYear;
     static int bushelsPerAcre = DefaultValues.startingBushelsPerAcre;
     static int imigration;
+
+    static int peopleToDie = 0;
+    
+    static bool gameEnded;
     #endregion
 
     #region Player Variables
@@ -82,9 +90,7 @@ public class MainProgram
     static int bushels = DefaultValues.startingBushels;
 
     static int currentPopulation = DefaultValues.startingPopulation;
-    static int peopleToDie = 0;
-
-    static bool gameEnded;
+    static int landPlanted = 0;
     #endregion
 
 
@@ -96,46 +102,47 @@ public class MainProgram
 
     private static void MainGame()
     {
-        KillPeople();
+        if (currentYear != 0)
+        {
+            GrowBushels();
+            AddPopulation();
+            KillPeople();
+        }
 
         if (gameEnded) return;
-
-        GrowBushels();
-        AddPopulation();
 
         Report();
 
         TryToBuyLand();
         TryToSellLand();
+        TryToFeedPeople();
         TryToPlantLand();
 
-        TryToFeedPeople();
-
         EndYear();
+        
     }
 
     private static void GrowBushels()
     {
-        bushels += bushelsPerAcre * ownedLand;
+        bushels += bushelsPerAcre * landPlanted;
     }
 
     private static void TryToPlantLand()
     {
-        Console.WriteLine(DefaultValues.feedPopulationQuestion + " (" + DefaultValues.minimumBushelsPerYearPerPerson + DefaultValues.perPersonText + ")");
+        Console.WriteLine(DefaultValues.plantBeshelsQuestion + " (" + DefaultValues.bushelsPerLand + DefaultValues.seedsPerAcreText + ")");
 
         int.TryParse(Console.ReadLine(), out int parseResult);
-        int amountOfBushelsToFeedPeople = parseResult;
+        int amountOfBushelsToPlant = parseResult;
 
-        if (amountOfBushelsToFeedPeople > bushels)
+        if (amountOfBushelsToPlant > bushels)
         {
             Console.WriteLine(DefaultValues.notEnoughMoneyText);
             TryToPlantLand();
         }
         else
         {
-            bushels -= amountOfBushelsToFeedPeople;
-            int bushelsNeeded = currentPopulation * DefaultValues.minimumBushelsPerYearPerPerson;
-            peopleToDie = (int)((bushelsNeeded - amountOfBushelsToFeedPeople) / DefaultValues.minimumBushelsPerYearPerPerson);
+            bushels -= amountOfBushelsToPlant;
+            landPlanted = amountOfBushelsToPlant / DefaultValues.bushelsPerLand;
         }
     }
 
