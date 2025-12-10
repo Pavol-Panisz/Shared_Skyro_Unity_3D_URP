@@ -10,10 +10,12 @@
     public const int startingBushelsPerAcre = 3;
     public const int bushelsPerSeed = 2;
     public const int minimumBushelsPerYearPerPerson = 20;
-    public const int plaguePropability = 10; 
+    public const int plaguePropability = 15; 
 
     public static readonly MinMaxValueInt32 minMaxLandPrice = new MinMaxValueInt32(17, 27);
     public static readonly MinMaxValueInt32 minMaxBushelshPerAcre = new MinMaxValueInt32(1, 5);
+
+    public static readonly List<RatInfoStruct> ratInfoList = new List<RatInfoStruct> {new RatInfoStruct(10, 0), new RatInfoStruct(10, 25), new RatInfoStruct(10, 50), new RatInfoStruct(10, 100)};
 
     //LOSE VALUES
     public const int percentageOfPeopleNeededToBeKilledInOneTurnToLose = 33;
@@ -30,6 +32,9 @@
     //PLANT
     public const string plantSeedsQuestion = "How many seeds do you want to plant? ";
     public const string seedsPerAcreText = " beshels per seed";
+
+    //MOUSE
+    public const string howMuchBushelshRatsAteText = "Rats ate ";
 
     //GROW
     public const string bushelPerAcre = "Bushels per acre ";
@@ -56,8 +61,8 @@
     public const string canSellText = "You can sell ";
 
     //SUMMARY TEXT
-    public const string summaryText = "====SUMMARY====";
-    public const string lastSummaryText = "====GAME ENDED====";
+    public const string summaryText = "========SUMMARY========";
+    public const string lastSummaryText = "========GAME ENDED========";
 
     #region Randomize Methods
     public static int ReturnRandomFloat()
@@ -80,6 +85,8 @@ public class MainProgram
     static int peopleToDie = 0;
     static int peopleToDieFromPlague = 0;
 
+    static int bushelshEatenByRats = 0;
+
     static bool gameEnded;
     #endregion
 
@@ -89,6 +96,8 @@ public class MainProgram
 
     static int currentPopulation = DefaultValues.startingPopulation;
     static int landPlanted = 0;
+
+    static bool boughtLand;
     #endregion
 
     public static void Main()
@@ -99,11 +108,14 @@ public class MainProgram
 
     private static void MainGame()
     {
+        boughtLand = false;
+
         if (currentYear != 0)
         {
             GrowBushels();
             AddPopulation();
             KillPeople();
+            Rats();
         }
 
         if (gameEnded) return;
@@ -111,16 +123,40 @@ public class MainProgram
         Report();
 
         TryToBuyLand();
-        TryToSellLand();
+        if (!boughtLand)
+        {
+            TryToSellLand();
+        }
         TryToFeedPeople();
         TryToPlantLand();
 
-        if (PlagueOccured())
+        if (PlagueOccured() && currentYear != 0)
         {
             peopleToDieFromPlague = currentPopulation / 2;
         }
+        else
+        {
+            peopleToDieFromPlague = 0;
+        }
 
         EndYear();
+    }
+
+    private static void Rats()
+    {
+        for (int i = 0; i < DefaultValues.ratInfoList.Count; i++)
+        {
+            if (ReturnRandomInt(0, 100) <= DefaultValues.ratInfoList[i].chance)
+            {
+                bushelshEatenByRats = (int)(bushels / 100 * DefaultValues.ratInfoList[i].percentageOfStolen);
+                bushels -= bushelshEatenByRats;
+                bushels = Math.Clamp(bushels, 0, int.MaxValue);
+
+                return;
+            }
+        }
+
+        bushelshEatenByRats = 0;
     }
 
     private static void GrowBushels()
@@ -231,22 +267,22 @@ public class MainProgram
         //WRITE BASIC INFO
         Console.WriteLine(DefaultValues.currentYearPrefix + currentYear);
         Console.WriteLine(imigration + DefaultValues.populationAddedText + " and " + peopleToDie + DefaultValues.peopleDiedText);
+        Console.WriteLine(DefaultValues.currentPopulationText + currentPopulation);
 
         if (peopleToDieFromPlague > 0)
         {
             Console.WriteLine(DefaultValues.peopleDiedFromPlagueText + peopleToDieFromPlague + DefaultValues.peopleDiedText);
         }
 
-        Console.WriteLine(DefaultValues.currentPopulationText + currentPopulation);
         BonusMethods.PrintOwnedLand(ownedLand);
-        BonusMethods.Printbushels(bushels);
         Console.WriteLine(DefaultValues.bushelPerAcre + bushelsPerAcre);
+        Console.WriteLine(DefaultValues.howMuchBushelshRatsAteText + bushelshEatenByRats + DefaultValues.moneyName);
+        BonusMethods.Printbushels(bushels);
 
         BonusMethods.Space();
-
         Console.WriteLine(DefaultValues.landCostText + landPrice + DefaultValues.moneyName);
-
         BonusMethods.Space();
+
     }
 
     private static void TryToBuyLand()
@@ -264,11 +300,15 @@ public class MainProgram
         }
         else
         {
-            bushels -= amountOfLandToBuy * landPrice;
-            ownedLand += amountOfLandToBuy;
+            if (amountOfLandToBuy > 0)
+            {
+                bushels -= amountOfLandToBuy * landPrice;
+                ownedLand += amountOfLandToBuy;
 
-            BonusMethods.Printbushels(bushels);
-            BonusMethods.PrintOwnedLand(ownedLand);
+                BonusMethods.Printbushels(bushels);
+
+                boughtLand = true;
+            }
         }
     }
 
@@ -353,6 +393,18 @@ public struct MinMaxValueInt32
     {
         this.min = min;
         this.max = max;
+    }
+}
+
+public struct RatInfoStruct
+{
+    public int chance;
+    public int percentageOfStolen;
+
+    public RatInfoStruct(int chance, int percentageOfStolen)
+    {
+        this.chance = chance;
+        this.percentageOfStolen = percentageOfStolen;
     }
 }
 
