@@ -1,9 +1,13 @@
+using System.Security.Cryptography;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Splines.Interpolators;
 
 public class MapDysplayer : MonoBehaviour
 {
     public Renderer textureRenderer;
+    public MeshFilter meshFilter;
+    public MeshRenderer meshRenderer;
 
     public void DrawTexture(Texture2D texture)
     {
@@ -11,5 +15,11 @@ public class MapDysplayer : MonoBehaviour
 
         textureRenderer.sharedMaterial.mainTexture = texture;
         textureRenderer.transform.localScale = new Vector3(texture.width, 1, texture.height);
+    }
+
+    public void DrawMesh(MeshData meshData, Texture2D texture)
+    {
+        meshFilter.sharedMesh = meshData.CreateMesh();
+        meshRenderer.sharedMaterial.mainTexture = texture;
     }
 }
