@@ -2,14 +2,15 @@
 {
     //DEFAULT VALUES
     public const int startingLand = 1000;
-    public const int landPrice = 20;
+    public const int landPrice = 27;
     public const int startingBushels = 3000;
     public const int startingYear = 0;
     public const int maxYear = 10;
     public const int startingPopulation = 100;
     public const int startingBushelsPerAcre = 3;
-    public const int bushelsPerLand = 2;
+    public const int bushelsPerSeed = 2;
     public const int minimumBushelsPerYearPerPerson = 20;
+    public const int plaguePropability = 10; 
 
     public static readonly MinMaxValueInt32 minMaxLandPrice = new MinMaxValueInt32(17, 27);
     public static readonly MinMaxValueInt32 minMaxBushelshPerAcre = new MinMaxValueInt32(1, 5);
@@ -27,22 +28,24 @@
     public const string landCostText = "Land costs ";
 
     //PLANT
-    public const string plantBeshelsQuestion = "How many bushels do you want to plant? ";
-    public const string seedsPerAcreText = " beshels per land";
+    public const string plantSeedsQuestion = "How many seeds do you want to plant? ";
+    public const string seedsPerAcreText = " beshels per seed";
 
     //GROW
     public const string bushelPerAcre = "Bushels per acre ";
     
     //POPULATION
     public const string currentPopulationText = "Current population is ";
-    public const string populationAddedText = " new people arrived.";
+    public const string populationAddedText = " new people arrived";
     public const string feedPopulationQuestion = "How many bushels do you wish to feed your people? ";
+    public const string peopleDiedFromPlagueText = "Plague has occured in your kingdom and ";
 
     //GENERAL TEXT
     public const string ownText = "You own ";
     public const string haveText = "You have ";
     public const string currentYearPrefix = "It is year ";
-    public const string perPersonText = " per person.";
+    public const string perPersonText = " per person";
+    public const string peopleDiedText = " people died.";
 
     //BUY
     public const string canBuyText = "You can buy ";
@@ -53,20 +56,14 @@
     public const string canSellText = "You can sell ";
 
     //SUMMARY TEXT
-    public const string summaryText = "====Summary====";
+    public const string summaryText = "====SUMMARY====";
     public const string lastSummaryText = "====GAME ENDED====";
 
     #region Randomize Methods
-    public static int ReturnRandomLandPrice()
+    public static int ReturnRandomFloat()
     {
         Random rnd = new Random();
         return rnd.Next(minMaxLandPrice.min, minMaxLandPrice.max + 1);
-    }
-
-    public static int ReturnRandomBushelsPerAcre()
-    {
-        Random rnd = new Random();
-        return rnd.Next(minMaxBushelshPerAcre.min, minMaxBushelshPerAcre.max + 1);
     }
     #endregion
 }
@@ -81,7 +78,8 @@ public class MainProgram
     static int imigration;
 
     static int peopleToDie = 0;
-    
+    static int peopleToDieFromPlague = 0;
+
     static bool gameEnded;
     #endregion
 
@@ -93,11 +91,10 @@ public class MainProgram
     static int landPlanted = 0;
     #endregion
 
-
     public static void Main()
     {
         MainGame();
-        //SimulatePrices.SimulateLandPrices(10, 10);
+        //SimulatePrices.SimulateLandPrices(100, 10);
     }
 
     private static void MainGame()
@@ -118,8 +115,12 @@ public class MainProgram
         TryToFeedPeople();
         TryToPlantLand();
 
+        if (PlagueOccured())
+        {
+            peopleToDieFromPlague = currentPopulation / 2;
+        }
+
         EndYear();
-        
     }
 
     private static void GrowBushels()
@@ -129,20 +130,20 @@ public class MainProgram
 
     private static void TryToPlantLand()
     {
-        Console.WriteLine(DefaultValues.plantBeshelsQuestion + " (" + DefaultValues.bushelsPerLand + DefaultValues.seedsPerAcreText + ")");
+        Console.WriteLine(DefaultValues.plantSeedsQuestion + " (" + DefaultValues.bushelsPerSeed + DefaultValues.seedsPerAcreText + ")");
 
         int.TryParse(Console.ReadLine(), out int parseResult);
-        int amountOfBushelsToPlant = parseResult;
+        int amountOfSeedsToPlant = parseResult;
 
-        if (amountOfBushelsToPlant > bushels)
+        if (amountOfSeedsToPlant * 2 > bushels)
         {
             Console.WriteLine(DefaultValues.notEnoughMoneyText);
             TryToPlantLand();
         }
         else
         {
-            bushels -= amountOfBushelsToPlant;
-            landPlanted = amountOfBushelsToPlant / DefaultValues.bushelsPerLand;
+            bushels -= amountOfSeedsToPlant * 2;
+            landPlanted = amountOfSeedsToPlant;
         }
     }
 
@@ -154,6 +155,7 @@ public class MainProgram
         }
 
         currentPopulation -= peopleToDie;
+        currentPopulation -= peopleToDieFromPlague;
     }
 
     private static void Lose()
@@ -190,9 +192,9 @@ public class MainProgram
 
     private static void RandomizeNumbers()
     {
-        landPrice = DefaultValues.ReturnRandomLandPrice();
+        landPrice = ReturnRandomLandPrice();
 
-        bushelsPerAcre = DefaultValues.ReturnRandomBushelsPerAcre();
+        bushelsPerAcre =ReturnRandomBushelsPerAcre();
     }
 
     private static void EndYear()
@@ -228,7 +230,13 @@ public class MainProgram
 
         //WRITE BASIC INFO
         Console.WriteLine(DefaultValues.currentYearPrefix + currentYear);
-        Console.WriteLine(imigration + DefaultValues.populationAddedText);
+        Console.WriteLine(imigration + DefaultValues.populationAddedText + " and " + peopleToDie + DefaultValues.peopleDiedText);
+
+        if (peopleToDieFromPlague > 0)
+        {
+            Console.WriteLine(DefaultValues.peopleDiedFromPlagueText + peopleToDieFromPlague + DefaultValues.peopleDiedText);
+        }
+
         Console.WriteLine(DefaultValues.currentPopulationText + currentPopulation);
         BonusMethods.PrintOwnedLand(ownedLand);
         BonusMethods.Printbushels(bushels);
@@ -285,6 +293,29 @@ public class MainProgram
             BonusMethods.Printbushels(bushels);
             BonusMethods.PrintOwnedLand(ownedLand);
         }
+    }
+
+    public static int ReturnRandomLandPrice()
+    {
+        Random rnd = new Random();
+        return rnd.Next(DefaultValues.minMaxLandPrice.min, DefaultValues.minMaxLandPrice.max + 1);
+    }
+
+    public static int ReturnRandomBushelsPerAcre()
+    {
+        Random rnd = new Random();
+        return rnd.Next(DefaultValues.minMaxBushelshPerAcre.min, DefaultValues.minMaxBushelshPerAcre.max + 1);
+    }
+
+    public static int ReturnRandomInt(int min, int max)
+    {
+        Random rnd = new Random();
+        return rnd.Next(min, max);
+    }
+
+    private static bool PlagueOccured()
+    {
+        return (ReturnRandomInt(0, 100) > DefaultValues.plaguePropability)? false : true;
     }
 }
 
@@ -357,7 +388,7 @@ public class SimulatePrices()
     private static void RandomizeNumbers()
     {
         Random rnd = new Random();
-        landPrice = DefaultValues.ReturnRandomLandPrice();
+        landPrice = MainProgram.ReturnRandomLandPrice();
 
         landPrices.Add(landPrice);
         Console.WriteLine(landPrice);
