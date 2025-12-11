@@ -26,7 +26,20 @@
 
         public static void WriteGameState(bool lastReport)
         {
-            Console.WriteLine("");
+            BonusPrintMethods.Space();
+            if (lastReport)
+            {
+                BonusPrintMethods.Print(DefaultTexts.lastSummaryText);
+            }
+            else
+            {
+                BonusPrintMethods.Print(DefaultTexts.summaryText);
+            }
+            BonusPrintMethods.Space();
+            BonusPrintMethods.Print(string.Format(DefaultTexts.landCostText, currentYear));
+
+
+            BonusPrintMethods.Space();
             if (lastReport)
             {
                 Console.WriteLine(DefaultTexts.lastSummaryText);
@@ -35,7 +48,7 @@
             {
                 Console.WriteLine(DefaultTexts.summaryText);
             }
-            Console.WriteLine("");
+            BonusPrintMethods.Space();
 
             //WRITE BASIC INFO
             Console.WriteLine(DefaultTexts.currentYearText + currentYear);

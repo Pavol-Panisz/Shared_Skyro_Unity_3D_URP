@@ -44,7 +44,7 @@
         //LAND TEXT
         public const string buyLandQuestion = "How much land do you want to buy?";
         public const string sellLandQuestion = "How much land do you want to sell?";
-        public const string landCostText = "Land costs ";
+        public const string landCostText = "Land costs {0}";
 
         //PLANT
         public const string plantSeedsQuestion = "How many seeds do you want to plant? ";
