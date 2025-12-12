@@ -38,38 +38,18 @@
             BonusPrintMethods.Space();
             Debug.Log($"Its year {currentYear}");
             Debug.Log($"{amountOfPeopleThatStarved} people starved and {imigration} people arrived");
-            Debug.Log($"Ri");
-            Debug.Log($"One acre of land costs {landPrice}");
-
-
-            BonusPrintMethods.Space();
-            if (lastReport)
-            {
-                Console.WriteLine(DefaultTexts.lastSummaryText);
-            }
-            else
-            {
-                Console.WriteLine(DefaultTexts.summaryText);
-            }
-            BonusPrintMethods.Space();
-
-            //WRITE BASIC INFO
-            Console.WriteLine(DefaultTexts.currentYearText + currentYear);
-            Console.WriteLine(imigration + DefaultTexts.populationArrivedText + " and " + amountOfPeopleThatStarved + DefaultTexts.peopleStarvedText);
-            Console.WriteLine(DefaultTexts.currentPopulationText + currentPopulation);
-
             if (amountOfPeopleThatDiedFromPlagueDuringYear > 0)
             {
-                Console.WriteLine(DefaultTexts.peopleDiedFromPlagueText + amountOfPeopleThatDiedFromPlagueDuringYear + DefaultTexts.peopleStarvedText);
+                Debug.Log("DefaultTexts.peopleDiedFromPlagueText + amountOfPeopleThatDiedFromPlagueDuringYear + DefaultTexts.peopleStarvedText");
             }
-
+            Debug.Log($"Population is now {currentPopulation}");
             BonusPrintMethods.PrintOwnedLand(landOwned);
-            Console.WriteLine(DefaultTexts.bushelPerAcreText + bushelsPerAcre);
-            Console.WriteLine(DefaultTexts.howMuchBushelshRatsAteText + bushelshEatenByRats + DefaultTexts.moneyName);
+            Debug.Log($"You harvested {bushelsPerAcre} bushels per acre of land");
+            Debug.Log($"Rats ate {bushelshEatenByRats} bushels");
             BonusPrintMethods.Printbushels(bushels);
 
             BonusPrintMethods.Space();
-            Console.WriteLine(DefaultTexts.landCostText + landPrice + DefaultTexts.moneyName);
+            Debug.Log($"One acre of land costs {landPrice}");
             BonusPrintMethods.Space();
         }
     }
@@ -88,7 +68,7 @@
 
         public static void PrintOwnedLand(int ownedLand)
         {
-            Debug.Log(DefaultTexts.ownText + ownedLand + DefaultTexts.landName);
+            Debug.Log($"The city now owns {ownedLand} acres of land");
         }
 
         public static void PrintHeader(string text)
