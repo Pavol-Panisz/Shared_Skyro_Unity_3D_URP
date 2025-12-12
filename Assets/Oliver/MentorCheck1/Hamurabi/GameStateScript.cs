@@ -29,14 +29,17 @@
             BonusPrintMethods.Space();
             if (lastReport)
             {
-                BonusPrintMethods.Print(DefaultTexts.lastSummaryText);
+                Debug.Log(DefaultTexts.lastSummaryText);
             }
             else
             {
-                BonusPrintMethods.Print(DefaultTexts.summaryText);
+                Debug.Log(DefaultTexts.summaryText);
             }
             BonusPrintMethods.Space();
-            BonusPrintMethods.Print(string.Format(DefaultTexts.landCostText, currentYear));
+            Debug.Log($"Its year {currentYear}");
+            Debug.Log($"{amountOfPeopleThatStarved} people starved and {imigration} people arrived");
+            Debug.Log($"Ri");
+            Debug.Log($"One acre of land costs {landPrice}");
 
 
             BonusPrintMethods.Space();
@@ -73,30 +76,25 @@
 
     internal class BonusPrintMethods
     {
-        public static void Print(string msg)
-        {
-            Console.WriteLine(msg);
-        }
-
         public static void Space()
         {
-            Print("");
+            Debug.Log("");
         }
 
         public static void Printbushels(int bushels)
         {
-            BonusPrintMethods.Print(DefaultTexts.haveText + bushels + DefaultTexts.moneyName);
+            Debug.Log(DefaultTexts.haveText + bushels + DefaultTexts.moneyName);
         }
 
         public static void PrintOwnedLand(int ownedLand)
         {
-            BonusPrintMethods.Print(DefaultTexts.ownText + ownedLand + DefaultTexts.landName);
+            Debug.Log(DefaultTexts.ownText + ownedLand + DefaultTexts.landName);
         }
 
         public static void PrintHeader(string text)
         {
             BonusPrintMethods.Space();
-            BonusPrintMethods.Print(text);
+            Debug.Log(text);
             BonusPrintMethods.Space();
         }
     }

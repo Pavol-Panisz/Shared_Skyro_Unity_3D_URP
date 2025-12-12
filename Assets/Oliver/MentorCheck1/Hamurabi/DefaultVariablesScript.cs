@@ -25,14 +25,6 @@
 
         //LOSE VARIABLES
         public const int percentageOfPeopleNeededToBeKilledInOneTurnToLose = 33;
-
-        #region Randomize Methods
-        public static int ReturnRandomInt()
-        {
-            Random rnd = new Random();
-            return rnd.Next(minMaxLandPrice.min, minMaxLandPrice.max + 1);
-        }
-        #endregion
     }
 
     internal class DefaultTexts
