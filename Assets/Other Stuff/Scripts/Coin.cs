@@ -12,16 +12,26 @@ public class Coin : MonoBehaviour
 
     private Vector3 startPos;
     private Text coinsText;
+
     public static int coins = 0;
+    private static bool initialized = false;
 
     void Start()
     {
-        coins = 0;
+        if (!initialized)
+        {
+            coins = 0;
+            initialized = true;
+        }
 
         startPos = transform.position;
+
         GameObject textObj = GameObject.FindGameObjectWithTag("CoinsText");
         if (textObj != null)
             coinsText = textObj.GetComponent<Text>();
+
+        if (coinsText != null)
+            coinsText.text = "Coins: " + coins;
     }
 
     void Update()
@@ -40,6 +50,5 @@ public class Coin : MonoBehaviour
             coinsText.text = "Coins: " + coins;
 
         Destroy(gameObject);
-        
     }
 }

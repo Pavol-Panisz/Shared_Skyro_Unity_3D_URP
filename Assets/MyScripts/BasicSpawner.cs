@@ -1,22 +1,14 @@
 using UnityEngine;
 
 public class NewMonoBehaviourScript : MonoBehaviour
-
-
 {
     public GameObject ObjectToSpawn;
 
     void Start()
     {
-        Vector3 spawnPositrion = new Vector3(1.0f, 2.0f, 3.0f);
+        Vector3 spawnPosition = new Vector3(1.0f, 2.0f, 3.0f);
         Debug.Log("Poloha: " + spawnPosition.ToString());
 
-        Instantiate(ObjectToSpawn, spawnPositrion, transform.rotation);
-
-    }
-
-    void Update()
-    {
-        
+        Instantiate(ObjectToSpawn, spawnPosition, transform.rotation);
     }
 }

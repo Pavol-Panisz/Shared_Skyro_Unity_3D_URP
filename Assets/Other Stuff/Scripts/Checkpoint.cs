@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
-using System.Collections.Generic;
 
 public class Checkpoint : MonoBehaviour
 {
@@ -12,7 +11,7 @@ public class Checkpoint : MonoBehaviour
 
     private void Start()
     {
-        allCheckpoints = GameObject.FindObjectsOfType<Checkpoint>();
+        allCheckpoints = Object.FindObjectsByType<Checkpoint>(FindObjectsSortMode.None);
     }
 
     void OnTriggerEnter(Collider collider)
@@ -20,19 +19,14 @@ public class Checkpoint : MonoBehaviour
         if (collider.gameObject.CompareTag("Player"))
         {
             KillPlayer.playerRespawnPoint = transform.position + Vector3.up * spawnOffset;
-            
+
             foreach (var checkpoint in allCheckpoints)
             {
                 if (checkpoint == this)
-                {
                     OnThisSetAsRespawn?.Invoke();
-                }
                 else
-                {
                     checkpoint.OnOtherSetAsRespawn?.Invoke();
-                }
             }
-
         }
     }
 }
