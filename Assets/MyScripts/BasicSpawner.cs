@@ -16,7 +16,7 @@ public class BasicSpawner : MonoBehaviour
         
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (prefabCount <0)
+            if (prefabCount <= 0)
             {
                 Debug.Log("Prekrocil si limit bro");
             }

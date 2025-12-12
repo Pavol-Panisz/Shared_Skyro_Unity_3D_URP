@@ -16,7 +16,7 @@ public class Coin : MonoBehaviour
 
     void Start()
     {
-        coins = 0;
+        //coins = 0;
 
         startPos = transform.position;
         GameObject textObj = GameObject.FindGameObjectWithTag("CoinsText");
