@@ -63,4 +63,27 @@
             this.minHunger = minHunger;
         }
     }
+    public struct MinMaxValueInt32
+    {
+        public int min;
+        public int max;
+
+        public MinMaxValueInt32(int min, int max)
+        {
+            this.min = min;
+            this.max = max;
+        }
+    }
+
+    public struct RatInfoStruct
+    {
+        public int chance;
+        public int percentageOfStolen;
+
+        public RatInfoStruct(int chance, int percentageOfStolen)
+        {
+            this.chance = chance;
+            this.percentageOfStolen = percentageOfStolen;
+        }
+    }
 }

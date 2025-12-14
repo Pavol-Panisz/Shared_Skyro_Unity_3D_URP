@@ -75,11 +75,11 @@
 
                 hunger /= percentageOfPeopleThatDiedInEveryYear.Count;
 
-                foreach (StatusStruct statusStruct in DefaultTexts.StatusList)
-                {
-                    if (rich <= statusStruct.maxRich || hunger >= statusStruct.minHunger)
+                for (int i = DefaultTexts.StatusList.Count; i > 0; i--) {
+                    if (rich <= DefaultTexts.StatusList[i].maxRich || hunger >= DefaultTexts.StatusList[i].minHunger)
                     {
-                        Debug.Log(statusStruct.message);
+                        Debug.Log(DefaultTexts.StatusList[i].message);
+                        return;
                     }
                 }
             }

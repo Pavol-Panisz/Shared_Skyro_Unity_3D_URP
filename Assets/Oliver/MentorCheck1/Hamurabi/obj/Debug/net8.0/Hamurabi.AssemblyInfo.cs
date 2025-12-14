@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Hamurabi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ab82d4e3b5b6a309a048b7bb7b748488947d37dd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0b09ba84206c420b57e97a97cf0c61c91241e22c")]
 [assembly: System.Reflection.AssemblyProductAttribute("Hamurabi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Hamurabi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

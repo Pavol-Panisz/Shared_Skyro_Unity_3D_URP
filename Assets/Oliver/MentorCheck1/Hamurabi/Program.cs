@@ -230,9 +230,10 @@
 
             private static void DoPlague()
             {
-                if (ReturnRandomInt(0, 100) > DefaultVariables.plaguePropability)
+                if (ReturnRandomInt(0, 100) < DefaultVariables.plaguePropability)
                 {
                     GameState.amountOfPeopleThatDiedFromPlagueDuringYear = GameState.currentPopulation / 2;
+                    return;
                 }
                 else
                 {
@@ -285,30 +286,6 @@
         private static void Report(bool lastReport = false)
         {
             GameState.WriteGameState(lastReport);
-        }
-    }
-
-    public struct MinMaxValueInt32
-    {
-        public int min;
-        public int max;
-
-        public MinMaxValueInt32(int min, int max)
-        {
-            this.min = min;
-            this.max = max;
-        }
-    }
-
-    public struct RatInfoStruct
-    {
-        public int chance;
-        public int percentageOfStolen;
-
-        public RatInfoStruct(int chance, int percentageOfStolen)
-        {
-            this.chance = chance;
-            this.percentageOfStolen = percentageOfStolen;
         }
     }
 }
