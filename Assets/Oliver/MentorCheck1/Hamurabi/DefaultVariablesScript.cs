@@ -63,6 +63,7 @@
             this.minHunger = minHunger;
         }
     }
+
     public struct MinMaxValueInt32
     {
         public int min;
