@@ -24,33 +24,65 @@
             public static bool boughtLand;
         #endregion
 
+        #region Game Info Variables
+            public static int totalPeople = DefaultVariables.startingPopulation;
+            public static int totalPeopleThatDied = 0;
+
+            public static List<float> percentageOfPeopleThatDiedInEveryYear = new List<float>();
+        #endregion
+
         public static void WriteGameState(bool lastReport)
         {
-            BonusPrintMethods.Space();
-            if (lastReport)
+            if (!lastReport)
             {
-                Debug.Log(DefaultTexts.lastSummaryText);
+                BonusPrintMethods.Space();
+                Debug.Log(DefaultTexts.summaryText);
+                BonusPrintMethods.Space();
+                Debug.Log($"Its year {currentYear}");
+                Debug.Log($"{amountOfPeopleThatStarved} people starved and {imigration} people arrived");
+                if (amountOfPeopleThatDiedFromPlagueDuringYear > 0)
+                {
+                    Debug.Log($"{amountOfPeopleThatDiedFromPlagueDuringYear} people died from plague this year.");
+                }
+                Debug.Log($"Population is now {currentPopulation}");
+                BonusPrintMethods.PrintOwnedLand(landOwned);
+                Debug.Log($"You harvested {bushelsPerAcre} bushels per acre of land");
+                Debug.Log($"Rats ate {bushelshEatenByRats} bushels");
+                BonusPrintMethods.Printbushels(bushels);
+
+                BonusPrintMethods.Space();
+                Debug.Log($"One acre of land costs {landPrice}");
+                BonusPrintMethods.Space();
+            }
+            else if (amountOfPeopleThatStarved > currentPopulation / 100 * DefaultVariables.percentageOfPeopleNeededToBeKilledInOneTurnToLose)
+            {
+                Debug.Log($"You starved a {amountOfPeopleThatStarved} in one year!!!");
+                BonusPrintMethods.Space();
+                Debug.Log(DefaultTexts.starvedManyPeopleInAYearText);
             }
             else
             {
-                Debug.Log(DefaultTexts.summaryText);
-            }
-            BonusPrintMethods.Space();
-            Debug.Log($"Its year {currentYear}");
-            Debug.Log($"{amountOfPeopleThatStarved} people starved and {imigration} people arrived");
-            if (amountOfPeopleThatDiedFromPlagueDuringYear > 0)
-            {
-                Debug.Log("DefaultTexts.peopleDiedFromPlagueText + amountOfPeopleThatDiedFromPlagueDuringYear + DefaultTexts.peopleStarvedText");
-            }
-            Debug.Log($"Population is now {currentPopulation}");
-            BonusPrintMethods.PrintOwnedLand(landOwned);
-            Debug.Log($"You harvested {bushelsPerAcre} bushels per acre of land");
-            Debug.Log($"Rats ate {bushelshEatenByRats} bushels");
-            BonusPrintMethods.Printbushels(bushels);
+                Debug.Log($"In your {DefaultVariables.lastPlayableYear}-year term of office, {totalPeopleThatDied / totalPeople * 100}% of the population starved per year on the average, I. E. a total of {totalPeopleThatDied} peoople died!");
+                Debug.Log($"You started with {DefaultVariables.startingLand / DefaultVariables.startingPopulation} acres per person and ended with {landOwned / currentPopulation} acres per person.");
 
-            BonusPrintMethods.Space();
-            Debug.Log($"One acre of land costs {landPrice}");
-            BonusPrintMethods.Space();
+                float rich = landOwned / currentPopulation;
+                float hunger = 0;
+
+                foreach(float hungerValue in percentageOfPeopleThatDiedInEveryYear)
+                {
+                    hunger += hungerValue;
+                }
+
+                hunger /= percentageOfPeopleThatDiedInEveryYear.Count;
+
+                foreach (StatusStruct statusStruct in DefaultTexts.StatusList)
+                {
+                    if (rich <= statusStruct.maxRich || hunger >= statusStruct.minHunger)
+                    {
+                        Debug.Log(statusStruct.message);
+                    }
+                }
+            }
         }
     }
 
@@ -63,7 +95,7 @@
 
         public static void Printbushels(int bushels)
         {
-            Debug.Log(DefaultTexts.haveText + bushels + DefaultTexts.moneyName);
+            Debug.Log($"You now have {bushels} bushels");
         }
 
         public static void PrintOwnedLand(int ownedLand)
@@ -73,9 +105,9 @@
 
         public static void PrintHeader(string text)
         {
-            BonusPrintMethods.Space();
+            Space();
             Debug.Log(text);
-            BonusPrintMethods.Space();
+            Space();
         }
     }
 }

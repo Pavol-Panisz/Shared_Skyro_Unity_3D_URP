@@ -15,6 +15,7 @@
         public const int bushelsPerSeed = 2;
         public const int minimumBushelsPerYearPerPerson = 20;
         public const int plaguePropability = 15;
+        public const int personCanPlantSeeds = 10;
 
         //MIN MAX VARIABLES
         public static readonly MinMaxValueInt32 minMaxLandPrice = new MinMaxValueInt32(17, 27);
@@ -29,50 +30,37 @@
 
     internal class DefaultTexts
     {
-        //GAME CURRENCY NAMES
-        public const string moneyName = " bushels";
-        public const string landName = " land";
-
-        //LAND TEXT
-        public const string buyLandQuestion = "How much land do you want to buy?";
-        public const string sellLandQuestion = "How much land do you want to sell?";
-        public const string landCostText = "Land costs {0}";
-
-        //PLANT
-        public const string plantSeedsQuestion = "How many seeds do you want to plant? ";
-        public const string bushelsPerSeedText = " bushels per seed";
-
-        //RATS
-        public const string howMuchBushelshRatsAteText = "Rats ate ";
-
-        //GROW
-        public const string bushelPerAcreText = "Bushels per acre ";
-
-        //PLAGUE
-        public const string peopleDiedFromPlagueText = "Plague has occured in your kingdom and ";
-
-        //POPULATION
-        public const string currentPopulationText = "Current population is ";
-        public const string populationArrivedText = " new people arrived";
-        public const string feedPopulationQuestion = "How many bushels do you wish to feed your people? ";
-
-        //GENERAL TEXT
-        public const string ownText = "You now own ";
-        public const string haveText = "You now have ";
-        public const string currentYearText = "It is year ";
-        public const string perPersonText = " per person";
-        public const string peopleStarvedText = " people starved.";
-
-        //BUY
-        public const string canBuyText = "You can buy ";
+        //NOT ENOUGH
         public const string notEnoughMoneyText = "You don't have enough money!!!";
         public const string notEnoughLandText = "You don't have enough land!!!";
+        public const string notEnoughPeopleText = "You don't have enough people!!!";
 
-        //SELL
-        public const string canSellText = "You can sell ";
+        //LOSE TEXTS
+        public const string starvedManyPeopleInAYearText = "DUE TO THIS EXTREME MISMANAGEMENT YYOU HAVE NOT ONLY \nBEEN IMPEACHED AND THROWN OUT OF OFFICE BUT YOU HAVE \nALSO BEEN DECLARED NATIONAL FINK!!!";
 
         //SUMMARY TEXT
         public const string summaryText = "========SUMMARY========";
         public const string lastSummaryText = "========GAME ENDED========";
+
+        public static readonly List<StatusStruct> StatusList = new List<StatusStruct> {
+            new StatusStruct("YOUR PERFORMACE FOR THE LAST 10 YEARS IS WORSE THAN BOBO'S \nPERFORMANCE WITH GAME DEVELOPMENT. PARENTS WILL USE YOU \nAS AN EXAMPLE ON WHAT SOMEONE WILL BECOME IF THEY WONT DO THEIR HOMEWORK.", 7, 33),
+            new StatusStruct("YOU ARE AS GOOD AS VIVAT SLOVAKIA. YOU WILL BE REMEMBERED AS ONE \nOF THE WORST RULERS IN THIS COUNTRY.", 9, 10),
+            new StatusStruct("YOU ARE BETTER THAN THE CURRENT GOVERMENT OF SLOVAKIA. \nCONGRATULATION, YOU WONT BE REMEMBERED.", 10, 3),
+            new StatusStruct("YOUR PERFORMANCE DURING THE LAST 10 YEARS CHANGED THE WORLD \nEVEN MORE THAN RESCUE ZOO TYCOON. GOOD JOB. YOU WILL BE \nREMEMBERED FOR HUNDERDS OF YEARS.", int.MaxValue, int.MinValue)
+        };
+    }
+
+    public struct StatusStruct
+    {
+        public string message;
+        public int minHunger;
+        public int maxRich;
+
+        public StatusStruct(string message, int maxRich, int minHunger)
+        {
+            this.message = message;
+            this.maxRich = maxRich;
+            this.minHunger = minHunger;
+        }
     }
 }

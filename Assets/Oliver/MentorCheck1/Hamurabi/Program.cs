@@ -13,7 +13,6 @@
         private static void Main()
         {
             MainGame();
-            //SimulatePrices.SimulateLandPrices(100, 10);
         }
 
         /// <summary>
@@ -25,7 +24,7 @@
             GameState.boughtLand = false;
 
             //If the game is in its first year values will stay the same and won't change so when game designers set some starting values they know that the game will start with those values
-            if (!FirstYear())
+            if (GameState.currentYear != DefaultVariables.startingYear)
             {
                 GrowBushels();
                 AddPopulation();
@@ -36,6 +35,7 @@
                 KillPeople();
             }
 
+            //Stop the game when meny people die
             if (GameState.gameEnded) return;
 
             Report();
@@ -46,202 +46,245 @@
                 TryToSellLand();
             }
             TryToFeedPeople();
-            TryToPlantLand();
+            TryToPlantBushels();
 
             EndYear();
         }
 
-        private static void Rats()
-        {
-            for (int i = 0; i < DefaultVariables.ratInfoList.Count; i++)
+        #region Planting and growing
+            /// <summary>
+            /// Calculates how may bushels did grow
+            /// </summary>
+            private static void GrowBushels()
             {
-                if (ReturnRandomInt(0, 100) <= DefaultVariables.ratInfoList[i].chance)
-                {
-                    GameState.bushelshEatenByRats = (int)(GameState.bushels / 100 * DefaultVariables.ratInfoList[i].percentageOfStolen);
-                    GameState.bushels -= GameState.bushelshEatenByRats;
+                GameState.bushels += GameState.bushelsPerAcre * GameState.landPlanted;
+            }
+            
+            /// <summary>
+            /// Ask player how many seeds do they want to plant and plant them
+            /// </summary>
+            private static void TryToPlantBushels()
+            {
+                Debug.Log($"How many acres do you wish to plant with seed? (One seed costs {DefaultVariables.bushelsPerSeed} bushels)");
 
-                    return;
+                int.TryParse(Console.ReadLine(), out int parseResult);
+                int amountOfAcresToPlant = parseResult;
+
+                if (amountOfAcresToPlant * DefaultVariables.bushelsPerSeed > GameState.bushels)
+                {
+                    Debug.Log(DefaultTexts.notEnoughMoneyText);
+                    TryToPlantBushels();
+                }
+                else if (amountOfAcresToPlant > GameState.currentPopulation * DefaultVariables.personCanPlantSeeds)
+                {
+                    Debug.Log(DefaultTexts.notEnoughPeopleText);
+                    TryToPlantBushels();
+                }
+                else if (amountOfAcresToPlant > GameState.landOwned)
+                {
+                    Debug.Log(DefaultTexts.notEnoughLandText);
+                    TryToPlantBushels();
+                }
+                else
+                {
+                    GameState.bushels -= amountOfAcresToPlant * DefaultVariables.bushelsPerSeed;
+                    GameState.landPlanted = amountOfAcresToPlant;
                 }
             }
 
-            GameState.bushelshEatenByRats = 0;
-        }
-
-        private static void GrowBushels()
-        {
-            GameState.bushels += GameState.bushelsPerAcre * GameState.landPlanted;
-        }
-
-        private static void TryToPlantLand()
-        {
-            Debug.Log(DefaultTexts.plantSeedsQuestion + " (" + DefaultVariables.bushelsPerSeed + DefaultTexts.bushelsPerSeedText + ")");
-
-            int.TryParse(Console.ReadLine(), out int parseResult);
-            int amountOfSeedsToPlant = parseResult;
-
-            if (amountOfSeedsToPlant * 2 > GameState.bushels)
+            /// <summary>
+            /// Get the amount of bushels grown per acre
+            /// </summary>
+            /// <returns>Returns amount of bushels grown per acre</returns>
+            public static int ReturnRandomBushelsPerAcre()
             {
-                Debug.Log(DefaultTexts.notEnoughMoneyText);
-                TryToPlantLand();
+                return rng.Next(DefaultVariables.minMaxBushelshPerAcre.min, DefaultVariables.minMaxBushelshPerAcre.max + 1);
             }
-            else
+        #endregion
+
+        #region Buy Sell Land
+            /// <summary>
+            /// Ask player how many land do they want to buy
+            /// </summary>
+            private static void TryToBuyLand()
             {
-                GameState.bushels -= amountOfSeedsToPlant * 2;
-                GameState.landPlanted = amountOfSeedsToPlant;
-            }
-        }
+                int amountThatPlayerCanBuy = GameState.bushels / GameState.landPrice;
+                Debug.Log($"How much acres of land do you want to buy? (You can buy {(int)(GameState.bushels / GameState.landPrice)} acres of land)");
 
-        private static void KillPeople()
-        {
-            if (GameState.amountOfPeopleThatStarved > GameState.currentPopulation / 100 * DefaultVariables.percentageOfPeopleNeededToBeKilledInOneTurnToLose)
+                int.TryParse(Console.ReadLine(), out int parseResult);
+                int amountOfLandToBuy = parseResult;
+
+                if (amountOfLandToBuy * GameState.landPrice > GameState.bushels)
+                {
+                    Debug.Log(DefaultTexts.notEnoughMoneyText);
+                    TryToBuyLand();
+                }
+                else
+                {
+                    if (amountOfLandToBuy > 0)
+                    {
+                        GameState.bushels -= amountOfLandToBuy * GameState.landPrice;
+                        GameState.landOwned += amountOfLandToBuy;
+
+                        BonusPrintMethods.Printbushels(GameState.bushels);
+
+                        GameState.boughtLand = true;
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Ask player how many land do they want to sell
+            /// </summary>
+            private static void TryToSellLand()
+                {
+                Debug.Log($"How much acres of land do you want to sell? (You can sell {GameState.landOwned} acres of land)");
+
+                int.TryParse(Console.ReadLine(), out int parseResult);
+                int amountOfLandToSell = parseResult;
+
+                if (amountOfLandToSell > GameState.landOwned)
+                {
+                    Debug.Log(DefaultTexts.notEnoughLandText);
+                    TryToSellLand();
+                }
+                else
+                {
+                    GameState.bushels += amountOfLandToSell * GameState.landPrice;
+                    GameState.landOwned -= amountOfLandToSell;
+
+                    BonusPrintMethods.Printbushels(GameState.bushels);
+                    BonusPrintMethods.PrintOwnedLand(GameState.landOwned);
+                }
+            }
+
+            /// <summary>
+            /// Returns random price of one acre of land.
+            /// </summary>
+            /// <returns>Returns random price of one acre of land</returns>
+            public static int ReturnRandomLandPrice()
             {
-                Lose();
+                return rng.Next(DefaultVariables.minMaxLandPrice.min, DefaultVariables.minMaxLandPrice.max + 1);
             }
+        #endregion
 
-            GameState.currentPopulation -= GameState.amountOfPeopleThatStarved;
-            GameState.currentPopulation -= GameState.amountOfPeopleThatDiedFromPlagueDuringYear;
-        }
-
-        private static void Lose()
-        {
-            //LOSE
-            GameState.gameEnded = true;
-        }
-
-        private static void TryToFeedPeople()
-        {
-            Debug.Log(DefaultTexts.feedPopulationQuestion + " (" + DefaultVariables.minimumBushelsPerYearPerPerson + DefaultTexts.perPersonText + ")");
-
-            int.TryParse(Console.ReadLine(), out int parseResult);
-            int amountOfBushelsToFeedPeople = parseResult;
-
-            if (amountOfBushelsToFeedPeople > GameState.bushels)
+        #region Add Feed and Kill People
+            private static void AddPopulation()
             {
-                Debug.Log(DefaultTexts.notEnoughMoneyText);
-                TryToFeedPeople();
+                GameState.imigration = (int)(GameState.bushelsPerAcre * (20 * GameState.landOwned + GameState.bushels) / GameState.currentPopulation / 100 + 1);
+                GameState.currentPopulation += GameState.imigration;
+
+                GameState.totalPeople += GameState.imigration;
             }
-            else
+
+            private static void TryToFeedPeople()
             {
-                GameState.bushels -= amountOfBushelsToFeedPeople;
-                int bushelsNeeded = GameState.currentPopulation * DefaultVariables.minimumBushelsPerYearPerPerson;
-                GameState.amountOfPeopleThatStarved= (int)((bushelsNeeded - amountOfBushelsToFeedPeople) / DefaultVariables.minimumBushelsPerYearPerPerson);
+                Debug.Log($"How many bushels do you wish to feed your people? (One person needs {DefaultVariables.minimumBushelsPerYearPerPerson} busheels per year)");
+
+                int.TryParse(Console.ReadLine(), out int parseResult);
+                int amountOfBushelsToFeedPeople = parseResult;
+
+                if (amountOfBushelsToFeedPeople > GameState.bushels)
+                {
+                    Debug.Log(DefaultTexts.notEnoughMoneyText);
+                    TryToFeedPeople();
+                }
+                else
+                {
+                    GameState.bushels -= amountOfBushelsToFeedPeople;
+                    int bushelsNeeded = GameState.currentPopulation * DefaultVariables.minimumBushelsPerYearPerPerson;
+                    GameState.amountOfPeopleThatStarved = (int)((bushelsNeeded - amountOfBushelsToFeedPeople) / DefaultVariables.minimumBushelsPerYearPerPerson);
+                }
             }
-        }
 
-        private static void AddPopulation()
-        {
-            GameState.imigration = (int)(GameState.bushelsPerAcre * (20 * GameState.landOwned + GameState.bushels) / GameState.currentPopulation / 100 + 1);
-            GameState.currentPopulation += GameState.imigration;
-        }
-
-        private static void RandomizeNumbers()
-        {
-            GameState.landPrice = ReturnRandomLandPrice();
-
-            GameState.bushelsPerAcre = ReturnRandomBushelsPerAcre();
-        }
-
-        private static void EndYear()
-        {
-            if (GameState.currentYear == DefaultVariables.lastPlayableYear)
+            private static void KillPeople()
             {
-                EndGame();
+                if (GameState.amountOfPeopleThatStarved > GameState.currentPopulation / 100 * DefaultVariables.percentageOfPeopleNeededToBeKilledInOneTurnToLose)
+                {
+                    EndGame();
+                }
+
+                GameState.percentageOfPeopleThatDiedInEveryYear.Add(GameState.amountOfPeopleThatStarved / GameState.currentPopulation * 100);
+                GameState.totalPeopleThatDied += GameState.amountOfPeopleThatStarved;
+                GameState.currentPopulation -= GameState.amountOfPeopleThatStarved;
+                GameState.currentPopulation -= GameState.amountOfPeopleThatDiedFromPlagueDuringYear;
             }
-            else
+        #endregion
+
+        #region Rats and Plague
+            private static void Rats()
             {
-                GameState.currentYear++;
-                RandomizeNumbers();
+                for (int i = 0; i < DefaultVariables.ratInfoList.Count; i++)
+                {
+                    if (ReturnRandomInt(0, 100) <= DefaultVariables.ratInfoList[i].chance)
+                    {
+                        GameState.bushelshEatenByRats = (int)(GameState.bushels / 100 * DefaultVariables.ratInfoList[i].percentageOfStolen);
+                        GameState.bushels -= GameState.bushelshEatenByRats;
 
-                MainGame();
+                        return;
+                    }
+                }
+
+                GameState.bushelshEatenByRats = 0;
             }
-        }
 
-        private static void EndGame()
-        {
-            Report(true);
-        }
+            private static void DoPlague()
+            {
+                if (ReturnRandomInt(0, 100) > DefaultVariables.plaguePropability)
+                {
+                    GameState.amountOfPeopleThatDiedFromPlagueDuringYear = GameState.currentPopulation / 2;
+                }
+                else
+                {
+                    GameState.amountOfPeopleThatDiedFromPlagueDuringYear = 0;
+                }
+            }
+        #endregion
 
+        #region Random values
+            private static int ReturnRandomInt(int min, int max)
+            {
+                return rng.Next(min, max);
+            }
+
+            private static void RandomizeNumbers()
+            {
+                GameState.landPrice = ReturnRandomLandPrice();
+
+                GameState.bushelsPerAcre = ReturnRandomBushelsPerAcre();
+            }
+        #endregion
+
+        #region End game/year
+            private static void EndYear()
+            {
+                if (GameState.currentYear == DefaultVariables.lastPlayableYear)
+                {
+                    EndGame();
+                }
+                else
+                {
+                    GameState.currentYear++;
+                    RandomizeNumbers();
+
+                    MainGame();
+                }
+            }
+
+            private static void EndGame()
+            {
+                GameState.gameEnded = true;
+                Report(true);
+            }
+        #endregion
+
+        /// <summary>
+        /// Writes Report to the console
+        /// </summary>
+        /// <param name="lastReport"> If true it will report different texts and information</param>
         private static void Report(bool lastReport = false)
         {
             GameState.WriteGameState(lastReport);
-        }
-
-        private static void TryToBuyLand()
-        {
-            int amountThatPlayerCanBuy = GameState.bushels / GameState.landPrice;
-            Debug.Log(DefaultTexts.buyLandQuestion + " (" + DefaultTexts.canBuyText + amountThatPlayerCanBuy.ToString() + ")");
-
-            int.TryParse(Console.ReadLine(), out int parseResult);
-            int amountOfLandToBuy = parseResult;
-
-            if (amountOfLandToBuy * GameState.landPrice > GameState.bushels)
-            {
-                Debug.Log(DefaultTexts.notEnoughMoneyText);
-                TryToBuyLand();
-            }
-            else
-            {
-                if (amountOfLandToBuy > 0)
-                {
-                    GameState.bushels -= amountOfLandToBuy * GameState.landPrice;
-                    GameState.landOwned+= amountOfLandToBuy;
-
-                    BonusPrintMethods.Printbushels(GameState.bushels);
-
-                    GameState.boughtLand = true;
-                }
-            }
-        }
-
-        private static void TryToSellLand()
-        {
-            int amountThatPlayerCanSell = GameState.landOwned;
-            Debug.Log(DefaultTexts.sellLandQuestion + " (" + DefaultTexts.canSellText + amountThatPlayerCanSell.ToString() + ")");
-
-            int.TryParse(Console.ReadLine(), out int parseResult);
-            int amountOfLandToSell = parseResult;
-
-            if (amountOfLandToSell > GameState.landOwned)
-            {
-                Debug.Log(DefaultTexts.notEnoughLandText);
-                TryToSellLand();
-            }
-            else
-            {
-                GameState.bushels += amountOfLandToSell * GameState.landPrice;
-                GameState.landOwned -= amountOfLandToSell;
-
-                BonusPrintMethods.Printbushels(GameState.bushels);
-                BonusPrintMethods.PrintOwnedLand(GameState.landOwned);
-            }
-        }
-
-        public static int ReturnRandomLandPrice()
-        {
-            return rng.Next(DefaultVariables.minMaxLandPrice.min, DefaultVariables.minMaxLandPrice.max + 1);
-        }
-
-        public static int ReturnRandomBushelsPerAcre()
-        {
-            return rng.Next(DefaultVariables.minMaxBushelshPerAcre.min, DefaultVariables.minMaxBushelshPerAcre.max + 1);
-        }
-
-        private static void DoPlague()
-        {
-            if (ReturnRandomInt(0, 100) > DefaultVariables.plaguePropability)
-            {
-                GameState.amountOfPeopleThatDiedFromPlagueDuringYear = GameState.currentPopulation / 2;
-            }
-        }
-
-        private static int ReturnRandomInt(int min, int max)
-        {
-            return rng.Next(min, max);
-        }
-
-        public static bool FirstYear()
-        {
-            return GameState.currentYear == DefaultVariables.startingYear;
         }
     }
 
@@ -266,44 +309,6 @@
         {
             this.chance = chance;
             this.percentageOfStolen = percentageOfStolen;
-        }
-    }
-
-    public class SimulatePrices()
-    {
-        static List<int> landPrices = new List<int>();
-        static int landPrice;
-
-        public static void SimulateLandPrices(int amountOfSimulations, int amountOfNumbersInSimulations)
-        {
-            landPrice = DefaultVariables.startingLandPrice;
-            landPrices.Clear();
-
-            for (int i = 0; i < amountOfSimulations; i++)
-            {
-                for (int y = 0; y < amountOfSimulations; y++)
-                {
-                    RandomizeNumbers();
-                }
-            }
-
-            float averageLandPrice = 0;
-
-            for (int i = 0; i < landPrices.Count; i++)
-            {
-                averageLandPrice += landPrices[i];
-            }
-
-            averageLandPrice /= landPrices.Count;
-            Debug.Log(averageLandPrice.ToString());
-        }
-
-        private static void RandomizeNumbers()
-        {
-            landPrice = MainProgram.ReturnRandomLandPrice();
-
-            landPrices.Add(landPrice);
-            Debug.Log(landPrice.ToString());
         }
     }
 }
