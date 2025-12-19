@@ -36,21 +36,21 @@ Všetky bullety by mali mať na sebe skript s názvom AutoSelfDestruct, ktorý z
 ---
 
 # Checks:
-- [ ] Enemy
-  - [ ] Movement
-    - [ ] left, right, forward, backward
-    - [ ] rotation
-  - [ ] Bullets
-    - [ ] Bullet spawning
-    - [ ] Bonus: always aiming at player (aimbot)
+- [x] Enemy
+  - [x] Movement
+    - [x] left, right, forward, backward
+    - [x] rotation
+  - [x] Bullets
+    - [x] Bullet spawning
+    - [x] Bonus: always aiming at player (aimbot)
   - [x] kill enemy with player bullets
   - [x] bonus: health
-- [ ] Player
+- [x] Player
   - [x] Movement
   - [x] Shooting
     - [x] Reloading system
     - [x] Semi & Auto firing system
-  - [ ] bonus: health
+  - [x] bonus: health
 
 ---
 

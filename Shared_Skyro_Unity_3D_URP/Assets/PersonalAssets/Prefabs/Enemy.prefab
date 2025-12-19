@@ -153,6 +153,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b998bc1a57e22e947846511acf9aa528, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 3
+  rotationSpeed: 100
+  projectilePrefab: {fileID: 7034158103593317174, guid: 700758a2a2ff11943b5e083fdf3c6752, type: 3}
+  firePoint: {fileID: 5560471408059272449}
+  projectileSpeed: 15
+  fireRate: 2
+  aimsAtPlayer: 1
 --- !u!114 &4505175248807506792
 MonoBehaviour:
   m_ObjectHideFlags: 0
