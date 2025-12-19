@@ -17,10 +17,11 @@ public class EnemySpawner : MonoBehaviour
     {
         for (int i = 0; i < 10; i++)
         {
-            Instantiate(enemyPrefab, new Vector3(0f,0f,0f), Quaternion.identity);   //https://discussions.unity.com/t/how-to-spawn-a-prefab-from-the-script-c/943047
-                                                                                    //https://docs.unity3d.com/ScriptReference/Object.Instantiate.html
-                                                                                    //https://discussions.unity.com/t/how-to-spawn-an-prefab/776669
-                                                                                    //yes i found a lot of shit
+            Instantiate(enemyPrefab, /*new Vector3(0f,0f,0f)*/ transform.position, Quaternion.identity);    //https://discussions.unity.com/t/how-to-spawn-a-prefab-from-the-script-c/943047
+                                                                                                            //https://docs.unity3d.com/ScriptReference/Object.Instantiate.html
+                                                                                                            //https://discussions.unity.com/t/how-to-spawn-an-prefab/776669
+                                                                                                            //yes i found a lot of shit
+                                                                                                            //also i replaced the vector3 with transform.position because i was tired and i messed up
         yield return new WaitForSeconds(spawnInterval);
         }
     }
