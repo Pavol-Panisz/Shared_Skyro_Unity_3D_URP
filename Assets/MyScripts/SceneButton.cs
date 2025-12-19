@@ -5,7 +5,7 @@ public class SceneChanger : MonoBehaviour
 {
     [SerializeField] private string sceneName;
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
