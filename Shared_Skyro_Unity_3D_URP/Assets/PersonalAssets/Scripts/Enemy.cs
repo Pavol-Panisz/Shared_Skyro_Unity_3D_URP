@@ -31,9 +31,9 @@ public class Enemy : MonoBehaviour
         if (aimsAtPlayer && player != null)
         {
             Vector3 direction = player.position - transform.position;
-            direction.y = 0;  // Keep rotation only on Y axis
+            direction.y = 0;  //keep rotation only on y axis
             Quaternion lookRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime); //https://docs.unity3d.com/ScriptReference/Quaternion.Slerp.html
         }
 
         // shooting
