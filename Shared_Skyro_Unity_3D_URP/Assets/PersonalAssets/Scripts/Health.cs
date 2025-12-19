@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement; //SceneManager needs that
 
 public class Health : MonoBehaviour
 {
@@ -24,6 +26,15 @@ public class Health : MonoBehaviour
     void Die()
     {
         Debug.Log(gameObject.name + " died!");
-        Destroy(gameObject);
+
+        if(gameObject.name != "Player") //need to change this from name to tag
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Debug.Log("Player died, restarting level");
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); //https://discussions.unity.com/t/level-restart/707461
+        }
     }
 }
