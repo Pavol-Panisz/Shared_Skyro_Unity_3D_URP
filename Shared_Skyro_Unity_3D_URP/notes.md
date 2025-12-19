@@ -43,8 +43,8 @@ Všetky bullety by mali mať na sebe skript s názvom AutoSelfDestruct, ktorý z
   - [ ] Bullets
     - [ ] Bullet spawning
     - [ ] Bonus: always aiming at player (aimbot)
-  - [ ] kill enemy with player bullets
-  - [ ] bonus: health
+  - [x] kill enemy with player bullets
+  - [x] bonus: health
 - [ ] Player
   - [x] Movement
   - [x] Shooting
