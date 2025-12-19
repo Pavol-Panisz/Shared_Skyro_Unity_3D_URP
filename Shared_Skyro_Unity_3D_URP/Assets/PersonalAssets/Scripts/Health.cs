@@ -45,17 +45,22 @@ public class Health : MonoBehaviour
         Enemy enemyScript = GetComponent<Enemy>();
         if (enemyScript != null)
         {
-            enemyScript.enabled = false;
+            enemyScript.enabled = false; //https://discussions.unity.com/t/how-do-you-disable-a-script/732589/3
         }
 
         //make it fall (disable kinematic if it has a rigidbody)
+        //https://discussions.unity.com/t/enable-disable-kinematic-of-other-object-in-script-c/208312
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null)
         {
             rb.useGravity = true;
             rb.isKinematic = false;
+
+            //UNLOCK ALL ROTATIONS so it can fall over
+            rb.constraints = RigidbodyConstraints.None;
         }
 
+        //tip it over for that Minecraft death effect
         if (rb != null)
         {
             rb.AddTorque(Random.Range(-10f, 10f), 0, Random.Range(-10f, 10f), ForceMode.Impulse);
