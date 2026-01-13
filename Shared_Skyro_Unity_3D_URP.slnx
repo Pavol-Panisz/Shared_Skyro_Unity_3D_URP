@@ -3,6 +3,7 @@
   <Project Path="SingularityGroup.HotReload.Editor.csproj" />
   <Project Path="QFSW.QC.csproj" />
   <Project Path="QFSW.QC.Extras.csproj" />
+  <Project Path="VInspector.csproj" />
   <Project Path="QFSW.QC.Suggestors.csproj" />
   <Project Path="QFSW.QC.Grammar.csproj" />
   <Project Path="QFSW.QC.Editor.csproj" />
