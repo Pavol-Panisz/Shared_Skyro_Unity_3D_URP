@@ -2,6 +2,7 @@
 //using System.Collections.Generic;
 //using TMPro;
 //using System;
+//using UnityEngine.TestTools;
 
 //public class ArraysScript : MonoBehaviour
 //{
@@ -25,11 +26,9 @@
 //    }
 
 //    public List<Items> itemsList;
-
 //    public void AddItem()
 //    {
 //        Items myItems = new Items();
-
 //        if (AddNameInput.text != "" && AddCountInput.text != "")
 //        {
 //            string CurrentAddNameInput = AddNameInput.text.ToLowerInvariant();
@@ -85,19 +84,19 @@
 //            itemsList[Index].textComponent.GetComponent<TMP_Text>().text = itemsList[Index].ItemCount.ToString();
 
 //        }
-//        else if (CurrentRemoveNameInput.Equals(itemsList[Index].ItemNames) && int.Parse(CurrentRemoveInput) == ItemCount[Index])
+//        else if (CurrentRemoveNameInput.Equals(itemsList[Index].ItemNames) && CurrentRemoveInput == itemsList[Index].ItemCount)
 //        {
-//            Destroy(nameTextObjects[(ItemNames.IndexOf(CurrentRemoveNameInput))]);
-//            Destroy(countTextObjects[(ItemNames.IndexOf(CurrentRemoveNameInput))]);
-//            ItemCount.RemoveAt(Index);
-//            ItemNames.RemoveAt(Index);
+//            Destroy(itemsList[Index].nameTextObject);
+//            Destroy(itemsList[Index].countTextObject);
+//            itemsList[Index].ItemNames = string.Empty;
+//            itemsList[Index].ItemCount = string.Empty;
 //        }
 //        else
 //        {
-//            Destroy(nameTextObjects[(ItemNames.IndexOf(CurrentRemoveNameInput))]);
-//            Destroy(countTextObjects[(ItemNames.IndexOf(CurrentRemoveNameInput))]);
-//            ItemCount.RemoveAt(Index);
-//            ItemNames.RemoveAt(Index);
+//            Destroy(itemsList[Index].nameTextObject);
+//            Destroy(itemsList[Index].countTextObject);
+//            itemsList[Index].ItemNames = string.Empty;
+//            itemsList[Index].ItemCount = string.Empty;
 //            print("Error");
 //        }
 //    }
