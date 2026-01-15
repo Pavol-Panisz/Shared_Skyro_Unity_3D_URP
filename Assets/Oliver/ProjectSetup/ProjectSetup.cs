@@ -45,16 +45,16 @@ public static class ProjectSetup
     [MenuItem("Tools/Setup/Create Folders")]
     public static void CreateFolders()
     {
-        Folders.Create("Assets", "Prefabs", "Materials", "Scripts", "Scripts/ScriptableObjectScripts", "Sprites", "Import");
+        Folders.Create("", "Prefabs", "Materials", "Scripts", "Scripts/ScriptableObjectScripts", "Sprites", "Import");
         AssetDatabase.Refresh();
         Folders.Delete("TutorialInfo");
         AssetDatabase.Refresh();
 
-        const string pathToInputAction = "Assets/InputSystem_Actions.inputactions";
-        string destination = "Assets/_Project/Settings/InputSystem_Actions.inputactions";
+        const string pathToInputAction = "InputSystem_Actions.inputactions";
+        string destination = "/Settings/InputSystem_Actions.inputactions";
         AssetDatabase.MoveAsset(pathToInputAction, destination);
 
-        const string pathToReadme = "Assets/Readmme.asset";
+        const string pathToReadme = "Readme.asset";
         AssetDatabase.DeleteAsset(pathToReadme);
         AssetDatabase.Refresh();
 
@@ -67,7 +67,7 @@ public static class ProjectSetup
             string basePath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
             string assetsFolder = System.IO.Path.Combine(basePath, "Unity/Asset Store-5.x");
 
-            UnityEditor.AssetDatabase.ImportPackage(string.Join(assetsFolder, folder, asset), false);
+            UnityEditor.AssetDatabase.ImportPackage(Path.Combine(assetsFolder, folder, asset), false);
         }
     }
 
