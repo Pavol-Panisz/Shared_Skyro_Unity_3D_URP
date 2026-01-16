@@ -4,6 +4,8 @@ using UnityEngine;
 public class EnemyLeftRight : MonoBehaviour
 {
     public Rigidbody myRigidbody;
+    public Transform pointA;
+    public Transform pointB;
 
     void Start()
     {
