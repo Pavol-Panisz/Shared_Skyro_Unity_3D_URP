@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Scene1.unity
     guid: e7163f6e669798f48a9ae2a20fdd0649
+  - enabled: 1
+    path: Assets/Scenes/YouWinScene.unity
+    guid: 2689a37d8ff87cd4592e7a79a0de472d
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
