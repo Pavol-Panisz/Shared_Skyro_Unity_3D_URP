@@ -18,5 +18,6 @@
   <Project Path="QFSW.QC.ScanRules.csproj" />
   <Project Path="QFSW.QC.Serializers.csproj" />
   <Project Path="QFSW.QC.Demo.csproj" />
+  <Project Path="BoidAssemblyDefinition.csproj" />
   <Project Path="QFSW.QC.Editor.Tools.csproj" />
 </Solution>
