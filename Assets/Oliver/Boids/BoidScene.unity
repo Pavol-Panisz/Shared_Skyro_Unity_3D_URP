@@ -2058,17 +2058,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76b2cb05d3c688f498bc19b9746f9e60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boidSpeed: 0.2
+  boidSpeed: 1
   changeTargetDist: 1
   startSlowingRadius: 2
   randomPosDist: 10
-  seeRadius: 2
-  rotationSpeed: 5
+  seeRadius: 5
+  rotationSpeed: 0.1
   separationEnabled: 1
-  separationDistance: 0.5
+  separationDistance: 1
   cohesionEnabled: 1
-  debugType: 6
-  goToTarget: 1
+  debugType: 3
+  goToTarget: 0
   target: {fileID: 872483949}
   boidsList:
   - {fileID: 885507609}
