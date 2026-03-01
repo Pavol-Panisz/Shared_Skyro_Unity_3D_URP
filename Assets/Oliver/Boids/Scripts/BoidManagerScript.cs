@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Burst;
 public class BoidManagerScript: MonoBehaviour
 {
     [Header("Boid Settings")]

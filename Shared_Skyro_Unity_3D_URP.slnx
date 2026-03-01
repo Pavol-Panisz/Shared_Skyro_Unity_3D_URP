@@ -1,23 +1,23 @@
 ﻿<Solution>
-  <Project Path="SingularityGroup.HotReload.Runtime.csproj" />
   <Project Path="SingularityGroup.HotReload.Editor.csproj" />
-  <Project Path="QFSW.QC.csproj" />
   <Project Path="QFSW.QC.Extras.csproj" />
-  <Project Path="VInspector.csproj" />
-  <Project Path="QFSW.QC.Suggestors.csproj" />
+  <Project Path="QFSW.QC.csproj" />
   <Project Path="QFSW.QC.Grammar.csproj" />
   <Project Path="QFSW.QC.Editor.csproj" />
   <Project Path="QFSW.QC.Parsers.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="VHierarchy.csproj" />
-  <Project Path="CompileCo.TimeTweaker.Editor.csproj" />
-  <Project Path="QFSW.QC.QGUI.csproj" />
-  <Project Path="BoidAssemblyDefinition.csproj" />
-  <Project Path="Assembly-CSharp-Editor.csproj" />
-  <Project Path="QFSW.QC.UI.csproj" />
+  <Project Path="VInspector.csproj" />
   <Project Path="SingularityGroup.HotReload.Runtime.Public.csproj" />
-  <Project Path="QFSW.QC.ScanRules.csproj" />
   <Project Path="QFSW.QC.Serializers.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="CompileCo.TimeTweaker.Editor.csproj" />
+  <Project Path="SingularityGroup.HotReload.Runtime.csproj" />
+  <Project Path="QFSW.QC.Suggestors.csproj" />
+  <Project Path="QFSW.QC.QGUI.csproj" />
+  <Project Path="QFSW.QC.UI.csproj" />
+  <Project Path="BoidAssemblyDefinition.csproj" />
   <Project Path="QFSW.QC.Demo.csproj" />
   <Project Path="QFSW.QC.Editor.Tools.csproj" />
+  <Project Path="QFSW.QC.ScanRules.csproj" />
 </Solution>
