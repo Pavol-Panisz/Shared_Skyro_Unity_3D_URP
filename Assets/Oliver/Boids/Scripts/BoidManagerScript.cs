@@ -15,25 +15,30 @@ public class BoidManagerScript: MonoBehaviour
     [SerializeField]private bool separationEnabled;
     [SerializeField]private float separationDistance;
 
+    [Header("Aligment Settings")]
+    [SerializeField]private bool aligmentEnabled;
+
     [Header("Cohesion Settings")]
     [SerializeField]private bool cohesionEnabled;
 
     [Header("Chunks")]
 
     [Header("Settings")]
-    [SerializeField]private DebugType debugType;
-    [SerializeField]private bool goToTarget;
+    [SerializeField]private bool debugSeparationDirection;
+    [SerializeField]private bool debugAligmentDirection;
+    [SerializeField]private bool debugCenterOfMass;
+    [SerializeField]private bool debugTargetDirection;
+    [SerializeField]private bool debugSeeRadius;
+    [SerializeField ]private List<Color> colors = new List<Color>();
 
     [Header("References")]
     [SerializeField]private Transform target;
     [SerializeField]private List<Rigidbody> boidsList = new List<Rigidbody>();
     private List<Vector3> targets = new List<Vector3>();
-    private List<Color> colors = new List<Color>();
 
     void Awake()
     {
         SetupTargets();
-        SetupColors();
     }
 
     void Update()
@@ -46,7 +51,9 @@ public class BoidManagerScript: MonoBehaviour
         int index = 0;
         float slowedSpeed;
         float dist;
-        Vector3 centerOfMass;
+        Vector3 centerOfMass = Vector3.zero;
+        Vector3 separationDir = Vector3.zero;
+        Vector3 aligmentDir = Vector3.zero;
 
         foreach (Rigidbody rb in boidsList)
         {
@@ -55,10 +62,16 @@ public class BoidManagerScript: MonoBehaviour
             slowedSpeed = boidSpeed * dist / startSlowingRadius;
             slowedSpeed = Mathf.Clamp(slowedSpeed, 0, boidSpeed);
             centerOfMass = CalculateCenterOfMass(rb);
+            separationDir = Vector3.zero;
+            aligmentDir = Vector3.zero;
+            List<Vector3> aligmentDirs = new List<Vector3>();
+            List<Vector3> separationDirs = new List<Vector3>();
 
-            targets[index] = centerOfMass;
+            if (cohesionEnabled)
+            {
+                targets[index] = centerOfMass;
+            }
 
-            List<Vector3> dirs = new List<Vector3>();
             if (separationEnabled)
             {
                 //Get all directions around
@@ -67,47 +80,57 @@ public class BoidManagerScript: MonoBehaviour
                     if (boid == rb) continue;
                     if (Vector3.Distance(rb.transform.position, boid.transform.position) < separationDistance)
                     {
-                        dirs.Add(boid.transform.position - rb.transform.position);
+                        separationDirs.Add(boid.transform.position - rb.transform.position);
                     }
                 }
-            }
 
-            Vector3 separationDir = Vector3.zero;
-            if (dirs.Count > 0)
-            {
-                foreach (Vector3 dir in dirs)
+                if (separationDirs.Count > 0)
                 {
-                    separationDir += dir;
+                    foreach (Vector3 dir in separationDirs)
+                    {
+                        separationDir += dir;
+                    }
+                    separationDir = -(separationDir / separationDirs.Count);    
                 }
-                separationDir = -(separationDir / dirs.Count);    
-            }
-            else if (goToTarget)
-            {
-                separationDir = targets[index] - rb.transform.position;
             }
 
-            targets[index] += separationDir;
-
-            switch (debugType)
+            if (aligmentEnabled)
             {
-                case DebugType.SeparationDir:
-                    Debug.DrawRay(rb.transform.position, separationDir, Color.red, 0.5f);
-                break;
-                case DebugType.Target:
-                    Debug.DrawLine(rb.transform.position, targets[index], Color.blue, 0.5f);
-                break;
-                case DebugType.SeparationDirAndTarget:
-                    Debug.DrawRay(rb.transform.position, separationDir, Color.red, 0.5f);
-                    Debug.DrawLine(rb.transform.position, targets[index], Color.blue, 0.5f);
-                break;
-                case DebugType.SeparationDirAndTargetAndCenterOfMass:
-                    Debug.DrawRay(rb.transform.position, separationDir, Color.red, 0.5f);
-                    Debug.DrawLine(rb.transform.position, targets[index], Color.blue, 0.5f);
-                break;
-                case DebugType.Everything:
-                    Debug.DrawRay(rb.transform.position, separationDir, Color.red, 0.5f);
-                    Debug.DrawLine(rb.transform.position, targets[index], Color.blue, 0.5f);
-                break;
+                //Get all directions around
+                foreach (Rigidbody boid in boidsList)
+                {
+                    if (boid == rb) continue;
+                    if (Vector3.Distance(rb.transform.position, boid.transform.position) < seeRadius)
+                    {
+                        aligmentDirs.Add(boid.transform.forward);
+                    }
+                }
+
+                if (aligmentDirs.Count > 0)
+                {
+                    foreach (Vector3 dir in aligmentDirs)
+                    {
+                        aligmentDir += dir;
+                    }
+                    aligmentDir = aligmentDir / aligmentDirs.Count;
+                }
+            }
+            
+            targets[index] += aligmentDir + (separationDir * 2);
+            //targets[index] += separationDir;
+
+            //Debug.DrawRay(rb.transform.position, (aligmentDir + separationDir) / 2, Color.black, 0.1f);
+            if (debugSeparationDirection)
+            {
+                Debug.DrawRay(rb.transform.position, separationDir, Color.red, 0.1f);
+            }
+            if (debugTargetDirection)
+            {
+                Debug.DrawLine(rb.transform.position, targets[index], colors[index], 0.1f);
+            }
+            if (debugAligmentDirection)
+            {
+                Debug.DrawRay(rb.transform.position, aligmentDir, Color.green, 0.1f);
             }
 
             //Change Rot
@@ -115,6 +138,15 @@ public class BoidManagerScript: MonoBehaviour
 
             //Set Velocity
             rb.linearVelocity = rb.transform.forward * boidSpeed;
+
+            if (rb.transform.position.y > randomPosDist) rb.transform.position = new Vector3(rb.transform.position.x, -randomPosDist, rb.transform.position.z);
+            if (rb.transform.position.y < -randomPosDist) rb.transform.position = new Vector3(rb.transform.position.x, randomPosDist, rb.transform.position.z);
+
+            if (rb.transform.position.x > randomPosDist) rb.transform.position = new Vector3(-randomPosDist, rb.transform.position.y, rb.transform.position.z);
+            if (rb.transform.position.x < -randomPosDist) rb.transform.position = new Vector3(randomPosDist, rb.transform.position.y, rb.transform.position.z);
+
+            if (rb.transform.position.z > randomPosDist) rb.transform.position = new Vector3(rb.transform.position.x, rb.transform.position.y, -randomPosDist);
+            if (rb.transform.position.z < -randomPosDist) rb.transform.position = new Vector3(rb.transform.position.x, rb.transform.position.y, randomPosDist);
 
             index++;
         }
@@ -143,7 +175,40 @@ public class BoidManagerScript: MonoBehaviour
         return new Vector3(Random.Range(0f, 1 * randomPosDist), Random.Range(0f, 1 * randomPosDist), Random.Range(0f, 1 * randomPosDist));
     }
 
-    private void SetupColors()
+    private void SetupTargets()
+    {
+        for (int i = 0; i < boidsList.Count; i++)
+        {   
+            targets.Add(target.position);
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireCube(transform.position, new Vector3(randomPosDist, randomPosDist, randomPosDist) * 2);
+
+        if (!debugCenterOfMass && !debugSeeRadius) return;
+
+        int index = 0;
+        foreach (Rigidbody rb in boidsList)
+        {
+            Gizmos.color = colors[index];
+
+            if (debugSeeRadius)
+            {
+                Gizmos.DrawWireSphere(rb.transform.position, seeRadius);
+            }
+            if (debugCenterOfMass)
+            {
+                Gizmos.DrawWireSphere(CalculateCenterOfMass(rb), 0.5f);
+            }
+
+            index++;
+        }
+    }
+
+    [ContextMenu("Randomize Colors")]
+    private void RandomizeColors()
     {
         for (int i = 0; i < boidsList.Count; i++)
         {
@@ -152,57 +217,30 @@ public class BoidManagerScript: MonoBehaviour
         }
     }
 
-    private void SetupTargets()
+    [ContextMenu("Randomize Rotations")]
+    private void RandomizeRotations()
     {
-        for (int i = 0; i < boidsList.Count; i++)
+        foreach (Rigidbody boid in boidsList)
         {
-            targets.Add(target.position);
+            boid.transform.rotation = Random.rotation;
         }
     }
 
-    void OnDrawGizmos()
+    [ContextMenu("Reset Rotations")]
+    private void ResetRotations()
     {
-        int index = 0;
-        if (debugType == DebugType.Everything)
+        foreach (Rigidbody boid in boidsList)
         {
-            foreach (Rigidbody rb in boidsList)
-            {
-                Gizmos.color = colors[index];
-                Gizmos.DrawWireSphere(rb.transform.position, seeRadius);
-                Gizmos.DrawWireSphere(CalculateCenterOfMass(rb), 0.5f);
-                index++;
-            }
+            boid.transform.eulerAngles = new Vector3(0, 0, 0);
         }
-        else if (debugType == DebugType.SeeRadius)
-        {
-            foreach (Rigidbody rb in boidsList)
-            {
-                Gizmos.color = colors[index];
-                Gizmos.DrawWireSphere(rb.transform.position, seeRadius);
-                index++;
-            }
-        }
-        else if (debugType == DebugType.CenterOfMass || debugType == DebugType.SeparationDirAndTargetAndCenterOfMass)
-        {
-            foreach (Rigidbody rb in boidsList)
-            {
-                Gizmos.color = colors[index];
-                Gizmos.DrawWireSphere(CalculateCenterOfMass(rb), 0.1f);
-                index++;
-            }
-        }
-
     }
-}
 
-enum DebugType
-{
-    None,
-    SeparationDir,
-    Target,
-    CenterOfMass,
-    SeparationDirAndTarget,
-    SeparationDirAndTargetAndCenterOfMass,
-    SeeRadius,
-    Everything
+    [ContextMenu("Randomize Positions")]
+    private void RandomizePositions()
+    {
+        foreach (Rigidbody boid in boidsList)
+        {
+            boid.transform.position = new Vector3(Random.Range(-randomPosDist, randomPosDist), Random.Range(-randomPosDist, randomPosDist), Random.Range(-randomPosDist, randomPosDist));
+        }
+    }
 }
