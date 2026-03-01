@@ -14,12 +14,17 @@ public class BoidManagerScript: MonoBehaviour
     [Header("Separation Settings")]
     [SerializeField]private bool separationEnabled;
     [SerializeField]private float separationDistance;
+    [SerializeField]private float separationMultiplier = 2f;
 
     [Header("Aligment Settings")]
     [SerializeField]private bool aligmentEnabled;
 
     [Header("Cohesion Settings")]
     [SerializeField]private bool cohesionEnabled;
+
+    [Header("Raycast Settings")]
+    [SerializeField]private LayerMask obstacleLayerMask;
+    [SerializeField]private int amountOfRaycasts;
 
     [Header("Chunks")]
 
@@ -49,7 +54,6 @@ public class BoidManagerScript: MonoBehaviour
     private void ControlBoids()
     {
         int index = 0;
-        float slowedSpeed;
         float dist;
         Vector3 centerOfMass = Vector3.zero;
         Vector3 separationDir = Vector3.zero;
@@ -59,11 +63,12 @@ public class BoidManagerScript: MonoBehaviour
         {
             //Calculate Values
             dist = Vector3.Distance(rb.transform.position, targets[index]);
-            slowedSpeed = boidSpeed * dist / startSlowingRadius;
-            slowedSpeed = Mathf.Clamp(slowedSpeed, 0, boidSpeed);
+
             centerOfMass = CalculateCenterOfMass(rb);
+
             separationDir = Vector3.zero;
             aligmentDir = Vector3.zero;
+
             List<Vector3> aligmentDirs = new List<Vector3>();
             List<Vector3> separationDirs = new List<Vector3>();
 
@@ -116,10 +121,8 @@ public class BoidManagerScript: MonoBehaviour
                 }
             }
             
-            targets[index] += aligmentDir + (separationDir * 2);
-            //targets[index] += separationDir;
+            targets[index] += aligmentDir + (separationDir * separationMultiplier);
 
-            //Debug.DrawRay(rb.transform.position, (aligmentDir + separationDir) / 2, Color.black, 0.1f);
             if (debugSeparationDirection)
             {
                 Debug.DrawRay(rb.transform.position, separationDir, Color.red, 0.1f);
@@ -131,6 +134,25 @@ public class BoidManagerScript: MonoBehaviour
             if (debugAligmentDirection)
             {
                 Debug.DrawRay(rb.transform.position, aligmentDir, Color.green, 0.1f);
+            }
+
+            if (Physics.Raycast(rb.transform.position, rb.transform.forward, seeRadius, obstacleLayerMask))
+            {
+                Vector3[] points = BoidHelperScript.Generate(amountOfRaycasts, seeRadius);
+
+                bool foundPath = false;
+                int a = 10;
+                while (!foundPath || a >= points.Length)
+                {
+                    if (!Physics.Raycast(rb.transform.position, points[a] - rb.transform.position, seeRadius * 2, obstacleLayerMask))
+                    {
+                        targets[index] = points[a];
+                        foundPath = true;
+                        Debug.DrawLine(rb.transform.position, points[a], Color.cyan, 0.1f);
+                    }
+
+                    a++;
+                }
             }
 
             //Change Rot
@@ -187,9 +209,19 @@ public class BoidManagerScript: MonoBehaviour
     {
         Gizmos.DrawWireCube(transform.position, new Vector3(randomPosDist, randomPosDist, randomPosDist) * 2);
 
-        if (!debugCenterOfMass && !debugSeeRadius) return;
+        Vector3[] points = BoidHelperScript.Generate(amountOfRaycasts, seeRadius);
 
         int index = 0;
+        foreach (Vector3 point in points)
+        {
+            Gizmos.DrawWireSphere(point + boidsList[0].transform.position, 0.1f);
+
+            index++;
+        }
+
+        if (!debugCenterOfMass && !debugSeeRadius) return;
+
+        index = 0;
         foreach (Rigidbody rb in boidsList)
         {
             Gizmos.color = colors[index];
@@ -205,6 +237,8 @@ public class BoidManagerScript: MonoBehaviour
 
             index++;
         }
+
+        
     }
 
     [ContextMenu("Randomize Colors")]
