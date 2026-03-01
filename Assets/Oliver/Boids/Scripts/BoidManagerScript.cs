@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-
+using Unity.Burst;
 public class BoidManagerScript: MonoBehaviour
 {
     [Header("Boid Settings")]
@@ -24,7 +24,7 @@ public class BoidManagerScript: MonoBehaviour
 
     [Header("Raycast Settings")]
     [SerializeField]private LayerMask obstacleLayerMask;
-    [SerializeField]private int amountOfRaycasts;
+    [SerializeField]private float sphereCastRadius;
 
     [Header("Chunks")]
 
@@ -34,11 +34,13 @@ public class BoidManagerScript: MonoBehaviour
     [SerializeField]private bool debugCenterOfMass;
     [SerializeField]private bool debugTargetDirection;
     [SerializeField]private bool debugSeeRadius;
+    [SerializeField]private bool debugRaycast;
     [SerializeField ]private List<Color> colors = new List<Color>();
 
     [Header("References")]
     [SerializeField]private Transform target;
     [SerializeField]private List<Rigidbody> boidsList = new List<Rigidbody>();
+    [SerializeField]private GameObject boidPrefab;
     private List<Vector3> targets = new List<Vector3>();
 
     void Awake()
@@ -71,57 +73,75 @@ public class BoidManagerScript: MonoBehaviour
 
             List<Vector3> aligmentDirs = new List<Vector3>();
             List<Vector3> separationDirs = new List<Vector3>();
-
-            if (cohesionEnabled)
+            RaycastHit hit;
+            if (Physics.SphereCast(rb.transform.position, sphereCastRadius, rb.transform.forward, out hit, seeRadius, obstacleLayerMask))
             {
-                targets[index] = centerOfMass;
-            }
-
-            if (separationEnabled)
-            {
-                //Get all directions around
-                foreach (Rigidbody boid in boidsList)
+                targets[index] = rb.transform.right * 5;
+                if (debugRaycast)
                 {
-                    if (boid == rb) continue;
-                    if (Vector3.Distance(rb.transform.position, boid.transform.position) < separationDistance)
-                    {
-                        separationDirs.Add(boid.transform.position - rb.transform.position);
-                    }
-                }
-
-                if (separationDirs.Count > 0)
-                {
-                    foreach (Vector3 dir in separationDirs)
-                    {
-                        separationDir += dir;
-                    }
-                    separationDir = -(separationDir / separationDirs.Count);    
+                    Debug.DrawLine(rb.transform.position, hit.point, Color.white, 0.25f);
                 }
             }
-
-            if (aligmentEnabled)
+            else
             {
-                //Get all directions around
-                foreach (Rigidbody boid in boidsList)
+                if (cohesionEnabled)
                 {
-                    if (boid == rb) continue;
-                    if (Vector3.Distance(rb.transform.position, boid.transform.position) < seeRadius)
+                    targets[index] = centerOfMass;
+                }
+
+                if (separationEnabled)
+                {
+                    //Get all directions around
+                    foreach (Rigidbody boid in boidsList)
                     {
-                        aligmentDirs.Add(boid.transform.forward);
+                        if (boid == rb) continue;
+                        if (Vector3.Distance(rb.transform.position, boid.transform.position) < separationDistance)
+                        {
+                            separationDirs.Add(boid.transform.position - rb.transform.position);
+                        }
+                    }
+
+                    if (separationDirs.Count > 0)
+                    {
+                        foreach (Vector3 dir in separationDirs)
+                        {
+                            separationDir += dir;
+                        }
+                        separationDir = -(separationDir / separationDirs.Count);    
                     }
                 }
 
-                if (aligmentDirs.Count > 0)
+                if (aligmentEnabled)
                 {
-                    foreach (Vector3 dir in aligmentDirs)
+                    //Get all directions around
+                    foreach (Rigidbody boid in boidsList)
                     {
-                        aligmentDir += dir;
+                        if (boid == rb) continue;
+                        if (Vector3.Distance(rb.transform.position, boid.transform.position) < seeRadius)
+                        {
+                            aligmentDirs.Add(boid.transform.forward);
+                        }
                     }
-                    aligmentDir = aligmentDir / aligmentDirs.Count;
+
+                    if (aligmentDirs.Count > 0)
+                    {
+                        foreach (Vector3 dir in aligmentDirs)
+                        {
+                            aligmentDir += dir;
+                        }
+                        aligmentDir = aligmentDir / aligmentDirs.Count;
+                    }
+                }
+                
+                if (aligmentDir + (separationDir * separationMultiplier) == Vector3.zero)
+                {
+                    targets[index] = rb.transform.position + rb.transform.forward;
+                }
+                else
+                {
+                    targets[index] += aligmentDir + (separationDir * separationMultiplier);
                 }
             }
-            
-            targets[index] += aligmentDir + (separationDir * separationMultiplier);
 
             if (debugSeparationDirection)
             {
@@ -134,25 +154,6 @@ public class BoidManagerScript: MonoBehaviour
             if (debugAligmentDirection)
             {
                 Debug.DrawRay(rb.transform.position, aligmentDir, Color.green, 0.1f);
-            }
-
-            if (Physics.Raycast(rb.transform.position, rb.transform.forward, seeRadius, obstacleLayerMask))
-            {
-                Vector3[] points = BoidHelperScript.Generate(amountOfRaycasts, seeRadius);
-
-                bool foundPath = false;
-                int a = 10;
-                while (!foundPath || a >= points.Length)
-                {
-                    if (!Physics.Raycast(rb.transform.position, points[a] - rb.transform.position, seeRadius * 2, obstacleLayerMask))
-                    {
-                        targets[index] = points[a];
-                        foundPath = true;
-                        Debug.DrawLine(rb.transform.position, points[a], Color.cyan, 0.1f);
-                    }
-
-                    a++;
-                }
             }
 
             //Change Rot
@@ -209,19 +210,9 @@ public class BoidManagerScript: MonoBehaviour
     {
         Gizmos.DrawWireCube(transform.position, new Vector3(randomPosDist, randomPosDist, randomPosDist) * 2);
 
-        Vector3[] points = BoidHelperScript.Generate(amountOfRaycasts, seeRadius);
-
-        int index = 0;
-        foreach (Vector3 point in points)
-        {
-            Gizmos.DrawWireSphere(point + boidsList[0].transform.position, 0.1f);
-
-            index++;
-        }
-
         if (!debugCenterOfMass && !debugSeeRadius) return;
 
-        index = 0;
+        int index = 0;
         foreach (Rigidbody rb in boidsList)
         {
             Gizmos.color = colors[index];
@@ -275,6 +266,20 @@ public class BoidManagerScript: MonoBehaviour
         foreach (Rigidbody boid in boidsList)
         {
             boid.transform.position = new Vector3(Random.Range(-randomPosDist, randomPosDist), Random.Range(-randomPosDist, randomPosDist), Random.Range(-randomPosDist, randomPosDist));
+        }
+    }
+
+    [ContextMenu("Fill Boid List")]
+    private void FillBoidList()
+    {
+        if (!boidPrefab) Debug.LogError("Boid prefab is not assigned!!!");
+
+        for (int i = 0; i < boidsList.Count; i++)
+        {
+            if (boidsList[i] == null)
+            {
+                boidsList[i] = Instantiate(boidPrefab, transform.position, Quaternion.identity).GetComponent<Rigidbody>();
+            }
         }
     }
 }
