@@ -71,7 +71,6 @@ public partial struct BoidSystem : ISystem
             .Build();
 
         boids = query.ToComponentDataArray<LocalTransform>(Allocator.Persistent);
-        Debug.Log(boids.Length);
 
         //foreach ((RefRW<LocalTransform> localTransform, RefRW<PhysicsVelocity> physicsVelocity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<PhysicsVelocity>>())
         foreach (RefRW<LocalTransform> localTransform in SystemAPI.Query<RefRW<LocalTransform>>())
@@ -82,7 +81,6 @@ public partial struct BoidSystem : ISystem
             dist = math.distance(localTransform.ValueRO.Position, target);
 
             centerOfMass = CalculateCenterOfMass(localTransform);
-            Debug.Log(centerOfMass);
 
             separationDir = float3.zero;
             aligmentDir = float3.zero;
@@ -165,9 +163,10 @@ public partial struct BoidSystem : ISystem
 
             //Change Rot
             Debug.DrawLine(localTransform.ValueRO.Position, target);
-            localTransform.ValueRW.Rotate(Quaternion.LookRotation(math.normalize(target - localTransform.ValueRO.Position), localTransform.ValueRO.Up()));
+            //localTransform.ValueRW.Rotation = quaternion.LookRotationSafe(math.normalize(target - localTransform.ValueRO.Position), localTransform.ValueRO.Up());
+            localTransform.ValueRW.Rotation = Quaternion.Slerp(localTransform.ValueRO.Rotation, quaternion.LookRotationSafe(math.normalize(target - localTransform.ValueRO.Position), localTransform.ValueRO.Up()), SystemAPI.Time.DeltaTime);
             //localTransform.ValueRW.Rotate(Quaternion.LookRotation(Vector3.RotateTowards(localTransform.ValueRO.Forward(), target - localTransform.ValueRO.Forward(), rotationSpeed * Mathf.Deg2Rad, Mathf.Infinity)));
-
+            
             //Set Velocity
             localTransform.ValueRW.Position = localTransform.ValueRO.Position + (localTransform.ValueRO.Forward() * boidSpeed * Time.deltaTime);
             
@@ -194,7 +193,6 @@ public partial struct BoidSystem : ISystem
             if (math.distance(boid.Position, localTransform.ValueRO.Position) < seeRadius)
             {
                 centerOfMass += boid.Position;
-                Debug.Log(boid.Position);
                 index++;
             }
         }
