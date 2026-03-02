@@ -189,6 +189,9 @@ public partial struct BoidSystem : ISystem
 
             index++;
         }
+
+        BoidCalculationJob boidCalculationJob = new BoidCalculationJob{};
+        boidCalculationJob.Schedule();
     }
 
     [BurstCompile]
@@ -219,5 +222,13 @@ public partial struct BoidSystem : ISystem
         if (first.z != second.z) return false;
 
         return true;
+    }
+
+    public partial struct BoidCalculationJob : IJobEntity
+    {
+        public void Execute(ref LocalTransform localTransform)
+        {
+            Debug.Log("-");
+        }
     }
 }
