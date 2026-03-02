@@ -1,10 +1,8 @@
-using System.Collections.Generic;
 using UnityEngine;
 using Unity.Entities;
 using Unity.Transforms;
 using Unity.Mathematics;
 using Unity.Collections;
-using UnityEngine.UIElements;
 using Unity.Burst;
 
 public partial struct BoidSystem : ISystem
@@ -48,14 +46,14 @@ public partial struct BoidSystem : ISystem
         boidSpeed = 2f;
         randomPosDist = 10f;
         seeRadius = 4f;
-        rotationSpeed = 0.3f;
+        rotationSpeed = 0.5f;
 
         separationEnabled = true;
         separationDistance = 1;
-        separationMultiplier = 5;
+        separationMultiplier = 2000;
 
         aligmentEnabled = true;
-        aligmentMultiplier = 5;
+        aligmentMultiplier = 500;
 
         cohesionEnabled = true;
     }
@@ -131,7 +129,7 @@ public partial struct BoidSystem : ISystem
                 //Get all directions around
                 foreach (LocalTransform boid in boids)
                 {
-                    if (boid.Position.x == localTransform.ValueRO.Position.x) continue;
+                    if (IsEqual(boid.Position, localTransform.ValueRO.Position)) continue;
                     if (math.distance(localTransform.ValueRO.Position, boid.Position) < seeRadius)
                     {
                         aligmentDirs[a] = boid.Forward();
@@ -170,8 +168,9 @@ public partial struct BoidSystem : ISystem
                     Debug.DrawRay(localTransform.ValueRO.Position, aligmentDir, Color.green, 0.1f);
             }*/
 
+
             //Change Rot
-            Debug.DrawLine(localTransform.ValueRO.Position, centerOfMass);
+            //Debug.DrawLine(localTransform.ValueRO.Position, centerOfMass);
             //localTransform.ValueRW.Rotation = quaternion.LookRotationSafe(math.normalize(target - localTransform.ValueRO.Position), localTransform.ValueRO.Up());
             localTransform.ValueRW.Rotation = Quaternion.Slerp(localTransform.ValueRO.Rotation, quaternion.LookRotationSafe(math.normalize(target - localTransform.ValueRO.Position), localTransform.ValueRO.Up()), SystemAPI.Time.DeltaTime * rotationSpeed);
             //localTransform.ValueRW.Rotate(Quaternion.LookRotation(Vector3.RotateTowards(localTransform.ValueRO.Forward(), target - localTransform.ValueRO.Forward(), rotationSpeed * Mathf.Deg2Rad, Mathf.Infinity)));
@@ -208,6 +207,7 @@ public partial struct BoidSystem : ISystem
         }
 
         centerOfMass = centerOfMass / index;
+        Debug.DrawLine(centerOfMass, new float3(centerOfMass.x, centerOfMass.y + 0.5f, centerOfMass.z), Color.red, 0.1f);
 
         return centerOfMass;
     }
