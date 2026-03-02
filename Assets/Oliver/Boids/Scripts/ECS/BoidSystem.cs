@@ -207,7 +207,7 @@ public partial struct BoidSystem : ISystem
         }
 
         centerOfMass = centerOfMass / index;
-        Debug.DrawLine(centerOfMass, new float3(centerOfMass.x, centerOfMass.y + 0.5f, centerOfMass.z), Color.red, 0.1f);
+        //Debug.DrawLine(centerOfMass, new float3(centerOfMass.x, centerOfMass.y + 0.5f, centerOfMass.z), Color.red, 0.1f);
 
         return centerOfMass;
     }
