@@ -44,7 +44,7 @@ public partial struct BoidSystem : ISystem
     private void SetupVariables()
     {
         boidSpeed = 2f;
-        randomPosDist = 2f;
+        randomPosDist = 10f;
         seeRadius = 7.5f;
         rotationSpeed = 0.1f;
 
@@ -164,6 +164,7 @@ public partial struct BoidSystem : ISystem
             }*/
 
             //Change Rot
+            Debug.DrawLine(localTransform.ValueRO.Position, target);
             localTransform.ValueRW.Rotate(Quaternion.LookRotation(math.normalize(target - localTransform.ValueRO.Position), localTransform.ValueRO.Up()));
             //localTransform.ValueRW.Rotate(Quaternion.LookRotation(Vector3.RotateTowards(localTransform.ValueRO.Forward(), target - localTransform.ValueRO.Forward(), rotationSpeed * Mathf.Deg2Rad, Mathf.Infinity)));
 
