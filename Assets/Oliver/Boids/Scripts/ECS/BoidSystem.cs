@@ -5,6 +5,7 @@ using Unity.Transforms;
 using Unity.Mathematics;
 using Unity.Collections;
 using UnityEngine.UIElements;
+using Unity.Burst;
 
 public partial struct BoidSystem : ISystem
 {
@@ -21,6 +22,7 @@ public partial struct BoidSystem : ISystem
 
     //Aligment Settings
     public bool aligmentEnabled;
+    public float aligmentMultiplier;
 
     //Cohesion Settings
     public bool cohesionEnabled;
@@ -45,18 +47,20 @@ public partial struct BoidSystem : ISystem
     {
         boidSpeed = 2f;
         randomPosDist = 10f;
-        seeRadius = 7.5f;
-        rotationSpeed = 0.1f;
+        seeRadius = 4f;
+        rotationSpeed = 0.3f;
 
         separationEnabled = true;
         separationDistance = 1;
-        separationMultiplier = 2;
+        separationMultiplier = 5;
 
         aligmentEnabled = true;
+        aligmentMultiplier = 5;
 
         cohesionEnabled = true;
     }
 
+    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         int index = 0;
@@ -70,7 +74,9 @@ public partial struct BoidSystem : ISystem
             .WithAll<LocalTransform>()
             .Build();
 
-        boids = query.ToComponentDataArray<LocalTransform>(Allocator.Persistent);
+        boids = query.ToComponentDataArray<LocalTransform>(Allocator.Temp);
+        NativeArray<float3> aligmentDirs = new NativeArray<float3>(boids.Length, Allocator.Temp);
+        NativeArray<float3> separationDirs = new NativeArray<float3>(boids.Length, Allocator.Temp);
 
         //foreach ((RefRW<LocalTransform> localTransform, RefRW<PhysicsVelocity> physicsVelocity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<PhysicsVelocity>>())
         foreach (RefRW<LocalTransform> localTransform in SystemAPI.Query<RefRW<LocalTransform>>())
@@ -85,8 +91,11 @@ public partial struct BoidSystem : ISystem
             separationDir = float3.zero;
             aligmentDir = float3.zero;
 
-            NativeArray<float3> aligmentDirs = new NativeArray<float3>(boids.Length, Allocator.Temp);
-            NativeArray<float3> separationDirs = new NativeArray<float3>(boids.Length, Allocator.Temp);
+            for (int i = 0; i < aligmentDirs.Length; i++)
+            {
+                aligmentDirs[i] = 0;
+                separationDirs[i] = 0;
+            }
 
             if (cohesionEnabled)
             {
@@ -141,11 +150,11 @@ public partial struct BoidSystem : ISystem
 
             if (IsEqual(aligmentDir + (separationDir * separationMultiplier), float3.zero))
             {
-                target = localTransform.ValueRO.Position + localTransform.ValueRO.Position;
+                target = localTransform.ValueRO.Position + localTransform.ValueRO.Forward();
             }
             else
             {
-                target += aligmentDir + (separationDir * separationMultiplier);
+                target += (aligmentDir * aligmentMultiplier) + (separationDir * separationMultiplier);
             }
 
             /*if (debugSeparationDirection)
@@ -162,9 +171,9 @@ public partial struct BoidSystem : ISystem
             }*/
 
             //Change Rot
-            Debug.DrawLine(localTransform.ValueRO.Position, target);
+            Debug.DrawLine(localTransform.ValueRO.Position, centerOfMass);
             //localTransform.ValueRW.Rotation = quaternion.LookRotationSafe(math.normalize(target - localTransform.ValueRO.Position), localTransform.ValueRO.Up());
-            localTransform.ValueRW.Rotation = Quaternion.Slerp(localTransform.ValueRO.Rotation, quaternion.LookRotationSafe(math.normalize(target - localTransform.ValueRO.Position), localTransform.ValueRO.Up()), SystemAPI.Time.DeltaTime);
+            localTransform.ValueRW.Rotation = Quaternion.Slerp(localTransform.ValueRO.Rotation, quaternion.LookRotationSafe(math.normalize(target - localTransform.ValueRO.Position), localTransform.ValueRO.Up()), SystemAPI.Time.DeltaTime * rotationSpeed);
             //localTransform.ValueRW.Rotate(Quaternion.LookRotation(Vector3.RotateTowards(localTransform.ValueRO.Forward(), target - localTransform.ValueRO.Forward(), rotationSpeed * Mathf.Deg2Rad, Mathf.Infinity)));
             
             //Set Velocity
@@ -183,6 +192,7 @@ public partial struct BoidSystem : ISystem
         }
     }
 
+    [BurstCompile]
     private float3 CalculateCenterOfMass(RefRW<LocalTransform> localTransform)
     {
         float3 centerOfMass = float3.zero;
