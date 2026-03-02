@@ -4,6 +4,7 @@ using Unity.Transforms;
 using Unity.Mathematics;
 using Unity.Collections;
 using Unity.Burst;
+using Unity.Entities.UniversalDelegates;
 
 public partial struct BoidSystem : ISystem
 {
@@ -35,6 +36,8 @@ public partial struct BoidSystem : ISystem
 
     //References
     public NativeArray<LocalTransform> boids;
+    /*public NativeArray<LocalTransform> firstboids;
+    public NativeArray<LocalTransform> secondboids;*/
 
     public void OnCreate(ref SystemState state)
     {
@@ -61,30 +64,129 @@ public partial struct BoidSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        int index = 0;
-        float dist;
-        float3 centerOfMass = float3.zero;
-        float3 separationDir = float3.zero;
-        float3 aligmentDir = float3.zero;
-        float3 target = float3.zero;
-
-        EntityQuery query = SystemAPI.QueryBuilder()
-            .WithAll<LocalTransform>()
-            .Build();
-
-        boids = query.ToComponentDataArray<LocalTransform>(Allocator.Temp);
-        NativeArray<float3> aligmentDirs = new NativeArray<float3>(boids.Length, Allocator.Temp);
-        NativeArray<float3> separationDirs = new NativeArray<float3>(boids.Length, Allocator.Temp);
-
-        //foreach ((RefRW<LocalTransform> localTransform, RefRW<PhysicsVelocity> physicsVelocity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<PhysicsVelocity>>())
-        foreach (RefRW<LocalTransform> localTransform in SystemAPI.Query<RefRW<LocalTransform>>())
+        if (boids.Length <= 0)
         {
+            EntityQuery query = SystemAPI.QueryBuilder()
+                .WithAll<LocalTransform>()
+                .Build();
+
+            boids = query.ToComponentDataArray<LocalTransform>(Allocator.Persistent);
+
+            /*firstboids = new NativeArray<LocalTransform>(boids.Length / 2, Allocator.Persistent);
+            secondboids = new NativeArray<LocalTransform>(boids.Length / 2, Allocator.Persistent);
+
+            for (int i = 0; i < boids.Length; i++)
+            {
+                if (i < boids.Length / 2)
+                {
+                    firstboids[i] = boids[i];
+                }
+                else
+                {
+                    secondboids[boids.Length - i] = boids[i];
+                }
+            }*/
+        }
+
+        BoidCalculationJob boidCalculationJob = new BoidCalculationJob
+        {
+            boidSpeed = boidSpeed,
+            randomPosDist = randomPosDist,
+            seeRadius = seeRadius,
+            rotationSpeed = rotationSpeed,
+
+            separationEnabled = separationEnabled,
+            separationDistance = separationDistance,
+            separationMultiplier = separationMultiplier,
+
+            aligmentEnabled = aligmentEnabled,
+            aligmentMultiplier = aligmentMultiplier,
+
+            cohesionEnabled = cohesionEnabled,
+
+            deltaTime = SystemAPI.Time.DeltaTime,
+
+            boids = boids
+
+        };
+        boidCalculationJob.Schedule();
+    }
+
+    [BurstCompile]
+    private static float3 CalculateCenterOfMass(LocalTransform localTransform, NativeArray<LocalTransform> boids, float seeRadius)
+    {
+        float3 centerOfMass = float3.zero;
+        int index = 0;
+
+        foreach (LocalTransform boid in boids)
+        {
+            if (math.distance(boid.Position, localTransform.Position) < seeRadius)
+            {
+                centerOfMass += boid.Position;
+                index++;
+            }
+        }
+
+        centerOfMass = centerOfMass / index;
+        //Debug.DrawLine(centerOfMass, new float3(centerOfMass.x, centerOfMass.y + 0.5f, centerOfMass.z), Color.red, 0.1f);
+
+        return centerOfMass;
+    }
+
+    private static bool IsEqual(float3 first, float3 second)
+    {
+        if (first.x != second.x) return false;
+        if (first.y != second.y) return false;
+        if (first.z != second.z) return false;
+
+        return true;
+    }
+
+    [BurstCompile]
+    public partial struct BoidCalculationJob : IJobEntity
+    {
+        //Boid Settings
+        public float boidSpeed;
+        public float randomPosDist;
+        public float seeRadius;
+        public float rotationSpeed;
+
+        //Separation Settings
+        public bool separationEnabled;
+        public float separationDistance;
+        public float separationMultiplier;
+
+        //Aligment Settings
+        public bool aligmentEnabled;
+        public float aligmentMultiplier;
+
+        //Cohesion Settings
+        public bool cohesionEnabled;
+
+        //Time
+        public float deltaTime;
+
+        //References
+        public NativeArray<LocalTransform> boids;
+
+        [BurstCompile]
+        public void Execute(ref LocalTransform localTransform)
+        {
+            float dist;
+            float3 centerOfMass = float3.zero;
+            float3 separationDir = float3.zero;
+            float3 aligmentDir = float3.zero;
+            float3 target = float3.zero;
+
+            NativeArray<float3> aligmentDirs = new NativeArray<float3>(boids.Length, Allocator.Temp);
+            NativeArray<float3> separationDirs = new NativeArray<float3>(boids.Length, Allocator.Temp);
+
             target = float3.zero;
 
             //Calculate Values
-            dist = math.distance(localTransform.ValueRO.Position, target);
+            dist = math.distance(localTransform.Position, target);
 
-            centerOfMass = CalculateCenterOfMass(localTransform);
+            centerOfMass = CalculateCenterOfMass(localTransform, boids, seeRadius);
 
             separationDir = float3.zero;
             aligmentDir = float3.zero;
@@ -106,10 +208,10 @@ public partial struct BoidSystem : ISystem
                 //Get all directions around
                 foreach (LocalTransform boid in boids)
                 {
-                    if (boid.Position.x == localTransform.ValueRO.Position.x) continue;
-                    if (math.distance(localTransform.ValueRO.Position, boid.Position) < separationDistance)
+                    if (boid.Position.x == localTransform.Position.x) continue;
+                    if (math.distance(localTransform.Position, boid.Position) < separationDistance)
                     {
-                        separationDirs[a] = boid.Position - localTransform.ValueRO.Position;
+                        separationDirs[a] = boid.Position - localTransform.Position;
                     }
                 }
 
@@ -129,8 +231,8 @@ public partial struct BoidSystem : ISystem
                 //Get all directions around
                 foreach (LocalTransform boid in boids)
                 {
-                    if (IsEqual(boid.Position, localTransform.ValueRO.Position)) continue;
-                    if (math.distance(localTransform.ValueRO.Position, boid.Position) < seeRadius)
+                    if (IsEqual(boid.Position, localTransform.Position)) continue;
+                    if (math.distance(localTransform.Position, boid.Position) < seeRadius)
                     {
                         aligmentDirs[a] = boid.Forward();
                     }
@@ -148,87 +250,27 @@ public partial struct BoidSystem : ISystem
 
             if (IsEqual(aligmentDir + (separationDir * separationMultiplier), float3.zero))
             {
-                target = localTransform.ValueRO.Position + localTransform.ValueRO.Forward();
+                target = localTransform.Position + localTransform.Forward();
             }
             else
             {
                 target += (aligmentDir * aligmentMultiplier) + (separationDir * separationMultiplier);
             }
 
-            /*if (debugSeparationDirection)
-            {
-                Debug.DrawRay(localTransform.ValueRO.Position, separationDir, Color.red, 0.1f);
-            }
-            if (debugTargetDirection)
-            {
-                    Debug.DrawLine(localTransform.ValueRO.Position, target, Color.blue, 0.1f);
-            }
-            if (debugAligmentDirection)
-            {
-                    Debug.DrawRay(localTransform.ValueRO.Position, aligmentDir, Color.green, 0.1f);
-            }*/
-
-
             //Change Rot
-            //Debug.DrawLine(localTransform.ValueRO.Position, centerOfMass);
-            //localTransform.ValueRW.Rotation = quaternion.LookRotationSafe(math.normalize(target - localTransform.ValueRO.Position), localTransform.ValueRO.Up());
-            localTransform.ValueRW.Rotation = Quaternion.Slerp(localTransform.ValueRO.Rotation, quaternion.LookRotationSafe(math.normalize(target - localTransform.ValueRO.Position), localTransform.ValueRO.Up()), SystemAPI.Time.DeltaTime * rotationSpeed);
-            //localTransform.ValueRW.Rotate(Quaternion.LookRotation(Vector3.RotateTowards(localTransform.ValueRO.Forward(), target - localTransform.ValueRO.Forward(), rotationSpeed * Mathf.Deg2Rad, Mathf.Infinity)));
+            localTransform.Rotation = Quaternion.Slerp(localTransform.Rotation, quaternion.LookRotationSafe(math.normalize(target - localTransform.Position), localTransform.Up()), deltaTime * rotationSpeed);
             
             //Set Velocity
-            localTransform.ValueRW.Position = localTransform.ValueRO.Position + (localTransform.ValueRO.Forward() * boidSpeed * Time.deltaTime);
+            localTransform.Position = localTransform.Position + (localTransform.Forward() * boidSpeed * deltaTime);
             
-            if (localTransform.ValueRO.Position.y > randomPosDist) localTransform.ValueRW.Position = new float3(localTransform.ValueRO.Position.x, -randomPosDist, localTransform.ValueRO.Position.z);
-            if (localTransform.ValueRO.Position.y < -randomPosDist) localTransform.ValueRW.Position = new float3(localTransform.ValueRO.Position.x, randomPosDist, localTransform.ValueRO.Position.z);
+            if (localTransform.Position.y > randomPosDist) localTransform.Position = new float3(localTransform.Position.x, -randomPosDist, localTransform.Position.z);
+            if (localTransform.Position.y < -randomPosDist) localTransform.Position = new float3(localTransform.Position.x, randomPosDist, localTransform.Position.z);
 
-            if (localTransform.ValueRO.Position.x > randomPosDist) localTransform.ValueRW.Position = new float3(-randomPosDist, localTransform.ValueRO.Position.y, localTransform.ValueRO.Position.z);
-            if (localTransform.ValueRO.Position.x < -randomPosDist) localTransform.ValueRW.Position = new float3(randomPosDist, localTransform.ValueRO.Position.y, localTransform.ValueRO.Position.z);
+            if (localTransform.Position.x > randomPosDist) localTransform.Position = new float3(-randomPosDist, localTransform.Position.y, localTransform.Position.z);
+            if (localTransform.Position.x < -randomPosDist) localTransform.Position = new float3(randomPosDist, localTransform.Position.y, localTransform.Position.z);
 
-            if (localTransform.ValueRO.Position.z > randomPosDist) localTransform.ValueRW.Position = new float3(localTransform.ValueRO.Position.x, localTransform.ValueRO.Position.y, -randomPosDist);
-            if (localTransform.ValueRO.Position.z < -randomPosDist) localTransform.ValueRW.Position = new float3(localTransform.ValueRO.Position.x, localTransform.ValueRO.Position.y, randomPosDist);
-
-            index++;
-        }
-
-        BoidCalculationJob boidCalculationJob = new BoidCalculationJob{};
-        boidCalculationJob.Schedule();
-    }
-
-    [BurstCompile]
-    private float3 CalculateCenterOfMass(RefRW<LocalTransform> localTransform)
-    {
-        float3 centerOfMass = float3.zero;
-        int index = 0;
-
-        foreach (LocalTransform boid in boids)
-        {
-            if (math.distance(boid.Position, localTransform.ValueRO.Position) < seeRadius)
-            {
-                centerOfMass += boid.Position;
-                index++;
-            }
-        }
-
-        centerOfMass = centerOfMass / index;
-        //Debug.DrawLine(centerOfMass, new float3(centerOfMass.x, centerOfMass.y + 0.5f, centerOfMass.z), Color.red, 0.1f);
-
-        return centerOfMass;
-    }
-
-    private bool IsEqual(float3 first, float3 second)
-    {
-        if (first.x != second.x) return false;
-        if (first.y != second.y) return false;
-        if (first.z != second.z) return false;
-
-        return true;
-    }
-
-    public partial struct BoidCalculationJob : IJobEntity
-    {
-        public void Execute(ref LocalTransform localTransform)
-        {
-            Debug.Log("-");
+            if (localTransform.Position.z > randomPosDist) localTransform.Position = new float3(localTransform.Position.x, localTransform.Position.y, -randomPosDist);
+            if (localTransform.Position.z < -randomPosDist) localTransform.Position = new float3(localTransform.Position.x, localTransform.Position.y, randomPosDist);
         }
     }
 }
