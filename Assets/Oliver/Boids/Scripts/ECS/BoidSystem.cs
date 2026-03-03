@@ -48,11 +48,11 @@ public partial struct BoidSystem : ISystem
         boidSpeed = 2f;
         randomPosDist = 20f;
         seeRadius = 7.5f;
-        rotationSpeed = .4f;
+        rotationSpeed = .2f;
 
         separationEnabled = true;
         separationDistance = 1;
-        separationMultiplier = 3000;
+        separationMultiplier = 5000;
 
         aligmentEnabled = true;
         aligmentMultiplier = 1000;
@@ -222,7 +222,6 @@ public partial struct BoidSystem : ISystem
                 target = float3.zero;
             }
 
-
             if (math.all((aligmentDir * aligmentMultiplier) + (separationDir * separationMultiplier) == float3.zero))
             {
                 target = localTransform.Position + localTransform.Forward();
@@ -231,6 +230,8 @@ public partial struct BoidSystem : ISystem
             {
                 target += (aligmentDir * aligmentMultiplier) + (separationDir * separationMultiplier);
             }
+
+            Debug.DrawLine(localTransform.Position, target, Color.white);
 
             //Change Rot
             localTransform.Rotation = Quaternion.Slerp(localTransform.Rotation, quaternion.LookRotationSafe(math.normalize(target - localTransform.Position), localTransform.Up()), deltaTime * rotationSpeed);
