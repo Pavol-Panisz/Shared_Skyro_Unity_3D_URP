@@ -48,7 +48,7 @@ public partial struct BoidSystem : ISystem
         boidSpeed = 2f;
         randomPosDist = 20f;
         seeRadius = 7.5f;
-        rotationSpeed = .2f;
+        rotationSpeed = .1f;
 
         separationEnabled = true;
         separationDistance = 1;
