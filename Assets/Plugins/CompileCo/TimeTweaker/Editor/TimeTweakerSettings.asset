@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: TimeTweakerSettings
   m_EditorClassIdentifier: 
   minTimeScale: 0
-  maxTimeScale: 10
+  maxTimeScale: 20
   defaultTimeScale: 1
-  lastKnownTimeScale: 1
+  lastKnownTimeScale: 20

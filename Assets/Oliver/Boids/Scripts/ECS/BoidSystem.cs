@@ -36,8 +36,7 @@ public partial struct BoidSystem : ISystem
 
     //References
     public NativeArray<LocalTransform> boids;
-    /*public NativeArray<LocalTransform> firstboids;
-    public NativeArray<LocalTransform> secondboids;*/
+    BoidCalculationJob boidCalculationJob;
 
     public void OnCreate(ref SystemState state)
     {
@@ -47,18 +46,18 @@ public partial struct BoidSystem : ISystem
     private void SetupVariables()
     {
         boidSpeed = 2f;
-        randomPosDist = 10f;
-        seeRadius = 4f;
-        rotationSpeed = 0.5f;
+        randomPosDist = 30f;
+        seeRadius = 30f;
+        rotationSpeed = 0.4f;
 
-        separationEnabled = true;
+        separationEnabled = false;
         separationDistance = 1;
-        separationMultiplier = 2000;
+        separationMultiplier = 3000;
 
         aligmentEnabled = true;
-        aligmentMultiplier = 500;
+        aligmentMultiplier = 1000;
 
-        cohesionEnabled = true;
+        cohesionEnabled = false;
     }
 
     [BurstCompile]
@@ -72,44 +71,31 @@ public partial struct BoidSystem : ISystem
 
             boids = query.ToComponentDataArray<LocalTransform>(Allocator.Persistent);
 
-            /*firstboids = new NativeArray<LocalTransform>(boids.Length / 2, Allocator.Persistent);
-            secondboids = new NativeArray<LocalTransform>(boids.Length / 2, Allocator.Persistent);
-
-            for (int i = 0; i < boids.Length; i++)
+            boidCalculationJob = new BoidCalculationJob
             {
-                if (i < boids.Length / 2)
-                {
-                    firstboids[i] = boids[i];
-                }
-                else
-                {
-                    secondboids[boids.Length - i] = boids[i];
-                }
-            }*/
+                boidSpeed = boidSpeed,
+                randomPosDist = randomPosDist,
+                seeRadius = seeRadius,
+                rotationSpeed = rotationSpeed,
+
+                separationEnabled = separationEnabled,
+                separationDistance = separationDistance,
+                separationMultiplier = separationMultiplier,
+
+                aligmentEnabled = aligmentEnabled,
+                aligmentMultiplier = aligmentMultiplier,
+
+                cohesionEnabled = cohesionEnabled,
+
+                deltaTime = SystemAPI.Time.DeltaTime,
+
+                boids = boids
+
+            };
         }
-
-        BoidCalculationJob boidCalculationJob = new BoidCalculationJob
-        {
-            boidSpeed = boidSpeed,
-            randomPosDist = randomPosDist,
-            seeRadius = seeRadius,
-            rotationSpeed = rotationSpeed,
-
-            separationEnabled = separationEnabled,
-            separationDistance = separationDistance,
-            separationMultiplier = separationMultiplier,
-
-            aligmentEnabled = aligmentEnabled,
-            aligmentMultiplier = aligmentMultiplier,
-
-            cohesionEnabled = cohesionEnabled,
-
-            deltaTime = SystemAPI.Time.DeltaTime,
-
-            boids = boids
-
-        };
-        boidCalculationJob.Schedule();
+        
+        boidCalculationJob.deltaTime = SystemAPI.Time.DeltaTime;
+        boidCalculationJob.ScheduleParallel();
     }
 
     [BurstCompile]
@@ -127,7 +113,14 @@ public partial struct BoidSystem : ISystem
             }
         }
 
-        centerOfMass = centerOfMass / index;
+        if (index > 0)
+        {
+            centerOfMass = centerOfMass / index;
+        }
+        else
+        {
+            centerOfMass = localTransform.Position;
+        }
         //Debug.DrawLine(centerOfMass, new float3(centerOfMass.x, centerOfMass.y + 0.5f, centerOfMass.z), Color.red, 0.1f);
 
         return centerOfMass;
@@ -173,82 +166,64 @@ public partial struct BoidSystem : ISystem
         public void Execute(ref LocalTransform localTransform)
         {
             float dist;
-            float3 centerOfMass = float3.zero;
+            float3 centerOfMass = CalculateCenterOfMass(localTransform, boids, seeRadius);
             float3 separationDir = float3.zero;
             float3 aligmentDir = float3.zero;
             float3 target = float3.zero;
-
-            NativeArray<float3> aligmentDirs = new NativeArray<float3>(boids.Length, Allocator.Temp);
-            NativeArray<float3> separationDirs = new NativeArray<float3>(boids.Length, Allocator.Temp);
-
-            target = float3.zero;
-
-            //Calculate Values
-            dist = math.distance(localTransform.Position, target);
-
-            centerOfMass = CalculateCenterOfMass(localTransform, boids, seeRadius);
+            int separations = 0;
+            int aligments = 0;
 
             separationDir = float3.zero;
             aligmentDir = float3.zero;
 
-            for (int i = 0; i < aligmentDirs.Length; i++)
+            //Get all directions around
+            foreach (LocalTransform boid in boids)
             {
-                aligmentDirs[i] = 0;
-                separationDirs[i] = 0;
+                if (IsEqual(boid.Position, localTransform.Position)) continue;
+
+                dist = math.distance(localTransform.Position, boid.Position); 
+                    
+                if (separationEnabled && dist < separationDistance)
+                {
+                    separationDir += boid.Position - localTransform.Position;
+                    separations++;
+                }
+
+                if (aligmentEnabled && dist < seeRadius)
+                {
+                    aligmentDir += boid.Forward();
+                    aligments++;
+                }
+            }
+
+            if (separations > 0)
+            {
+                separationDir = -(separationDir / separations);
+            }
+            else
+            {
+                separationDir = float3.zero;
+            }
+            if (aligments > 0)
+            {
+                aligmentDir = aligmentDir / aligments;
+            }
+            else
+            {
+                aligmentDir = float3.zero;
             }
 
             if (cohesionEnabled)
             {
                 target = centerOfMass;
             }
-
-            int a = 0;
-            if (separationEnabled)
+            else
             {
-                //Get all directions around
-                foreach (LocalTransform boid in boids)
-                {
-                    if (boid.Position.x == localTransform.Position.x) continue;
-                    if (math.distance(localTransform.Position, boid.Position) < separationDistance)
-                    {
-                        separationDirs[a] = boid.Position - localTransform.Position;
-                    }
-                }
-
-                if (separationDirs.Length > 0)
-                {
-                    foreach (float3 dir in separationDirs)
-                    {
-                        separationDir += dir;
-                    }
-                    separationDir = -(separationDir / separationDirs.Length);    
-                }
+                target = float3.zero;
             }
 
-            if (aligmentEnabled)
-            {
-                a = 0;
-                //Get all directions around
-                foreach (LocalTransform boid in boids)
-                {
-                    if (IsEqual(boid.Position, localTransform.Position)) continue;
-                    if (math.distance(localTransform.Position, boid.Position) < seeRadius)
-                    {
-                        aligmentDirs[a] = boid.Forward();
-                    }
-                }
 
-                if (aligmentDirs.Length > 0)
-                {
-                    foreach (float3 dir in aligmentDirs)
-                    {
-                        aligmentDir += dir;
-                    }
-                    aligmentDir = aligmentDir / aligmentDirs.Length;
-                }
-            }
-
-            if (IsEqual(aligmentDir + (separationDir * separationMultiplier), float3.zero))
+            if (IsEqual(target, float3.zero))
             {
                 target = localTransform.Position + localTransform.Forward();
             }
