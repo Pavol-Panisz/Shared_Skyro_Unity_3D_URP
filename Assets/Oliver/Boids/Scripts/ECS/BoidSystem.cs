@@ -52,10 +52,10 @@ public partial struct BoidSystem : ISystem
 
         separationEnabled = true;
         separationDistance = 1;
-        separationMultiplier = 5000;
+        separationMultiplier = 4;
 
         aligmentEnabled = true;
-        aligmentMultiplier = 1000;
+        aligmentMultiplier = 1;
 
         cohesionEnabled = true;
     }
@@ -231,7 +231,7 @@ public partial struct BoidSystem : ISystem
                 target += (aligmentDir * aligmentMultiplier) + (separationDir * separationMultiplier);
             }
 
-            Debug.DrawLine(localTransform.Position, target, Color.white);
+            //Debug.DrawLine(localTransform.Position, target, Color.white);
 
             //Change Rot
             localTransform.Rotation = Quaternion.Slerp(localTransform.Rotation, quaternion.LookRotationSafe(math.normalize(target - localTransform.Position), localTransform.Up()), deltaTime * rotationSpeed);
