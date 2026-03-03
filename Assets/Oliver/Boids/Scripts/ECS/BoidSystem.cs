@@ -46,18 +46,18 @@ public partial struct BoidSystem : ISystem
     private void SetupVariables()
     {
         boidSpeed = 2f;
-        randomPosDist = 30f;
-        seeRadius = 30f;
-        rotationSpeed = 0.4f;
+        randomPosDist = 20f;
+        seeRadius = 7.5f;
+        rotationSpeed = .4f;
 
-        separationEnabled = false;
+        separationEnabled = true;
         separationDistance = 1;
         separationMultiplier = 3000;
 
         aligmentEnabled = true;
         aligmentMultiplier = 1000;
 
-        cohesionEnabled = false;
+        cohesionEnabled = true;
     }
 
     [BurstCompile]
@@ -223,7 +223,7 @@ public partial struct BoidSystem : ISystem
             }
 
 
-            if (IsEqual(target, float3.zero))
+            if (math.all((aligmentDir * aligmentMultiplier) + (separationDir * separationMultiplier) == float3.zero))
             {
                 target = localTransform.Position + localTransform.Forward();
             }
