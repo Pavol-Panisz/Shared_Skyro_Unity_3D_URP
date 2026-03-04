@@ -47,13 +47,13 @@ public partial struct BoidSystem : ISystem
     private void SetupVariables()
     {
         boidSpeed = 2f;
-        randomPosDist = 20f;
-        seeRadius = 5f;
+        randomPosDist = 30f;
+        seeRadius = 6f;
         rotationSpeed = .3f;
 
-        separationEnabled = false;
-        separationDistance = 1;
-        separationMultiplier = 4;
+        separationEnabled = true;
+        separationDistance = 1f;
+        separationMultiplier = 5;
 
         aligmentEnabled = true;
         aligmentMultiplier = 4;
