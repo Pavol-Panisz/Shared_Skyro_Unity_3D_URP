@@ -47,7 +47,7 @@ public partial struct BoidSystem : ISystem
     private void SetupVariables()
     {
         boidSpeed = 2f;
-        randomPosDist = 30f;
+        randomPosDist = 25f;
         seeRadius = 6f;
         rotationSpeed = .3f;
 
