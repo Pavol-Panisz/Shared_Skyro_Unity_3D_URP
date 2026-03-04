@@ -6,6 +6,7 @@ using Unity.Collections;
 using Unity.Burst;
 using Unity.Entities.UniversalDelegates;
 using Unity.Jobs;
+using System;
 
 public partial struct BoidSystem : ISystem
 {
@@ -67,7 +68,7 @@ public partial struct BoidSystem : ISystem
         if (boids.Length <= 0)
         {
             EntityQuery query = SystemAPI.QueryBuilder()
-                .WithAll<LocalTransform>()
+                .WithAll<LocalTransform/*, BoidScript*/>()
                 .Build();
 
             boids = query.ToComponentDataArray<LocalTransform>(Allocator.Persistent);
@@ -91,7 +92,6 @@ public partial struct BoidSystem : ISystem
                 deltaTime = SystemAPI.Time.DeltaTime,
 
                 boids = boids
-
             };
         }
         
@@ -99,33 +99,7 @@ public partial struct BoidSystem : ISystem
         boidCalculationJob.ScheduleParallel();
     }
 
-    [BurstCompile]
-    private static float3 CalculateCenterOfMass(LocalTransform localTransform, NativeArray<LocalTransform> boids, float seeRadius)
-    {
-        float3 centerOfMass = float3.zero;
-        int index = 0;
-
-        foreach (LocalTransform boid in boids)
-        {
-            if (math.distance(boid.Position, localTransform.Position) < seeRadius)
-            {
-                centerOfMass += boid.Position;
-                index++;
-            }
-        }
-
-        if (index > 0)
-        {
-            centerOfMass = centerOfMass / index;
-        }
-        else
-        {
-            centerOfMass = localTransform.Position;
-        }
-        //Debug.DrawLine(centerOfMass, new float3(centerOfMass.x, centerOfMass.y + 0.5f, centerOfMass.z), Color.red, 0.1f);
-
-        return centerOfMass;
-    }
+    
 
     [BurstCompile]
     public partial struct BoidCalculationJob : IJobEntity
@@ -158,6 +132,7 @@ public partial struct BoidSystem : ISystem
         public void Execute(ref LocalTransform localTransform)
         {
             float dist;
+            
             float3 centerOfMass = CalculateCenterOfMass(localTransform, boids, seeRadius);
             float3 separationDir = float3.zero;
             float3 aligmentDir = float3.zero;
@@ -241,6 +216,34 @@ public partial struct BoidSystem : ISystem
 
             if (localTransform.Position.z > randomPosDist) localTransform.Position = new float3(localTransform.Position.x, localTransform.Position.y, -randomPosDist);
             if (localTransform.Position.z < -randomPosDist) localTransform.Position = new float3(localTransform.Position.x, localTransform.Position.y, randomPosDist);
+        }
+
+        [BurstCompile]
+        private float3 CalculateCenterOfMass(LocalTransform localTransform, NativeArray<LocalTransform> boids, float seeRadius)
+        {
+            int index = 0;
+            float3 centerOfMass = float3.zero;
+
+            foreach (LocalTransform boid in boids)
+            {
+                if (math.distance(boid.Position, localTransform.Position) < seeRadius)
+                {
+                    centerOfMass += boid.Position;
+                    index++;
+                }
+            }
+
+            if (index > 0)
+            {
+                centerOfMass = centerOfMass / index;
+            }
+            else
+            {
+                centerOfMass = localTransform.Position;
+            }
+
+            return centerOfMass;
+            //Debug.DrawLine(centerOfMass, new float3(centerOfMass.x, centerOfMass.y + 0.5f, centerOfMass.z), Color.red, 0.1f);
         }
     }
 }
