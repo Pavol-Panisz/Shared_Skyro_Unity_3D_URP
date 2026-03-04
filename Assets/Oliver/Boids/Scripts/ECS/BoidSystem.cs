@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using Unity.Collections;
 using Unity.Burst;
 using Unity.Entities.UniversalDelegates;
+using Unity.Jobs;
 
 public partial struct BoidSystem : ISystem
 {
@@ -46,18 +47,18 @@ public partial struct BoidSystem : ISystem
     private void SetupVariables()
     {
         boidSpeed = 2f;
-        randomPosDist = 30f;
-        seeRadius = 7.5f;
-        rotationSpeed = .1f;
+        randomPosDist = 20f;
+        seeRadius = 5f;
+        rotationSpeed = .3f;
 
         separationEnabled = false;
         separationDistance = 1;
         separationMultiplier = 4;
 
         aligmentEnabled = true;
-        aligmentMultiplier = 3;
+        aligmentMultiplier = 4;
 
-        cohesionEnabled = false;
+        cohesionEnabled = true;
     }
 
     [BurstCompile]
@@ -126,15 +127,6 @@ public partial struct BoidSystem : ISystem
         return centerOfMass;
     }
 
-    private static bool IsEqual(float3 first, float3 second)
-    {
-        if (first.x != second.x) return false;
-        if (first.y != second.y) return false;
-        if (first.z != second.z) return false;
-
-        return true;
-    }
-
     [BurstCompile]
     public partial struct BoidCalculationJob : IJobEntity
     {
@@ -179,10 +171,10 @@ public partial struct BoidSystem : ISystem
             //Get all directions around
             foreach (LocalTransform boid in boids)
             {
-                if (IsEqual(boid.Position, localTransform.Position)) continue;
+                if (math.all(boid.Position == localTransform.Position)) continue;
 
                 dist = math.distance(localTransform.Position, boid.Position); 
-                    
+                
                 if (separationEnabled && dist < separationDistance)
                 {
                     separationDir += boid.Position - localTransform.Position;
@@ -219,10 +211,10 @@ public partial struct BoidSystem : ISystem
             }
             else
             {
-                target = float3.zero;
+                target = localTransform.Position;
             }
 
-            if (math.all((aligmentDir * aligmentMultiplier) + (separationDir * separationMultiplier) == float3.zero))
+            if (math.all((aligmentDir * aligmentMultiplier) + (separationDir * separationMultiplier) == float3.zero) || math.all(centerOfMass == localTransform.Position))
             {
                 target = localTransform.Position + localTransform.Forward();
             }
