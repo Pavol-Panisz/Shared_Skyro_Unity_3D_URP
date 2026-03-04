@@ -4,9 +4,6 @@ using Unity.Transforms;
 using Unity.Mathematics;
 using Unity.Collections;
 using Unity.Burst;
-using Unity.Entities.UniversalDelegates;
-using Unity.Jobs;
-using System;
 
 public partial struct BoidSystem : ISystem
 {
@@ -43,6 +40,10 @@ public partial struct BoidSystem : ISystem
     public void OnCreate(ref SystemState state)
     {
         SetupVariables();
+    }
+
+    public void OnDestroy(ref SystemState systemState) {
+        boids.Dispose();
     }
 
     private void SetupVariables()
@@ -99,8 +100,6 @@ public partial struct BoidSystem : ISystem
         boidCalculationJob.ScheduleParallel();
     }
 
-    
-
     [BurstCompile]
     public partial struct BoidCalculationJob : IJobEntity
     {
@@ -136,12 +135,9 @@ public partial struct BoidSystem : ISystem
             float3 centerOfMass = CalculateCenterOfMass(localTransform, boids, seeRadius);
             float3 separationDir = float3.zero;
             float3 aligmentDir = float3.zero;
-            float3 target = float3.zero;
+            float3 target;
             int separations = 0;
             int aligments = 0;
-
-            separationDir = float3.zero;
-            aligmentDir = float3.zero;
 
             //Get all directions around
             foreach (LocalTransform boid in boids)
@@ -198,9 +194,9 @@ public partial struct BoidSystem : ISystem
                 target += (aligmentDir * aligmentMultiplier) + (separationDir * separationMultiplier);
             }
 
-            Debug.DrawLine(localTransform.Position, target, Color.red);
-            Debug.DrawLine(localTransform.Position, centerOfMass, Color.green);
-            Debug.DrawRay(localTransform.Position, aligmentDir * aligmentMultiplier, Color.white);
+            //Debug.DrawLine(localTransform.Position, target, Color.red);
+            //Debug.DrawLine(localTransform.Position, centerOfMass, Color.green);
+            //Debug.DrawRay(localTransform.Position, aligmentDir * aligmentMultiplier, Color.white);
 
             //Change Rot
             localTransform.Rotation = Quaternion.Slerp(localTransform.Rotation, quaternion.LookRotationSafe(math.normalize(target - localTransform.Position), localTransform.Up()), deltaTime * rotationSpeed);
@@ -241,7 +237,6 @@ public partial struct BoidSystem : ISystem
             {
                 centerOfMass = localTransform.Position;
             }
-
             return centerOfMass;
             //Debug.DrawLine(centerOfMass, new float3(centerOfMass.x, centerOfMass.y + 0.5f, centerOfMass.z), Color.red, 0.1f);
         }
