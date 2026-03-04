@@ -132,11 +132,13 @@ public partial struct BoidSystem : ISystem
         {
             float dist;
             
-            float3 centerOfMass = CalculateCenterOfMass(localTransform, boids, seeRadius);
+            //float3 centerOfMass = CalculateCenterOfMass(localTransform, boids, seeRadius);
+            float3 centerOfMass = float3.zero;
             float3 separationDir = float3.zero;
             float3 aligmentDir = float3.zero;
             float3 target;
             int separations = 0;
+            int masses = 0;
             int aligments = 0;
 
             //Get all directions around
@@ -157,6 +159,12 @@ public partial struct BoidSystem : ISystem
                     aligmentDir += boid.Forward();
                     aligments++;
                 }
+
+                if (cohesionEnabled)
+                {
+                    centerOfMass += boid.Position;
+                    masses++;
+                }
             }
 
             if (separations > 0)
@@ -174,6 +182,14 @@ public partial struct BoidSystem : ISystem
             else
             {
                 aligmentDir = float3.zero;
+            }
+            if (masses > 0)
+            {
+                centerOfMass = centerOfMass / masses;
+            }
+            else
+            {
+                centerOfMass = float3.zero;
             }
 
             if (cohesionEnabled)
