@@ -55,7 +55,7 @@ public partial struct BoidSystem : ISystem
 
         separationEnabled = true;
         separationDistance = 1f;
-        separationMultiplier = 5;
+        separationMultiplier = 10;
 
         aligmentEnabled = true;
         aligmentMultiplier = 4;
@@ -189,7 +189,7 @@ public partial struct BoidSystem : ISystem
             }
             else
             {
-                centerOfMass = float3.zero;
+                centerOfMass = localTransform.Position;
             }
 
             if (cohesionEnabled)
@@ -210,9 +210,9 @@ public partial struct BoidSystem : ISystem
                 target += (aligmentDir * aligmentMultiplier) + (separationDir * separationMultiplier);
             }
 
-            //Debug.DrawLine(localTransform.Position, target, Color.red);
-            //Debug.DrawLine(localTransform.Position, centerOfMass, Color.green);
-            //Debug.DrawRay(localTransform.Position, aligmentDir * aligmentMultiplier, Color.white);
+            Debug.DrawLine(localTransform.Position, target, Color.red);
+            Debug.DrawLine(localTransform.Position, centerOfMass, Color.green);
+            Debug.DrawRay(localTransform.Position, aligmentDir * aligmentMultiplier, Color.white);
 
             //Change Rot
             localTransform.Rotation = Quaternion.Slerp(localTransform.Rotation, quaternion.LookRotationSafe(math.normalize(target - localTransform.Position), localTransform.Up()), deltaTime * rotationSpeed);
