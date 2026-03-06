@@ -4,7 +4,7 @@ using UnityEngine.UI;
 [CreateAssetMenu]
 public class SOSO : ScriptableObject
 {
-    public string name;
+    public string Name;
 
     public string description;
 
@@ -18,5 +18,6 @@ public class SOSO : ScriptableObject
     void onEnable()
     {
         health = defaultValue;
+
     }
 }

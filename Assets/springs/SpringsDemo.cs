@@ -55,9 +55,6 @@ public class SpringsDemo : MonoBehaviour
             mainCube.transform.position = raycastHitPoint;
         }
 
-
-        Vector3 translation = target.position - transform.position;
-        Vector3 directionToTarget = translation.normalized;
         Vector3 something = (transform.position + target.position) / 2;
 
         middleCube.transform.LookAt(target, Vector3.right);
