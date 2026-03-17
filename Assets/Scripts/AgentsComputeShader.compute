@@ -1,0 +1,44 @@
+#pragma kernel CSMain
+
+StructuredBuffer<float3> positionsBuffer;
+RWStructuredBuffer<float3> separationForcesBuffer;
+
+float agentRadius;
+float agentSpeed;
+const uint agentCount = 512;
+
+[numthreads(64, 1, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    uint agentIndex = id.x;
+
+    if (agentIndex >= agentCount)
+        return;
+
+    float3 thisAgentPos = positionsBuffer[agentIndex];
+    float3 separationForce = float3(0.0, 0.0, 0.0);
+
+    for (uint i = 0; i < agentCount; i++)
+    {
+        if (i == agentIndex)
+            continue;
+
+        float3 otherAgentPos = positionsBuffer[i];
+        float3 translationToOther = otherAgentPos - thisAgentPos;
+        float distance = length(translationToOther);
+
+        if (distance > 0.0001 && distance <= agentRadius)
+        {
+            separationForce += -translationToOther / distance;
+        }
+    }
+
+    float forceLength = length(separationForce);
+
+    if (forceLength > 0.0001)
+        separationForce = (separationForce / forceLength) * agentSpeed;
+    else
+        separationForce = float3(0.0, 0.0, 0.0);
+
+    separationForcesBuffer[agentIndex] = separationForce;
+}
