@@ -455,7 +455,7 @@ GameObject:
   - component: {fileID: 1194720143}
   - component: {fileID: 1194720142}
   - component: {fileID: 1194720146}
-  - component: {fileID: 1194720147}
+  - component: {fileID: 1194720148}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -579,7 +579,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1194720147
+--- !u!114 &1194720148
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -588,10 +588,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1194720141}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1b453678bfce4d4680a99428383388c, type: 3}
+  m_Script: {fileID: 11500000, guid: e35dc7ae84c31684a8f9c8738cca6a60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bouncesCount: 0
+  currentMoney: 100
+  discountPercentage: 0
+  itemPrice: 70
+  remainingMoney: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

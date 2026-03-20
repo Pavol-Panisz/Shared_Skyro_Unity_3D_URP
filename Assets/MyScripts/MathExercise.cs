@@ -13,19 +13,28 @@ public class MathExercise : MonoBehaviour
     // Update is called once per frame
     private void OnCollisionEnter(Collision collision)
     {
-        
+
         bouncesCount++;
 
-        if (bouncesCount % 3 == 0 )
+        if (bouncesCount % 3 == 0 & bouncesCount % 5 == 0)
+
+        {
+            Debug.Log("FizzBuzz");
+        }
+        else if (bouncesCount % 3 == 0)
 
         {
             Debug.Log("Fizz");
-        }    
+        }
+        else if (bouncesCount % 5 == 0)
+        {
+            Debug.Log("Buzz");
+        }
         else
         {
             Debug.Log(bouncesCount);
         }
-
+           
 
 
     }
