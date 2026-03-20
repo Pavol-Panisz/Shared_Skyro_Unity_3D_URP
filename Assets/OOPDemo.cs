@@ -1,29 +1,45 @@
+
 using UnityEngine;
+using System.Collections.Generic;
 
-
-public class OOPDemo : MonoBehaviour, IDamageable
+public class Car
 {
-    
-    public int Health
+    public string brand;
+    public float topSpeed;
+
+    // default constructor
+    public Car()
     {
-        get 
-        {
-            Debug.Log("someone ELSE is reading health");    
-            return Health;
-        }
-        private set 
-        {
-            Health = value;
-
-            if (Health > 100) Health = 100;
-
-            if (Health < 0) Health = 0;
-        }
+        brand = "Toyota";
+        topSpeed = 0;
     }
 
-    public void TakeDamage(int amount)
+    // druhy constructor
+    public Car(string brand, float topSpeed)
     {
-        Health -= amount;
+        this.brand = brand;
+        this.topSpeed = topSpeed;
     }
+
+    ~Car()
+    {
+        Debug.Log("Goodbye cruel world");
+    }
+}
+public class OOPDemo : MonoBehaviour 
+{
+    List<Car> cars;
+
+    void Start()
+    {
+        cars = new List<Car>();
+
+        Car car1 = new Car("VW", 180f);
+
+        cars.Add(car1);
+
+        cars.Clear();
+    }
+
 
 }

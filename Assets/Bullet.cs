@@ -10,7 +10,7 @@ public class Bullet : MonoBehaviour
 
         OOPDemo demo = collision.gameObject.GetComponent<OOPDemo>();
 
-        Debug.Log(demo.Health);
+        //Debug.Log(demo.Health);
 
         IDamageable damageable = collision.gameObject.GetComponent<IDamageable>();
 
