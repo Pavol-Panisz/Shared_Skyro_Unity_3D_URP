@@ -1,39 +1,29 @@
 using UnityEngine;
 
 
-public class BaseEnemy
+public class OOPDemo : MonoBehaviour, IDamageable
 {
-    public int health;
-    public string name;
-    public float stopDistance, attackFrequency;
-
-    public void GoToPosition(Vector3 vec)
+    
+    public int Health
     {
+        get 
+        {
+            Debug.Log("someone ELSE is reading health");    
+            return Health;
+        }
+        private set 
+        {
+            Health = value;
+
+            if (Health > 100) Health = 100;
+
+            if (Health < 0) Health = 0;
+        }
     }
 
-    public virtual void Attack()
-    {
-
-    } // virtual - mozem overridnut no nemusim
-
-}
-
-
-public class RangedEnemy : BaseEnemy
-{
-
-}
-
-
-public class OOPDemo : MonoBehaviour, IDamageable, IHealth
-{
     public void TakeDamage(int amount)
     {
-
+        Health -= amount;
     }
 
-    public void MakeInvincible(int duration)
-    {
-
-    }
 }

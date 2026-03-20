@@ -1,15 +1,19 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Bullet : MonoBehaviour
 {
 
     public void OnCollisionEnter(Collision collision)
     {
-        IDamageable damageable;
+        // toto je zly priklad ale aspon tu vidno ako sa pouziva interface a setter
 
-        if (collision.gameObject.TryGetComponent<IDamageable>(out damageable))
-        {
-            damageable.TakeDamage(5);
-        }
+        OOPDemo demo = collision.gameObject.GetComponent<OOPDemo>();
+
+        Debug.Log(demo.Health);
+
+        IDamageable damageable = collision.gameObject.GetComponent<IDamageable>();
+
+        damageable.TakeDamage(5);
     }
 }
