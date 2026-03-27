@@ -1,16 +1,22 @@
 using UnityEngine;
 
-public class AbilityBase : MonoBehaviour
+public abstract class AbilityBase : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public float cooldown = 1f;
+    protected float lastUseTime;
+
+    public virtual bool CanUse()
     {
-        
+        return Time.time >= lastUseTime + cooldown;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void TryUse()
     {
-        
+        if (!CanUse()) return;
+
+        Use();
+        lastUseTime = Time.time;
     }
+
+    protected abstract void Use();
 }

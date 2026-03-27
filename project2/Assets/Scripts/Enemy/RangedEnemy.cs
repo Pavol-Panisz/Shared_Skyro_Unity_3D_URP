@@ -1,16 +1,19 @@
 using UnityEngine;
 
-public class RangedEnemy : MonoBehaviour
+public class RangedEnemy : EnemyBase
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public GameObject projectilePrefab;
+    public Transform shootPoint;
+    public float projectileSpeed = 8f;
 
-    // Update is called once per frame
-    void Update()
+    protected override void Attack()
     {
-        
+        if (Time.time < lastAttackTime + attackCooldown) return;
+
+        lastAttackTime = Time.time;
+
+        GameObject proj = Instantiate(projectilePrefab, shootPoint.position, shootPoint.rotation);
+        Rigidbody rb = proj.GetComponent<Rigidbody>();
+        rb.linearVelocity = (player.position - shootPoint.position).normalized * projectileSpeed;
     }
 }

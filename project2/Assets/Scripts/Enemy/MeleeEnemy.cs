@@ -1,16 +1,18 @@
 using UnityEngine;
 
-public class MeleeEnemy : MonoBehaviour
+public class MeleeEnemy : EnemyBase
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public float damage = 10f;
 
-    // Update is called once per frame
-    void Update()
+    protected override void Attack()
     {
-        
+        base.Attack();
+
+        if (Time.time < lastAttackTime + 0.1f) return;
+
+        if (player.TryGetComponent(out IDamageable dmg))
+        {
+            dmg.TakeDamage(damage);
+        }
     }
 }

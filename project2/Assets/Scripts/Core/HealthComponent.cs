@@ -1,16 +1,32 @@
 using UnityEngine;
 
-public class HealthComponent : MonoBehaviour
+public class HealthComponent : MonoBehaviour, IDamageable
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public float maxHealth = 100f;
+    public float currentHealth;
+
+    private void Awake()
     {
-        
+        currentHealth = maxHealth;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void TakeDamage(float amount)
     {
-        
+        currentHealth -= amount;
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    public void Heal(float amount)
+    {
+        currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
+    }
+
+    void Die()
+    {
+        Destroy(gameObject);
     }
 }

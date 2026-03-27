@@ -1,16 +1,15 @@
 using UnityEngine;
 
-public class ShootFireball : MonoBehaviour
+public class FireballAbility : AbilityBase
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public GameObject fireballPrefab;
+    public Transform firePoint;
+    public float speed = 10f;
 
-    // Update is called once per frame
-    void Update()
+    protected override void Use()
     {
-        
+        GameObject fb = Instantiate(fireballPrefab, firePoint.position, firePoint.rotation);
+        Rigidbody rb = fb.GetComponent<Rigidbody>();
+        rb.linearVelocity = firePoint.forward * speed;
     }
 }

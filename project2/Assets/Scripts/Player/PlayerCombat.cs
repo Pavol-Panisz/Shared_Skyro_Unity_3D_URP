@@ -2,15 +2,19 @@ using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public AbilityBase fireball;
+    public AbilityBase heal;
 
-    // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetMouseButtonDown(0))
+        {
+            fireball.TryUse();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            heal.TryUse();
+        }
     }
 }
