@@ -1,16 +1,21 @@
+using System;
 using UnityEngine;
 
 public class Money : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public int currentMoney = 0;
+    //public int currentMoney = 0;
 
-    [Range(0, 1)]
-    public float discountPercentage;
+    // [Range(0, 1)]
+    // public float discountPercentage;
 
-    public int itemPrice;
+    // public int itemPrice;
 
-    public int remainingMoney;
+    // public int remainingMoney;
+
+    public int maxAmount;
+    public int currentNumber;
+    public int multiplier ;
 
     void Start()
     {
@@ -24,8 +29,13 @@ public class Money : MonoBehaviour
     
     void Update()
     {
-        remainingMoney = currentMoney - (itemPrice - (int)(itemPrice*discountPercentage));
-        
+        //remainingMoney = currentMoney - (itemPrice - (int)(itemPrice * discountPercentage)); 
+       if (maxAmount > currentNumber)
+        {
+            currentNumber++; 
+        }
+      
+            
          
     }
 }
