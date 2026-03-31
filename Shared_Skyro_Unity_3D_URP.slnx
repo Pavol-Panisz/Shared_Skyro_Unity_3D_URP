@@ -20,4 +20,5 @@
   <Project Path="QFSW.QC.Demo.csproj" />
   <Project Path="QFSW.QC.Editor.Tools.csproj" />
   <Project Path="QFSW.QC.ScanRules.csproj" />
+  <Project Path="FractalAD.csproj" />
 </Solution>

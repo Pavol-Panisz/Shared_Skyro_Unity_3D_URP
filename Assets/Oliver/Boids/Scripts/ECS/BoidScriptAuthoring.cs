@@ -3,12 +3,14 @@ using UnityEngine;
 
 public class BoidScriptAuthoring : MonoBehaviour
 {
-    private class Baker : Baker<BoidScriptAuthoring>
+    
+}
+
+public class SimpleBaker : Baker<BoidScriptAuthoring>()
     {
         public override void Bake(BoidScriptAuthoring authoring)
         {
-            Entity entity = GetEntity(TransformUsageFlags.Dynamic)
+            Entity entity = GetEntity(TransformUsageFlags.Dynamic);
+            AddComponent(entity, new BoidScriptAuthoring{});
         }
-    }
-}
-*/
+    }*/

@@ -55,7 +55,7 @@ public partial struct BoidSystem : ISystem
 
         separationEnabled = true;
         separationDistance = 1f;
-        separationMultiplier = 10;
+        separationMultiplier = 5;
 
         aligmentEnabled = true;
         aligmentMultiplier = 4;
@@ -132,13 +132,12 @@ public partial struct BoidSystem : ISystem
         {
             float dist;
             
-            //float3 centerOfMass = CalculateCenterOfMass(localTransform, boids, seeRadius);
-            float3 centerOfMass = float3.zero;
+            float3 centerOfMass = CalculateCenterOfMass(localTransform, boids, seeRadius);
+            //float3 centerOfMass = float3.zero;
             float3 separationDir = float3.zero;
             float3 aligmentDir = float3.zero;
             float3 target;
             int separations = 0;
-            int masses = 0;
             int aligments = 0;
 
             //Get all directions around
@@ -159,12 +158,6 @@ public partial struct BoidSystem : ISystem
                     aligmentDir += boid.Forward();
                     aligments++;
                 }
-
-                if (cohesionEnabled)
-                {
-                    centerOfMass += boid.Position;
-                    masses++;
-                }
             }
 
             if (separations > 0)
@@ -182,14 +175,6 @@ public partial struct BoidSystem : ISystem
             else
             {
                 aligmentDir = float3.zero;
-            }
-            if (masses > 0)
-            {
-                centerOfMass = centerOfMass / masses;
-            }
-            else
-            {
-                centerOfMass = localTransform.Position;
             }
 
             if (cohesionEnabled)
@@ -210,9 +195,9 @@ public partial struct BoidSystem : ISystem
                 target += (aligmentDir * aligmentMultiplier) + (separationDir * separationMultiplier);
             }
 
-            Debug.DrawLine(localTransform.Position, target, Color.red);
-            Debug.DrawLine(localTransform.Position, centerOfMass, Color.green);
-            Debug.DrawRay(localTransform.Position, aligmentDir * aligmentMultiplier, Color.white);
+            //Debug.DrawLine(localTransform.Position, target, Color.red);
+            //Debug.DrawLine(localTransform.Position, centerOfMass, Color.green);
+            //Debug.DrawRay(localTransform.Position, aligmentDir * aligmentMultiplier, Color.white);
 
             //Change Rot
             localTransform.Rotation = Quaternion.Slerp(localTransform.Rotation, quaternion.LookRotationSafe(math.normalize(target - localTransform.Position), localTransform.Up()), deltaTime * rotationSpeed);

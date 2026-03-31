@@ -1,0 +1,49 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture2D<float4> Result;
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    /*float x = id.x;
+    float y = id.y;
+
+    float r = x / 255.0;
+    float g = y / 255.0;
+
+    Result[int2(x, y)] = float4(r, g, 0.0, 1.0);*/
+
+    float x = id.x;
+    float y = id.y;
+
+    float2 c = float2(x, y);
+    float2 z = float2(0, 0);
+
+    float2 z_next = float2(0, 0);
+
+    float g = 0;
+
+    bool isInside = true;
+    for (int n = 0; n < 10; n++)
+    {
+        float real = z.x * z.x + z.y * z.y *(-1);
+        float imag = 2 * z.x * z.y;
+        z.x = real;
+        z.y = imag;
+
+        z_next = float2(real, imag) + c;
+        if (length(z_next) > 2)
+        {
+            isInside = false;
+            g = 255;
+            break;
+        }
+    }
+
+    z = z_next;
+    Result[int2(x, y)] = float4(g, 0, 0, 1.0);
+}
+
