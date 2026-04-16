@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Movement : MonoBehaviour
+public class movement : MonoBehaviour
 {
     public float health;
     private Rigidbody rb;
