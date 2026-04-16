@@ -6,8 +6,8 @@ public class Movement : MonoBehaviour
 {
     protected Rigidbody _rigidobdy;
 
-    [SerializeField] protected float _speed;
-    public float curSpeed;
+    [SerializeField] protected float _speed = 3f;
+    [HideInInspector] public float curSpeed;
 
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private float _distanceFromPivotToTheGround = 0f;
@@ -20,10 +20,16 @@ public class Movement : MonoBehaviour
     [HideInInspector] public bool canChangeLinearDamping = true;
     public float linearDamping { get { return _rigidobdy.linearDamping; } set { if (canChangeLinearDamping) { _rigidobdy.linearDamping = value; } } }
     [SerializeField] private float _airMultiplier = 0.8f;
-    [SerializeField] private float _jumpForce;
-    [SerializeField] private float _minJumpTime;
+    [SerializeField] private float _jumpForce = 7f;
+    [SerializeField] private float _minJumpTime = 0.1f;
     private float _curJumpTime;
 
+    [SerializeField, Tooltip("Time to rotate on 90 degree angle")] private float _rotSmoothTime = 0.1f;
+    private float _curTimeToRotate;
+    private float _curRotationTime;
+    private Vector3 _startRotatingForwardVector;
+
+    protected Vector3 _beforeMoveDirection;
     protected Vector2 _curHorizontalMoveDirection;
 
     protected event Action onHittedTheGround;
@@ -60,17 +66,39 @@ public class Movement : MonoBehaviour
 
     }
 
-    protected virtual void Move(Vector2 horizontalMoveDirection)
+    protected virtual void Move(Vector3 horizontalMoveDirection)
     {
         if (horizontalMoveDirection.magnitude < 0.1f) return;
 
-        Vector3 moveDir = new Vector3(horizontalMoveDirection.x, 0f, horizontalMoveDirection.y);
-        if(_onSlope)
+        Vector3 moveDir = new Vector3(horizontalMoveDirection.x, 0f, horizontalMoveDirection.z);
+        RotateObjectToTheMoveDirection(moveDir);
+
+        if (_onSlope)
         {
             moveDir = GetSlopeMoveDirection(moveDir, _groundHit.normal);
         }
-
         _rigidobdy.AddForce(moveDir * curSpeed * 80f * (_isGrounded ? 1f : _airMultiplier), ForceMode.Force);
+    }
+
+    protected virtual void RotateObjectToTheMoveDirection(Vector3 moveDirection)
+    {
+        if (moveDirection.magnitude <= 0.1f) return;
+        if (_beforeMoveDirection != moveDirection)
+        {
+            _curTimeToRotate = Vector3.Angle(transform.forward, moveDirection) / 90f * _rotSmoothTime;
+            _curRotationTime = 0f;
+            _startRotatingForwardVector = transform.forward;
+            _beforeMoveDirection = moveDirection;
+        }
+
+        _curRotationTime += Time.fixedDeltaTime;
+
+        RotateObjectToTheMoveDirection(moveDirection, _startRotatingForwardVector, _curTimeToRotate, _curRotationTime);
+    }
+
+    protected virtual void RotateObjectToTheMoveDirection(Vector3 moveDirection, Vector3 startForwardVector, float timeToRotate, float curRotateTime)
+    {
+        transform.forward = Vector3.Slerp(startForwardVector, moveDirection, curRotateTime / timeToRotate);
     }
 
     protected bool IsGrounded()
