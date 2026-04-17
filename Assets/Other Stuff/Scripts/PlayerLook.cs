@@ -14,6 +14,7 @@ public class PlayerLook : MonoBehaviour
 
     float pitch;        // camera pitch (X, world)
     float targetYaw;    // desired world yaw driven by mouse
+    bool cursorFree = false;
 
     void Start()
     {
@@ -30,6 +31,16 @@ public class PlayerLook : MonoBehaviour
 
     void LateUpdate()
     {
+        // Toggle cursor on right mouse button
+        if (Input.GetMouseButtonDown(1))
+        {
+            cursorFree = !cursorFree;
+            Cursor.visible = cursorFree;
+            Cursor.lockState = cursorFree ? CursorLockMode.None : CursorLockMode.Locked;
+        }
+
+        if (cursorFree) return;
+
         // Read mouse (render-rate), build world-space look
         float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
