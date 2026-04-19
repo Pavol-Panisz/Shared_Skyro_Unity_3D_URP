@@ -5,11 +5,11 @@ public class FireballScript : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         other.gameObject.TryGetComponent(out IDamageable damageable);
-        if (damageable != null && !other.gameObject.GetComponent<Player>())
+        other.gameObject.TryGetComponent(out Player player);
+
+        if (damageable != null && player == null)
         {
             damageable.DealDamage(1);
         }
-
-        Destroy(gameObject);
     }
 }

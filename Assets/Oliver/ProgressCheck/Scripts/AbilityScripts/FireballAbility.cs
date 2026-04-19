@@ -10,19 +10,9 @@ public class FireballAbility : BaseAbility
         player = FindAnyObjectByType<Player>().transform;
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(key) && canUseAbility)
-        {
-            ActivateAbility();
-            canUseAbility = false;
-        }
-    }
-
     public override void ActivateAbility()
     {
         SpawnFireball();
-        Invoke(nameof(ResetAbility), cooldown);
     }
 
     private void SpawnFireball()

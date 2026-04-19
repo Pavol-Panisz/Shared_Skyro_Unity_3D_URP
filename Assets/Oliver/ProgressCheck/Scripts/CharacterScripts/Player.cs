@@ -1,7 +1,10 @@
+using TMPro;
 using UnityEngine;
 
 public class Player : Character
 {
+    [SerializeField]private TextMeshProUGUI healthText;
+
     Rigidbody rb;
 	Camera viewCamera;
 	Vector3 velocity;
@@ -18,6 +21,8 @@ public class Player : Character
 		velocity = new Vector3 (Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized * moveSpeed;
 
         if (Input.GetMouseButtonDown(0) && canAttack) Attack();
+
+        healthText.text = "Health: " + health;
 	}
 
 	void FixedUpdate() {
