@@ -57,13 +57,24 @@ public class Shop_zadanie : MonoBehaviour
                
                       
             }
-            
-
-            // Update is called once per frame
 
 
+        if (itemName == "EvilIsac" && boughtItem == true)
+        {
+            EvilIsac += 1;
+        }
+        if (itemName == "SharKhan" && boughtItem == true)
+        {
+            SharKhan += 1;
+        }
+        if (itemName == "JaneJuliet" && boughtItem == true)
+        {
+            JaneJuliet += 1;
+        }
 
-        
+
+
+
     }
 
 
