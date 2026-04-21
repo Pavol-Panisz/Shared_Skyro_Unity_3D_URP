@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class PlayerP : Character
+public class PlayerP : Character, IDamageable
 {
     public static PlayerP instance;
 

@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealthPoints: 10
-  currHealthPoint: 2
+  currHealthPoint: 10
   walkSpeed: 2
   attackSpeed: 10
   attackRadius: 6

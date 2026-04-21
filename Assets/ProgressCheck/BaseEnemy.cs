@@ -13,15 +13,20 @@ public abstract class BaseEnemy : Character
 
     IEnumerator Decide()
     {
-        if (Vector3.Distance(PlayerP.instance.transform.position, gameObject.transform.position) <= attackRadius)
+        while(gameObject != null)
         {
-            StartCoroutine(Attack());
+            print(Vector3.Distance(PlayerP.instance.transform.position, gameObject.transform.position));
+            if (Vector3.Distance(PlayerP.instance.transform.position, gameObject.transform.position) < attackRadius)
+            {
+                StartCoroutine(Attack());
+                yield return new WaitForSeconds(attackSpeed);
+            }
+            else
+            {
+                Chase();
+                yield return null;
+            }
         }
-        else
-        {
-            Chase();
-        }
-        yield return new WaitForSeconds(0.1f);
     }
     public void Chase()
     {

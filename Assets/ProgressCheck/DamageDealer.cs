@@ -4,15 +4,35 @@ using UnityEngine;
 public class DamageDealer : MonoBehaviour
 {
     public int damage;
-    private IEnumerator OnCollisionEnter2D(Collision2D collision)
+    public bool destroyOnHit = true;
+
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        var objectToDamage = collision.gameObject.GetComponent<IDamageable>();
-        objectToDamage.DealDamage(damage);
-        if (!gameObject.GetComponent<DamageAbility>() && gameObject != PlayerP.instance.sword)
+        GameObject hit = collision.gameObject;
+
+        GameObject owner = GetRootOwner();
+
+        if (hit == owner || hit.transform.IsChildOf(owner.transform)) return;
+
+        var damageable = hit.GetComponent<IDamageable>();
+        if (damageable == null) return;
+
+        damageable.DealDamage(damage);
+
+        if (destroyOnHit)
         {
             Destroy(gameObject);
         }
-        yield return new WaitForSeconds(0.1f);
-        if(gameObject != null) { Destroy(gameObject); }
+    }
+    private GameObject GetRootOwner()
+    {
+        Transform current = transform.parent;
+        while (current != null)
+        {
+            if (current.GetComponent<IDamageable>() != null)
+                return current.gameObject;
+            current = current.parent;
+        }
+        return gameObject;
     }
 }

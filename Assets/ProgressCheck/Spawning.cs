@@ -13,16 +13,19 @@ public class Spawning : MonoBehaviour
 
     IEnumerator spawnEnemy()
     {
-        var number = Random.Range(0, 2);
+        while (true)
+        {
+            var number = Random.Range(0, 2);
 
-        if(number == 0)
-        {
-            Instantiate(rangedEnemy, new Vector3(-5,0,0), Quaternion.identity);
+            if (number == 0)
+            {
+                Instantiate(rangedEnemy, new Vector3(-5, 0, 0), Quaternion.identity);
+            }
+            else
+            {
+                Instantiate(meleeEnemy, new Vector3(5, 0, 0), Quaternion.identity);
+            }
+            yield return new WaitForSeconds(Random.Range(4, 9));
         }
-        else
-        {
-            Instantiate(meleeEnemy, new Vector3(5, 0, 0), Quaternion.identity);
-        }
-        yield return new WaitForSeconds(Random.Range(4,9));
     }
 }

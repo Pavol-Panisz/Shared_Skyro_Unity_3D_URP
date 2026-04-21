@@ -12,7 +12,7 @@ public class RangedEnemy : BaseEnemy, IDamageable
     {
         while(gameObject != null)
         {
-            var createdProjectile = Instantiate(projectile, transform.position, Quaternion.identity);
+            var createdProjectile = Instantiate(projectile, transform.position, Quaternion.identity, transform);
             Vector2 directionToPlayer = (PlayerP.instance.transform.position - transform.position).normalized;
 
             float angle = Mathf.Atan2(directionToPlayer.y, directionToPlayer.x) * Mathf.Rad2Deg;
