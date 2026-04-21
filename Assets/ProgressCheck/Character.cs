@@ -3,10 +3,10 @@ using UnityEngine;
 
 public abstract class Character : MonoBehaviour, IDamageable
 {
-    public int maxHealthPoints {  get; private set; }
-    public int currHealthPoint {  get; set;}
-    public float walkSpeed { get; private set; }
-    public float attackSpeed {  get; set; }
+    public int maxHealthPoints = 10;
+    public int currHealthPoint = 10;
+    public float walkSpeed = 5f;
+    public float attackSpeed = 1f;
 
     public abstract IEnumerator Attack();
 

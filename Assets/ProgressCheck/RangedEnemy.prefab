@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 9101003998084737278}
   - component: {fileID: 62612159588283705}
-  - component: {fileID: 9092609993285087358}
   - component: {fileID: 3001178127463136279}
   - component: {fileID: 217874379921382625}
   m_Layer: 0
@@ -90,33 +89,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!50 &9092609993285087358
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1570087355541348702}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!61 &3001178127463136279
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -175,6 +147,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2144cdf5861fc84dae1cca83c52b38c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackRadius: 5
+  maxHealthPoints: 10
+  currHealthPoint: 2
+  walkSpeed: 2
+  attackSpeed: 10
+  attackRadius: 6
   projectileSpeed: 2
   projectile: {fileID: 6431303488228927484, guid: f2a08f8e688b63c45af88caa590ffe88, type: 3}

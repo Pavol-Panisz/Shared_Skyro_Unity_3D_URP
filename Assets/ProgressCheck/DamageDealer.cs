@@ -8,11 +8,11 @@ public class DamageDealer : MonoBehaviour
     {
         var objectToDamage = collision.gameObject.GetComponent<IDamageable>();
         objectToDamage.DealDamage(damage);
-        if (!gameObject.GetComponent<DamageAbility>())
+        if (!gameObject.GetComponent<DamageAbility>() && gameObject != PlayerP.instance.sword)
         {
             Destroy(gameObject);
         }
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(0.1f);
         if(gameObject != null) { Destroy(gameObject); }
     }
 }

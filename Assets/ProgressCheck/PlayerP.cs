@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerP : Character
@@ -8,6 +7,7 @@ public class PlayerP : Character
 
     public Transform swordPivot;
     public GameObject sword;
+
     private Rigidbody2D rb;
     private Camera viewCamera;
 
@@ -20,11 +20,18 @@ public class PlayerP : Character
 
     private void Update()
     {
-        transform.position += new Vector3(Input.GetAxis("Horizontal") * walkSpeed, Input.GetAxis("Vertical") * walkSpeed);
+        transform.position += new Vector3(Input.GetAxis("Horizontal") * walkSpeed, Input.GetAxis("Vertical") * walkSpeed) * Time.deltaTime;
 
-        Vector3 mousePos = viewCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0));
+        Vector3 mousePos = viewCamera.ScreenToWorldPoint(Input.mousePosition);
         Vector3 dirToMouse = mousePos - transform.position;
+        dirToMouse.z = 0;
         swordPivot.up = dirToMouse;
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            StartCoroutine(Attack());
+        }
+
     }
 
     public override void DealDamage(int damage)
@@ -38,13 +45,10 @@ public class PlayerP : Character
 
     public override IEnumerator Attack()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            sword.SetActive(true);
-            yield return new WaitForSeconds(0.5f);
-            sword.SetActive(false);
-            yield return new WaitForSeconds(0.4f);
-        }
+        sword.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        sword.SetActive(false);
+        yield return new WaitForSeconds(0.4f);
     }
 }
 

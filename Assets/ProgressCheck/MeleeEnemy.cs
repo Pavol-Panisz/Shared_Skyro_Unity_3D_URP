@@ -1,13 +1,16 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class MeleeEnemy : BaseEnemy
+public class MeleeEnemy : BaseEnemy, IDamageable
 {
     public GameObject sword;
     public Transform swordPivot;
+
+
     public override IEnumerator Attack()
     {
-        while (Vector3.Distance(PlayerP.instance.transform.position, transform.position) <= attackRadius)
+        while (Vector3.Distance(PlayerP.instance.transform.position, transform.position) < attackRadius)
         {
             swordPivot.LookAt(PlayerP.instance.transform.position);
             sword.SetActive(true);
