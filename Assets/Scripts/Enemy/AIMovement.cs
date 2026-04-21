@@ -1,14 +1,13 @@
 using System;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEngine.Rendering.DebugUI;
 
 public class AIMovement : Movement
 {
     private Transform _curTarget;
     private Transform _curCustomTarget;
 
-    private NavMeshPath _curNavMeshPath = new NavMeshPath();
+    private NavMeshPath _curNavMeshPath;
     private int _curCornerIndex;
 
     const int _pathUpdateCooldown = 12; //Path Update Cooldown in frames
@@ -72,7 +71,8 @@ public class AIMovement : Movement
             }
         }
 
-        Move(Vector3.Project(_curNavMeshPath.corners[_curCornerIndex] - transform.position, _flatVector).normalized);
+        Vector3 dir = _curNavMeshPath.corners[_curCornerIndex] - transform.position;
+        Move(new Vector3(dir.x, 0f, dir.z).normalized);
     }
 
     private void UpdatePath()

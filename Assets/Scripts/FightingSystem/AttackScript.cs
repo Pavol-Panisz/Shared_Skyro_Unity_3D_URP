@@ -7,7 +7,7 @@ public class AttackScript : MonoBehaviour
     private AttackScriptableObject _attackScriptableObject;
     public virtual AttackScriptableObject attackScriptableObject { get { return _attackScriptableObject; } set { _attackScriptableObject = value; _curAttackCooldown = value.attackCooldown; } }
 
-    private float _curAttackCooldown;
+    protected float _curAttackCooldown;
     private bool _holdingAttackButton;
 
     private void Update()
@@ -22,21 +22,14 @@ public class AttackScript : MonoBehaviour
 
     public virtual void Attack()
     {
-        if (!CanAttack()) return;
-
         _curAttackCooldown = 0f;
-    }
-
-    public void OnAttack(InputAction.CallbackContext context)
-    {
-        print(context.started);
-        OnAttack(!context.canceled);
     }
 
     public void OnAttack(bool attacking)
     {
+        print(attacking);
         _holdingAttackButton = attacking;
-        if (attacking)
+        if (attacking && CanAttack())
         {
             Attack();
         }
@@ -56,7 +49,7 @@ public class AttackScript : MonoBehaviour
 
     private void OnAttackCooldown()
     {
-        if(_holdingAttackButton)
+        if (_holdingAttackButton && CanAttack())
         {
             Attack();
         }

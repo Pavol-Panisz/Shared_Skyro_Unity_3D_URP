@@ -17,8 +17,8 @@ MonoBehaviour:
   attackDamage: 10
   attackInputAction:
     m_Name: Attack Input
-    m_Type: 0
-    m_ExpectedControlType: 
+    m_Type: 1
+    m_ExpectedControlType: Button
     m_Id: db4f9174-9891-479d-917c-1892d7b2dfc2
     m_Processors: 
     m_Interactions: 
@@ -31,6 +31,14 @@ MonoBehaviour:
       m_Groups: 
       m_Action: Attack Input
       m_Flags: 0
+    - m_Name: 
+      m_Id: 3fff8057-e81b-4e20-b1e4-3898c5cfc6af
+      m_Path: <Gamepad>/buttonEast
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Attack Input
+      m_Flags: 0
     m_Flags: 0
   hitboxSize: {x: 1, y: 1, z: 1}
-  hitboxLifeTime: 1
+  hitboxLifeTime: 0.1

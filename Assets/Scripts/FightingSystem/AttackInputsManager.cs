@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class AttackInputsManager : MonoBehaviour
 {
     private AttackScript _attackScript;
+    private InputAction _inputAction;
 
     private void Awake()
     {
@@ -12,11 +13,29 @@ public class AttackInputsManager : MonoBehaviour
         {
             Destroy(this);
         }
+
+        _inputAction = _attackScript.attackScriptableObject.attackInputAction;
     }
 
     private void OnEnable()
     {
-        _attackScript.attackScriptableObject.attackInputAction.started += _attackScript.OnAttack;
-        _attackScript.attackScriptableObject.attackInputAction.canceled += _attackScript.OnAttack;
+        if (_inputAction == null) return;
+        _inputAction.started += OnAttack;
+        _inputAction.canceled += OnAttack;
+
+        _inputAction.Enable();
+    }
+
+    private void OnDisable()
+    {
+        _inputAction.started -= OnAttack;
+        _inputAction.canceled -= OnAttack;
+
+        _inputAction.Disable();
+    }
+
+    private void OnAttack(InputAction.CallbackContext context)
+    {
+        _attackScript.OnAttack(!context.canceled);
     }
 }
