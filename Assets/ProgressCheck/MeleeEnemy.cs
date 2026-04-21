@@ -9,7 +9,10 @@ public class MeleeEnemy : BaseEnemy, IDamageable
 
     public override IEnumerator Attack()
     {
-        swordPivot.LookAt(PlayerP.instance.transform.position);
+        Vector3 playerPos = PlayerP.instance.transform.position;
+        Vector3 dirToPlayer = playerPos - transform.position;
+        dirToPlayer.z = 0;
+        swordPivot.up = dirToPlayer;
 
         sword.SetActive(true);
         yield return new WaitForSeconds(0.5f);
