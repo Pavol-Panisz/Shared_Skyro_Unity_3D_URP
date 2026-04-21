@@ -3,8 +3,15 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : Movement
 {
+    public static PlayerMovement Instance { get; private set; }
     private Vector2 _moveInputs;
     private bool _jumping;
+
+    protected override void Awake()
+    {
+        Instance = this;
+        base.Awake();
+    }
 
     protected override void Update()
     {

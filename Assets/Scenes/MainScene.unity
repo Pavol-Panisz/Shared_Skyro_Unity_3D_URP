@@ -552,6 +552,8 @@ GameObject:
   - component: {fileID: 1383686527}
   - component: {fileID: 1383686526}
   - component: {fileID: 1383686528}
+  - component: {fileID: 1383686530}
+  - component: {fileID: 1383686531}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -624,6 +626,7 @@ Transform:
   m_Children:
   - {fileID: 324104812}
   - {fileID: 1453065625}
+  - {fileID: 1847805289}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1383686526
@@ -725,7 +728,19 @@ MonoBehaviour:
     m_ActionId: a52fb457-c4c0-430b-b197-6d7642456cfd
     m_ActionName: Default/MouseCamera
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1383686528}
+        m_TargetAssemblyTypeName: PlayerCameraController, Assembly-CSharp
+        m_MethodName: OnCameraMoveGamepad
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 4ec00521-d658-4530-9d71-28f4c87e213d
     m_ActionName: Default/GamepadCamera
   m_NeverAutoSwitchControlSchemes: 0
@@ -748,9 +763,37 @@ MonoBehaviour:
   _cameraFollowTransform: {fileID: 1453065625}
   _horizontalSensitivity: 0.1
   _verticalSensitivity: 0.1
-  _gamepadSensitivityMultiplier: 1
+  _gamepadSensitivityMultiplier: 25
   _minY: -90
   _maxY: 90
+--- !u!114 &1383686530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1383686522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b60c77ba69114c48938ad97bae65679, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _startHealth: 100
+--- !u!114 &1383686531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1383686522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6bc68233abe42c41ba5c03832fefdfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _attacksSpawnPosition: {fileID: 1847805289}
+  _startAttacks:
+  - {fileID: 11400000, guid: 78c511af87483a64f9d55288f977af40, type: 2}
 --- !u!1 &1404546396
 GameObject:
   m_ObjectHideFlags: 0
@@ -898,6 +941,37 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.619, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1383686525}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1847805288
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1847805289}
+  m_Layer: 0
+  m_Name: AttacksSpawningTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1847805289
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1847805288}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.16, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

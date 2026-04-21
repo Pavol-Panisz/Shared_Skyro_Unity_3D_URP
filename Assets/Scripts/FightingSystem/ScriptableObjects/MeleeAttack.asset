@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab81993aa07f25c459f76b92356aebf5, type: 3}
+  m_Name: MeleeAttack
+  m_EditorClassIdentifier: 
+  attackPrefab: {fileID: 4747888239415919472, guid: 9a188be10bdaca74fb54d447d456b106, type: 3}
+  attackCooldown: 1
+  attackDamage: 10
+  attackInputAction:
+    m_Name: Attack Input
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: db4f9174-9891-479d-917c-1892d7b2dfc2
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 92d58301-6b4f-444c-8dda-4bc7d474fac5
+      m_Path: <Mouse>/leftButton
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Attack Input
+      m_Flags: 0
+    m_Flags: 0
+  hitboxSize: {x: 1, y: 1, z: 1}
+  hitboxLifeTime: 1
