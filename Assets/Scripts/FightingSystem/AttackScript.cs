@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class AttackScript : MonoBehaviour
 {
@@ -7,8 +8,21 @@ public class AttackScript : MonoBehaviour
     private AttackScriptableObject _attackScriptableObject;
     public virtual AttackScriptableObject attackScriptableObject { get { return _attackScriptableObject; } set { _attackScriptableObject = value; _curAttackCooldown = value.attackCooldown; } }
 
-    protected float _curAttackCooldown;
+    private float curattackcooldown;
+    protected float _curAttackCooldown {
+        get { return curattackcooldown; }
+        set
+        {
+            curattackcooldown = value;
+            if(attackCooldownUI != null)
+            {
+                attackCooldownUI.fillAmount = value / attackScriptableObject.attackCooldown;
+            }
+        }
+    }
     private bool _holdingAttackButton;
+
+    [HideInInspector] public Image attackCooldownUI;
 
     private void Update()
     {
@@ -53,5 +67,11 @@ public class AttackScript : MonoBehaviour
         {
             Attack();
         }
+    }
+
+    private void OnDestroy()
+    {
+        if(attackCooldownUI != null)
+            Destroy(attackCooldownUI.gameObject);
     }
 }

@@ -9,30 +9,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50a4cdaef7e18a44e8d9bc4f2037f498, type: 3}
-  m_Name: RangedAttack
+  m_Script: {fileID: 11500000, guid: aa3cf175daf071746942f07a5244a6a5, type: 3}
+  m_Name: HealingAttack
   m_EditorClassIdentifier: 
-  attackPrefab: {fileID: 6907872384051675069, guid: f314783e8285646439c9b7c49f33203b, type: 3}
-  attackCooldown: 1
-  attackDamage: 10
+  attackPrefab: {fileID: 6405699297168235936, guid: bb81927d69cf4504b9aec6863c64b7f1, type: 3}
+  attackCooldown: 4
+  attackDamage: 20
   attackInputAction:
     m_Name: Attack Input
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 9ecaf288-3962-481e-83d5-67d1cf849edf
+    m_Id: 15c43c57-5990-4e58-9bc3-48e2f986fe4c
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: e48f8cdc-6357-4651-bc05-b95d8c76575a
-      m_Path: <Keyboard>/q
+      m_Id: 23b131f9-92a6-4579-84e8-043199503dea
+      m_Path: <Keyboard>/e
       m_Interactions: 
       m_Processors: 
       m_Groups: 
       m_Action: Attack Input
       m_Flags: 0
     m_Flags: 0
-  attackSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  projectilePrefab: {fileID: 847958157955265253, guid: feb15b8f47dafde44884aea7a322d02f, type: 3}
-  projectileLifeTime: 3
-  projectileSpeed: 10
+  attackSprite: {fileID: 21300000, guid: daa49a1f06460a04b9827dd6f0bace08, type: 3}

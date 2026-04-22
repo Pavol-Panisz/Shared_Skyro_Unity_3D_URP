@@ -23,19 +23,19 @@ public class Hitbox : MonoBehaviour
 
     protected virtual void OnTriggerEnter(Collider other)
     {
-        if (IsThereAPlayer(other, out HealthSystem healthSystem, out bool isAttacker))
+        if (IsThereADamagableObject(other, out IDamagable iDamagable, out bool isAttacker))
         {
             if (isAttacker) return;
-            healthSystem.Damage(_damage);
+            iDamagable.Damage(_damage);
         }
     }
 
-    protected bool IsThereAPlayer(Collider other, out HealthSystem healthSystem, out bool isAttacker)
+    protected bool IsThereADamagableObject(Collider other, out IDamagable iDamagable, out bool isAttacker)
     {
         isAttacker = false;
-        if(other.TryGetComponent(out healthSystem))
+        if(other.TryGetComponent(out iDamagable))
         {
-            if (healthSystem == _attacker)
+            if (iDamagable == _attacker)
                 isAttacker = true;
             return true;
         }

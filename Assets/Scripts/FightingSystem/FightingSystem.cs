@@ -37,4 +37,22 @@ public class FightingSystem : MonoBehaviour
 
         return null;
     }
+
+    protected virtual void SetTargetToTheRangedWeapon(AttackScript attackScript, Transform target)
+    {
+        RangedAttackScript rangedAttackScript = attackScript as RangedAttackScript;
+        if (rangedAttackScript != null)
+        {
+            rangedAttackScript.target = target;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        foreach(var attack in attacks)
+        {
+            if (attack != null)
+                Destroy(attack.gameObject);
+        }
+    }
 }

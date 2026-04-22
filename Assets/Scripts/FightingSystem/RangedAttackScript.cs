@@ -5,7 +5,7 @@ public class RangedAttackScript : AttackScript
     public override AttackScriptableObject attackScriptableObject { get { return base.attackScriptableObject; } set { base.attackScriptableObject = value; _rangedAttackScriptableObject = value as RangedAttackScriptableObject; } }
     private RangedAttackScriptableObject _rangedAttackScriptableObject;
 
-    public Transform target;
+    [HideInInspector] public Transform target;
 
     public override void Attack()
     {
@@ -15,6 +15,6 @@ public class RangedAttackScript : AttackScript
 
     private void SpawnProjectile()
     {
-        Hitbox hitbox = Projectile.SpawnProjectile(_rangedAttackScriptableObject.projectilePrefab, transform.position, (target.position - transform.position).normalized, attackScriptableObject.attackDamage, _rangedAttackScriptableObject.projectileLifeTime, _rangedAttackScriptableObject.projectileSpeed, attacker);
+        Hitbox hitbox = Projectile.SpawnProjectile(_rangedAttackScriptableObject.projectilePrefab, transform.position, target != null ? (target.position - transform.position).normalized : transform.forward, attackScriptableObject.attackDamage, _rangedAttackScriptableObject.projectileLifeTime, _rangedAttackScriptableObject.projectileSpeed, attacker);
     }
 }

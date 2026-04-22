@@ -8,4 +8,5 @@ public class AttackScriptableObject : ScriptableObject
     public float attackCooldown;
     public float attackDamage;
     public InputAction attackInputAction;
+    public Sprite attackSprite;
 }

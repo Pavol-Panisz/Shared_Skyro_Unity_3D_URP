@@ -5,10 +5,10 @@ public class Projectile : Hitbox
 {
     protected override void OnTriggerEnter(Collider other)
     {
-        if (IsThereAPlayer(other, out HealthSystem healthSystem, out bool isAttacker))
+        if (IsThereADamagableObject(other, out IDamagable iDamagable, out bool isAttacker))
         {
             if (isAttacker) return;
-            healthSystem.Damage(_damage);
+            iDamagable.Damage(_damage);
         }
 
         Destroy(gameObject);

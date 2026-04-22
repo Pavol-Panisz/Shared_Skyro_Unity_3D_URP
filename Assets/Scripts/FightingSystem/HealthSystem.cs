@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class HealthSystem : MonoBehaviour
+public class HealthSystem : MonoBehaviour, IDamagable
 {
-    [SerializeField] private float _startHealth = 100f;
+    [SerializeField] protected float _startHealth = 100f;
     protected virtual float _curHealth { get; set; }
 
     private void Awake()
@@ -10,7 +10,7 @@ public class HealthSystem : MonoBehaviour
         _curHealth = _startHealth;
     }
 
-    public void Damage(float damage)
+    public virtual void Damage(float damage)
     {
         _curHealth -= damage;
         if(_curHealth <= 0f)
@@ -20,8 +20,13 @@ public class HealthSystem : MonoBehaviour
         }
     }
 
-    private void Die()
+    protected virtual void Die()
     {
         Destroy(gameObject);
     }
+}
+
+public interface IDamagable
+{
+    void Damage(float damage);
 }
