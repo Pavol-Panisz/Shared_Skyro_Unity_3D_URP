@@ -14,6 +14,13 @@ public class MeleeEnemy : BaseEnemyClass
             if (damageable != null) damageable.DealDamage(damage);
         }
 
-        base.Attack();
+        canAttack = false;
+        Invoke(nameof(ResetCanAttack), attackSpeed);
+
+        if (debug)
+        {
+            GameObject spawnedDebugCube = Instantiate(debugCube, transform.position + transform.forward, Quaternion.identity);
+            Destroy(spawnedDebugCube, attackSpeed);
+        }
     }
 }

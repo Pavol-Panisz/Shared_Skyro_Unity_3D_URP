@@ -22,6 +22,11 @@ public class BaseEnemyClass : Character
         ControllEnemy();
     }
 
+    public override void Attack()
+    {
+    
+    }
+
     public virtual void ControllEnemy()
     {
         switch (enemyState)

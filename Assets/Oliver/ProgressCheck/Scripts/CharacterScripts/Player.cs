@@ -44,7 +44,14 @@ public class Player : Character
             }
         }
 
-        base.Attack();
+        canAttack = false;
+        Invoke(nameof(ResetCanAttack), attackSpeed);
+
+        if (debug)
+        {
+            GameObject spawnedDebugCube = Instantiate(debugCube, transform.position + transform.forward, Quaternion.identity);
+            Destroy(spawnedDebugCube, attackSpeed);
+        }
     }
 
     void OnDrawGizmos()

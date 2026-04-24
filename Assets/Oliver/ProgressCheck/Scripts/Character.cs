@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Character : MonoBehaviour, IDamageable
+public abstract class Character : MonoBehaviour, IDamageable
 {
     [SerializeField]private int maxHealth;
     public int health;
@@ -11,6 +11,10 @@ public class Character : MonoBehaviour, IDamageable
     public int damage;
     public bool canAttack = true;
 
+    [Header("References")]
+    public bool debug;
+    public GameObject debugCube;
+
     private void Start()
     {
         CustomStart();
@@ -20,13 +24,9 @@ public class Character : MonoBehaviour, IDamageable
     public virtual void CustomStart(){}
 
 #region Attack
-    public virtual void Attack()
-    {
-        canAttack = false;
-        Invoke(nameof(ResetAttack), attackSpeed);
-    }
+    public abstract void Attack();
 
-    public void ResetAttack()
+    public void ResetCanAttack()
     {
         canAttack = true;
     }

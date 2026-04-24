@@ -11,7 +11,14 @@ public class RangeEnemy : BaseEnemyClass
         spawnedAmmo.GetComponent<Rigidbody>().AddForce(transform.forward * shootForce);
         Destroy(spawnedAmmo, 5f);
 
-        base.Attack();
+        canAttack = false;
+        Invoke(nameof(ResetCanAttack), attackSpeed);
+
+        if (debug)
+        {
+            GameObject spawnedDebugCube = Instantiate(debugCube, transform.position + transform.forward, Quaternion.identity);
+            Destroy(spawnedDebugCube, attackSpeed);
+        }
     }
 
     public override void ControllEnemy()

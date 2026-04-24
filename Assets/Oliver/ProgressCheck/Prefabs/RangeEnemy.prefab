@@ -130,6 +130,7 @@ MonoBehaviour:
   attackSpeed: 3
   damage: 1
   canAttack: 1
+  debugCube: {fileID: 3172332225355978664, guid: 8279c75bac06e7d4eb5072b410dc4800, type: 3}
   enemyState: 0
   attackDst: 7.5
   agent: {fileID: 9201017684574662595}

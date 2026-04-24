@@ -697,9 +697,11 @@ MonoBehaviour:
   maxHealth: 10
   health: 0
   moveSpeed: 4
-  attackSpeed: 1
+  attackSpeed: 0.75
   damage: 1
   canAttack: 1
+  debug: 1
+  debugCube: {fileID: 3172332225355978664, guid: 8279c75bac06e7d4eb5072b410dc4800, type: 3}
   healthText: {fileID: 911507703}
 --- !u!1001 &386083955
 PrefabInstance:
@@ -1198,9 +1200,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6940d2db77b2b5488e4d82f803008b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  key: e
+  key: q
   cooldown: 1
   canUseAbility: 1
+  abilityImg: {fileID: 867486786}
   fireballPrefab: {fileID: 845263919445805810, guid: 673ba34e529d56841981a4fac21c8780, type: 3}
 --- !u!1 &911507701
 GameObject:
@@ -2001,7 +2004,7 @@ GameObject:
   - component: {fileID: 1736827639}
   - component: {fileID: 1736827640}
   m_Layer: 5
-  m_Name: AbilityButtons
+  m_Name: AbilityImages
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2199,9 +2202,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32c87f6a4c1e08e43be33820371e80dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  key: q
+  key: e
   cooldown: 1
   canUseAbility: 1
+  abilityImg: {fileID: 1952208753}
   healAmount: 2
 --- !u!1001 &2145949848
 PrefabInstance:
