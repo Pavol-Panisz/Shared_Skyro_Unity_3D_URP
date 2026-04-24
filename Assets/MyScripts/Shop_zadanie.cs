@@ -30,49 +30,42 @@ public class Shop_zadanie : MonoBehaviour
         {
             Price = 27;
         }
-        if (itemName == "SharKhan")
+        else if (itemName == "SharKhan")
         {
             Price = 100;
         }
-        if (itemName == "JaneJuliet")
+        else if (itemName == "JaneJuliet")
         {
             Price = 67;
         }
 
-       
-            
-           
+
+        if (money - Price < 0)
+        {
+            Debug.Log("Broke Boy");
+            boughtItem = false;
+        }
+        else
+        {
+            money = money - Price;
+            Debug.Log("Rich fella");
+            boughtItem = true;
+        }
+
+        if(boughtItem)
+        {
+            if (itemName == "EvilIsac")
             {
-                if (money <= 0)
-                {
-                    Debug.Log("Broke Boy"); 
-                    boughtItem = false;
-                }
-                else if (money > 0) 
-                { 
-                    money = money - Price;
-                    Debug.Log("Rich fella");
-                    boughtItem= true;  
-                
-                }
-              
-                
-               
-                      
+                EvilIsac += 1;
             }
-
-
-        if (itemName == "EvilIsac" && boughtItem == true)
-        {
-            EvilIsac += 1;
-        }
-        if (itemName == "SharKhan" && boughtItem == true)
-        {
-            SharKhan += 1;
-        }
-        if (itemName == "JaneJuliet" && boughtItem == true)
-        {
-            JaneJuliet += 1;
+            else if (itemName == "SharKhan")
+            {
+                SharKhan += 1;
+            }
+            else if (itemName == "JaneJuliet")
+            {
+                JaneJuliet += 1;
+            }
         }
 
 
