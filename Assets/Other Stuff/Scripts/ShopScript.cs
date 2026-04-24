@@ -1,11 +1,16 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class ShopWithInventory : MonoBehaviour
 {
     public int money = 200;
     public TextMeshProUGUI moneyDisplay;
     public TextMeshProUGUI inventoryDisplay;
+    public TextMeshProUGUI notEnoughCoinsText;
+
+    private Coroutine notEnoughCoinsCoroutine;
+    private Coroutine closeShopCoroutine;
 
     // these variables are used for calculating
     // whether I have enough monet to buy the item:
@@ -26,6 +31,14 @@ public class ShopWithInventory : MonoBehaviour
     public int bows = 0;
     public int arrows = 0;
 
+    void Start()
+    {
+        if (notEnoughCoinsText != null)
+        {
+            notEnoughCoinsText.gameObject.SetActive(false);
+        }
+    }
+
     void Update()
     {
         moneyDisplay.text = $"Money: {money}";
@@ -41,21 +54,32 @@ public class ShopWithInventory : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
     }
 
-    public void PressedBuy(string itemName)
+    public void PressedBuy()
     {
-        // here i am just determinig how much to pay
-        if (itemName == "Sword")
+        GameObject clickedButton = EventSystem.current != null
+            ? EventSystem.current.currentSelectedGameObject
+            : null;
+
+        if (clickedButton == null)
         {
-            priceToPay = 50;
+            Debug.LogWarning("PressedBuy: could not detect clicked button.");
+            return;
         }
-        if (itemName == "Bow")
+
+        TMP_Text buttonText = clickedButton.GetComponentInChildren<TMP_Text>();
+        if (buttonText == null)
         {
-            priceToPay = 80;
+            Debug.LogWarning("PressedBuy: clicked button has no TMP text.");
+            return;
         }
-        if (itemName == "Arrow")
+
+        if (!TryGetItemAndPriceFromButtonText(buttonText.text, out string itemName, out int parsedPrice))
         {
-            priceToPay = 5;
+            Debug.LogWarning($"PressedBuy: invalid button text format '{buttonText.text}'. Use 'Item - Price'.");
+            return;
         }
+
+        priceToPay = parsedPrice;
         
         // here i am seeing whether i have enough money,
         // and if yes, i actually buy the thing
@@ -65,6 +89,16 @@ public class ShopWithInventory : MonoBehaviour
         {
             Debug.Log("Not enough money!");
             hasBoughtItem = false;
+
+            if (notEnoughCoinsText != null)
+            {
+                if (notEnoughCoinsCoroutine != null)
+                {
+                    StopCoroutine(notEnoughCoinsCoroutine);
+                }
+
+                notEnoughCoinsCoroutine = StartCoroutine(ShowNotEnoughCoinsForDelay(5f));
+            }
         }
         else
         {
@@ -77,20 +111,66 @@ public class ShopWithInventory : MonoBehaviour
         // time to potentially update the inventory
 
 
-        if (itemName == "Sword" && hasBoughtItem == true)
+        if (hasBoughtItem == true)
         {
-            swords += 1;
-        }
-        if (itemName == "Bow" && hasBoughtItem == true)
-        {
-            bows += 1;
-        }
-        if (itemName == "Arrow" && hasBoughtItem == true)
-        {
-            arrows += 1;
+            string normalizedItemName = itemName.Trim().ToLowerInvariant();
+
+            if (normalizedItemName == "sword")
+            {
+                swords += 1;
+            }
+            if (normalizedItemName == "bow")
+            {
+                bows += 1;
+            }
+            if (normalizedItemName == "arrow")
+            {
+                arrows += 1;
+            }
         }
 
-        StartCoroutine(CloseShopAfterDelay(5f));
+        if (closeShopCoroutine != null)
+        {
+            StopCoroutine(closeShopCoroutine);
+        }
+
+        closeShopCoroutine = StartCoroutine(CloseShopAfterDelay(5f));
+    }
+
+    bool TryGetItemAndPriceFromButtonText(string buttonLabel, out string itemName, out int itemPrice)
+    {
+        itemName = "";
+        itemPrice = 0;
+
+        if (string.IsNullOrWhiteSpace(buttonLabel))
+        {
+            return false;
+        }
+
+        int separatorIndex = buttonLabel.LastIndexOf('-');
+        if (separatorIndex <= 0 || separatorIndex >= buttonLabel.Length - 1)
+        {
+            return false;
+        }
+
+        itemName = buttonLabel.Substring(0, separatorIndex).Trim();
+        string pricePart = buttonLabel.Substring(separatorIndex + 1).Trim();
+
+        string digitsOnly = "";
+        foreach (char character in pricePart)
+        {
+            if (char.IsDigit(character))
+            {
+                digitsOnly += character;
+            }
+        }
+
+        if (string.IsNullOrEmpty(itemName) || string.IsNullOrEmpty(digitsOnly))
+        {
+            return false;
+        }
+
+        return int.TryParse(digitsOnly, out itemPrice);
     }
 
     System.Collections.IEnumerator CloseShopAfterDelay(float delay)
@@ -99,5 +179,14 @@ public class ShopWithInventory : MonoBehaviour
         shopCanvas.SetActive(false);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+        closeShopCoroutine = null;
+    }
+
+    System.Collections.IEnumerator ShowNotEnoughCoinsForDelay(float delay)
+    {
+        notEnoughCoinsText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(delay);
+        notEnoughCoinsText.gameObject.SetActive(false);
+        notEnoughCoinsCoroutine = null;
     }
 }
