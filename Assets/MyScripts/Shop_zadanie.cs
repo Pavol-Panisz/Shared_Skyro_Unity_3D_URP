@@ -39,20 +39,23 @@ public class Shop_zadanie : MonoBehaviour
             Price = 67;
         }
 
-            money = money - Price;
+       
+            
            
             {
-                if (money < 0)
+                if (money <= 0)
                 {
                     Debug.Log("Broke Boy"); 
                     boughtItem = false;
                 }
                 else if (money > 0) 
-                {
+                { 
+                    money = money - Price;
                     Debug.Log("Rich fella");
                     boughtItem= true;  
                 
                 }
+              
                 
                
                       
