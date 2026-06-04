@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class HealAbility : BaseAbility
@@ -8,7 +7,7 @@ public class HealAbility : BaseAbility
 
     private void Start()
     {
-        _playerDamageableCache = Player.Instance.GetComponent<IDamageable>();
+        _playerDamageableCache = GameManager.Player.GetComponent<IDamageable>();
     }
 
     protected override void Activate()

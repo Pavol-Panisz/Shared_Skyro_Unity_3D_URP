@@ -6,11 +6,10 @@ public class RangedEnemy : BaseEnemy
     
     protected override void Attack()
     {
-        Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-    }
-
-    protected override void Die()
-    {
-        Destroy(gameObject);
+        var angleZ = Vector2.SignedAngle(Vector2.right, RotationDir);
+        Instantiate(
+            bulletPrefab,
+            transform.position + RotationDir * closestAttackRange,
+            Quaternion.Euler(0f, 0f, angleZ));
     }
 }
