@@ -29,7 +29,7 @@ public class MovingPlatform : MonoBehaviour
 
     void OnEnable()
     {
-        // Do NOT reset time — we want to resume from where we left off
+        // Do NOT reset time - we want to resume from where we left off
         if (initialized)
         {
             // Optionally snap position exactly to where it should be based on current time

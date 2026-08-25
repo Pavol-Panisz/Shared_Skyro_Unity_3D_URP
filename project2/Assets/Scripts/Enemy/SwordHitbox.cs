@@ -15,7 +15,7 @@ public class SwordHitbox : MonoBehaviour
     {
         if (_hasHit) return;
         if (!other.TryGetComponent(out IDamageable dmg)) return;
-        if (transform.parent != null && other.transform.IsChildOf(transform.parent)) return;
+        if (transform.parent != null && other.transform.IsChildOf(transform.parent)) return; //https://docs.unity3d.com/6000.4/Documentation/ScriptReference/Transform.IsChildOf.html
 
         _hasHit = true;
         dmg.TakeDamage(_damage);
